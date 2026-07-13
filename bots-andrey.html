@@ -364,7 +364,7 @@ body::after {
   nums.forEach(function(el, i){
     var target = parseInt(el.dataset.count);
     var suffix = el.dataset.suffix || '';
-    var duration = 1200 + i * 150;
+    var duration = 2500 + i * 200;
     var start = Date.now();
     setTimeout(function(){
       function tick(){
@@ -377,7 +377,7 @@ body::after {
         else el.textContent = target + suffix;
       }
       tick();
-    }, 300 + i * 120);
+    }, 500 + i * 250);
   });
 })();
 </script>
