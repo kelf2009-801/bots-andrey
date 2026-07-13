@@ -47,9 +47,40 @@ body::after {
 
 /* === СТАТИСТИКА === */
 .stats { display:flex; gap:14px; margin-bottom:48px; flex-wrap:wrap; justify-content:center; }
-.stat { background:rgba(19,25,56,0.65); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 32px; text-align:center; min-width:140px; backdrop-filter:blur(10px); transition:all 0.25s; }
-.stat:hover { border-color:rgba(0,195,255,0.3); transform:translateY(-3px); }
-.stat-num { font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#00c3ff,#4c00ff); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.stat {
+  position:relative; background:radial-gradient(circle at 50% 0%, rgba(0,195,255,0.10), transparent 60%), rgba(19,25,56,0.65);
+  border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:22px 36px; text-align:center; min-width:140px;
+  backdrop-filter:blur(10px); overflow:hidden;
+  transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  opacity:0; animation:statFadeIn 0.6s ease forwards;
+}
+.stat:nth-child(1) { animation-delay:0.1s; }
+.stat:nth-child(2) { animation-delay:0.2s; }
+.stat:nth-child(3) { animation-delay:0.3s; }
+.stat:nth-child(4) { animation-delay:0.4s; }
+.stat:nth-child(5) { animation-delay:0.5s; }
+@keyframes statFadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+/* Светящаяся рамка */
+.stat::before {
+  content:''; position:absolute; inset:0; border-radius:inherit; padding:1.5px;
+  background:linear-gradient(135deg, #00c3ff, rgba(255,255,255,0.1) 50%, #4c00ff);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
+  pointer-events:none; opacity:0.3; transition:opacity 0.3s;
+}
+/* Блик */
+.stat::after {
+  content:''; position:absolute; top:0; left:-120%; width:50%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent); transform:skewX(-20deg); pointer-events:none;
+}
+.stat:hover {
+  transform:perspective(800px) rotateX(-5deg) rotateY(5deg) translateY(-4px) scale(1.05);
+  box-shadow:0 16px 40px rgba(0,195,255,0.3), 0 0 30px rgba(0,195,255,0.2);
+  border-color:rgba(0,195,255,0.4);
+}
+.stat:hover::before { opacity:1; }
+.stat:hover::after { animation:shine 0.7s ease; }
+.stat-num { font-size:1.9rem; font-weight:700; background:linear-gradient(135deg,#00c3ff,#4c00ff); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; transition:transform 0.3s; }
+.stat:hover .stat-num { transform:scale(1.1); }
 .stat-label { font-size:0.72rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-top:4px; }
 
 .section-title { font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:28px; display:flex; align-items:center; gap:12px; }
