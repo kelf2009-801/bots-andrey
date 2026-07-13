@@ -245,7 +245,7 @@ body::after {
       <li><strong>/admin</strong> — админка</li>
     </ul>
     <div class="bot-stack"><span class="stack-tag">Python</span><span class="stack-tag">Docker</span><span class="stack-tag">Ozon API</span><span class="stack-tag">SQLite</span></div>
-    <a class="bot-btn" href="intent://resolve?domain=DealBot63_bot#Intent;package=org.telegram.messenger;scheme=tg;end">🛒 Открыть бот</a>
+    <a class="bot-btn" href="#" onclick="openTgBot('DealBot63_bot'); return false;">🛒 Открыть бот</a>
   </div>
 
   <!-- ===== 2. GlamBot ===== -->
@@ -267,7 +267,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="intent://resolve?domain=nail163_bot#Intent;package=org.telegram.messenger;scheme=tg;end">💅 Открыть бот</a>
+    <a class="bot-btn" href="#" onclick="openTgBot('nail163_bot'); return false;">💅 Открыть бот</a>
   </div>
 
   <!-- ===== 3. BeautyBot ===== -->
@@ -289,7 +289,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="intent://resolve?domain=Nailselegantstudio_bot#Intent;package=org.telegram.messenger;scheme=tg;end">👩‍🦰 Открыть бот</a>
+    <a class="bot-btn" href="#" onclick="openTgBot('Nailselegantstudio_bot'); return false;">👩‍🦰 Открыть бот</a>
   </div>
 
   <!-- ===== 4. FinBot ===== -->
@@ -311,7 +311,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span><span class="stack-tag">Whisper</span><span class="stack-tag">qwen-vl-max</span>
     </div>
-    <a class="bot-btn" href="intent://resolve?domain=finpro63_bot#Intent;package=org.telegram.messenger;scheme=tg;end">💰 Открыть бот</a>
+    <a class="bot-btn" href="#" onclick="openTgBot('finpro63_bot'); return false;">💰 Открыть бот</a>
   </div>
 
   <!-- ===== 5. BotForge ===== -->
@@ -363,12 +363,12 @@ body::after {
   <div class="footer-title">Андрей · Сызрань</div>
   <p class="footer-text">Водитель автобуса, который осваивает AI и создаёт Telegram-ботов. Открыт к сотрудничеству и идеям.</p>
   <div class="footer-contacts">
-    <a class="footer-contact" href="intent://resolve?domain=DealBot63_bot#Intent;package=org.telegram.messenger;scheme=tg;end">🛒 DealBot63</a>
-    <a class="footer-contact" href="intent://resolve?domain=nail163_bot#Intent;package=org.telegram.messenger;scheme=tg;end">💅 GlamBot</a>
-    <a class="footer-contact" href="intent://resolve?domain=Nailselegantstudio_bot#Intent;package=org.telegram.messenger;scheme=tg;end">👩‍🦰 BeautyBot</a>
-    <a class="footer-contact" href="intent://resolve?domain=finpro63_bot#Intent;package=org.telegram.messenger;scheme=tg;end">💰 FinBot</a>
+    <a class="footer-contact" href="#" onclick="openTgBot('DealBot63_bot'); return false;">🛒 DealBot63</a>
+    <a class="footer-contact" href="#" onclick="openTgBot('nail163_bot'); return false;">💅 GlamBot</a>
+    <a class="footer-contact" href="#" onclick="openTgBot('Nailselegantstudio_bot'); return false;">👩‍🦰 BeautyBot</a>
+    <a class="footer-contact" href="#" onclick="openTgBot('finpro63_bot'); return false;">💰 FinBot</a>
     <a class="footer-contact" href="Dashboard.html" target="_blank">⚡ BotForge</a>
-    <a class="footer-contact" href="intent://resolve?domain=DebiHackBot#Intent;package=org.telegram.messenger;scheme=tg;end">🤖 DebiHackBot</a>
+    <a class="footer-contact" href="#" onclick="openTgBot('DebiHackBot'); return false;">🤖 DebiHackBot</a>
   </div>
   <div class="footer-bottom">Сделано с ❤ в Сызрани · 2026</div>
 </footer>
@@ -390,7 +390,7 @@ body::after {
     <div class="modal-lock">🔒 Доступ — закрытый. Для избранных.</div>
     <p class="modal-invite">Тот самый бот, о котором все говорят.<br>Но есть нюанс — попасть можно только по приглашению.</p>
     <p class="modal-invite"><strong>Хочешь получить доступ?</strong></p>
-    <a class="modal-btn" href="intent://resolve?domain=Vandrey63#Intent;package=org.telegram.messenger;scheme=tg;end">👉 Получить доступ</a>
+    <a class="modal-btn" href="#" onclick="openTgBot('Vandrey63'); return false;">👉 Получить доступ</a>
   </div>
 </div>
 
@@ -432,6 +432,33 @@ function closeDebiModal(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape') closeDebiModal();
 });
+
+<script>
+// Открывает бота в приложении Telegram — пробует tg:// protocol напрямую
+function openTgBot(username){
+  // Пробуем открыть через tg:// — Android Chrome может открыть приложение
+  window.location.href = 'tg://resolve?domain=' + username;
+  
+  // Через 1.5с проверяем — если не открылось, показываем подсказку
+  setTimeout(function(){
+    // Создаём модальное окно с инструкцией
+    var existing = document.getElementById('tgFallback');
+    if(existing) existing.remove();
+    
+    var div = document.createElement('div');
+    div.id = 'tgFallback';
+    div.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1a1a2e;color:#fff;padding:30px;border-radius:16px;z-index:99999;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.6);max-width:90vw;';
+    div.innerHTML = 
+      '<div style="font-size:48px;margin-bottom:12px;">📱</div>' +
+      '<p style="font-size:18px;font-weight:600;margin:0 0 16px 0;">Бот: @' + username + '</p>' +
+      '<p style="font-size:14px;color:#aaa;margin:0 0 20px 0;">Не удалось открыть приложение Telegram автоматически.</p>' +
+      '<p style="font-size:14px;margin:0 0 20px 0;">Открой Telegram и найди:</p>' +
+      '<p style="font-size:20px;font-weight:700;color:#64f5d3;margin:0 0 24px 0;word-break:break-all;">@' + username + '</p>' +
+      '<button onclick="document.getElementById(\'tgFallback\').remove()" style="background:#64f5d3;color:#0d0e12;border:none;padding:12px 32px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Понятно</button>';
+    document.body.appendChild(div);
+  }, 1500);
+}
+</script>
 
 </body>
 </html>
