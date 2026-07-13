@@ -159,7 +159,8 @@ body::after {
 .bot-stack { display:flex; gap:5px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.05); }
 .stack-tag { font-size:0.66rem; color:var(--text-dim); background:rgba(255,255,255,0.03); padding:3px 7px; border-radius:6px; border:1px solid rgba(255,255,255,0.08); }
 
-.bot-btn { display:block; text-align:center; padding:11px 18px; background:linear-gradient(135deg, var(--card-color), rgba(255,255,255,0.05)); border:1px solid var(--card-color); border-radius:12px; color:var(--text); text-decoration:none; font-size:0.88rem; font-weight:700; transition:all 0.2s; margin-top:auto; cursor:pointer; }
+.bot-btn { display:block; text-align:center; padding:11px 18px; background:linear-gradient(135deg, var(--card-color), rgba(255,255,255,0.05)); border:1px solid var(--card-color); border-radius:12px; color:var(--text); text-decoration:none; font-size:0.88rem; font-weight:700; transition:all 0.2s; margin-top:auto; cursor:pointer; position:relative; z-index:2; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.bot-btn:active { transform:scale(0.97); }
 .bot-btn:hover { background:var(--card-color); color:var(--bg-dark); transform:translateY(-2px); }
 
 /* === МОДАЛЬНОЕ ОКНО === */
