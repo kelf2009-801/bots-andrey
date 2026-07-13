@@ -245,7 +245,7 @@ body::after {
       <li><strong>/admin</strong> — админка</li>
     </ul>
     <div class="bot-stack"><span class="stack-tag">Python</span><span class="stack-tag">Docker</span><span class="stack-tag">Ozon API</span><span class="stack-tag">SQLite</span></div>
-    <a class="bot-btn" href="https://t.me/DealBot63_bot" target="_blank" onclick="return openTelegram('DealBot63_bot')">🛒 Открыть бот</a>
+    <a class="bot-btn" href="tg://resolve?domain=DealBot63_bot">🛒 Открыть бот</a>
   </div>
 
   <!-- ===== 2. GlamBot ===== -->
@@ -267,7 +267,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="https://t.me/nail163_bot" target="_blank" onclick="return openTelegram('nail163_bot')">💅 Открыть бот</a>
+    <a class="bot-btn" href="tg://resolve?domain=nail163_bot">💅 Открыть бот</a>
   </div>
 
   <!-- ===== 3. BeautyBot ===== -->
@@ -289,7 +289,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="https://t.me/Nailselegantstudio_bot" target="_blank" onclick="return openTelegram('Nailselegantstudio_bot')">👩‍🦰 Открыть бот</a>
+    <a class="bot-btn" href="tg://resolve?domain=Nailselegantstudio_bot">👩‍🦰 Открыть бот</a>
   </div>
 
   <!-- ===== 4. FinBot ===== -->
@@ -311,7 +311,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span><span class="stack-tag">Whisper</span><span class="stack-tag">qwen-vl-max</span>
     </div>
-    <a class="bot-btn" href="https://t.me/finpro63_bot" target="_blank" onclick="return openTelegram('finpro63_bot')">💰 Открыть бот</a>
+    <a class="bot-btn" href="tg://resolve?domain=finpro63_bot">💰 Открыть бот</a>
   </div>
 
   <!-- ===== 5. BotForge ===== -->
@@ -363,12 +363,12 @@ body::after {
   <div class="footer-title">Андрей · Сызрань</div>
   <p class="footer-text">Водитель автобуса, который осваивает AI и создаёт Telegram-ботов. Открыт к сотрудничеству и идеям.</p>
   <div class="footer-contacts">
-    <a class="footer-contact" href="https://t.me/DealBot63_bot" target="_blank">🛒 DealBot63</a>
-    <a class="footer-contact" href="https://t.me/nail163_bot" target="_blank">💅 GlamBot</a>
-    <a class="footer-contact" href="https://t.me/Nailselegantstudio_bot" target="_blank">👩‍🦰 BeautyBot</a>
-    <a class="footer-contact" href="https://t.me/finpro63_bot" target="_blank">💰 FinBot</a>
+    <a class="footer-contact" href="tg://resolve?domain=DealBot63_bot">🛒 DealBot63</a>
+    <a class="footer-contact" href="tg://resolve?domain=nail163_bot">💅 GlamBot</a>
+    <a class="footer-contact" href="tg://resolve?domain=Nailselegantstudio_bot">👩‍🦰 BeautyBot</a>
+    <a class="footer-contact" href="tg://resolve?domain=finpro63_bot">💰 FinBot</a>
     <a class="footer-contact" href="Dashboard.html" target="_blank">⚡ BotForge</a>
-    <a class="footer-contact" href="https://t.me/DebiHackBot" target="_blank">🤖 DebiHackBot</a>
+    <a class="footer-contact" href="tg://resolve?domain=DebiHackBot">🤖 DebiHackBot</a>
   </div>
   <div class="footer-bottom">Сделано с ❤ в Сызрани · 2026</div>
 </footer>
@@ -390,7 +390,7 @@ body::after {
     <div class="modal-lock">🔒 Доступ — закрытый. Для избранных.</div>
     <p class="modal-invite">Тот самый бот, о котором все говорят.<br>Но есть нюанс — попасть можно только по приглашению.</p>
     <p class="modal-invite"><strong>Хочешь получить доступ?</strong></p>
-    <a class="modal-btn" href="https://t.me/Vandrey63" target="_blank">👉 Получить доступ</a>
+    <a class="modal-btn" href="tg://resolve?domain=Vandrey63">👉 Получить доступ</a>
   </div>
 </div>
 
@@ -432,33 +432,6 @@ function closeDebiModal(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape') closeDebiModal();
 });
-
-// Открывает бота в приложении Telegram напрямую (tg:// protocol),
-// минуя браузер и DNS — обходит VPN-блокировку t.me
-function openTelegram(username){
-  var tgUrl = 'tg://resolve?domain=' + username;
-  var httpsUrl = 'https://t.me/' + username;
-  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-  if(isMobile){
-    // Пробуем открыть приложение Telegram через tg:// protocol
-    var iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = tgUrl;
-    document.body.appendChild(iframe);
-
-    // Фолбэк: если через 2с приложение не открылось — открываем через web
-    setTimeout(function(){
-      document.body.removeChild(iframe);
-      window.open(httpsUrl, '_blank');
-    }, 2000);
-    return false;
-  }
-
-  // На компе — обычная ссылка
-  return true;
-}
-
 
 </body>
 </html>
