@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BotForge — Telegram Bot Management Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN SYSTEM ===== */
+:root {
+  --bg-deep: #0B0F14;
+  --bg-secondary: #10151C;
+  --bg-panel: #131A22;
+  --bg-surface: #171F29;
+  --bg-elevated: #1B2430;
+  --bg-hover: #1E293B;
+  --border: #1E293B;
+  --border-light: #263040;
+  --border-focus: #334155;
+  --text-primary: #F0F3F7;
+  --text-secondary: #8B95A5;
+  --text-muted: #5A6575;
+  --cyan: #06B6D4;
+  --cyan-bg: rgba(6,182,212,0.1);
+  --blue: #3B82F6;
+  --teal: #14B8A6;
+  --emerald: #10B981;
+  --emerald-bg: rgba(16,185,129,0.1);
+  --amber: #F59E0B;
+  --amber-bg: rgba(245,158,11,0.1);
+  --red: #EF4444;
+  --red-bg: rgba(239,68,68,0.1);
+  --green: #22C55E;
+  --error: #EF4444;
+  --success: #22C55E;
+  --info: #3B82F6;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  --font: 'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono: 'JetBrains Mono',monospace;
+  --sidebar-w: 240px;
+  --topbar-h: 60px;
+  --transition: 0.15s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);
+  background:var(--bg-deep);
+  color:var(--text-primary);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+#app{display:flex;height:100vh}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--bg-secondary);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  z-index:100;
+  transition:transform var(--transition);
+}
+.sidebar__brand{
+  height:var(--topbar-h);
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar__brand svg{flex-shrink:0}
+.brand-name{font-weight:700;font-size:17px;letter-spacing:-0.3px}
+.sidebar__nav{flex:1;overflow-y:auto;padding:10px 8px}
+.nav-group{margin-bottom:14px}
+.nav-group__title{
+  font-size:10px;
+  letter-spacing:0.6px;
+  color:var(--text-muted);
+  text-transform:uppercase;
+  padding:4px 10px 6px;
+}
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  padding:8px 10px;
+  border-radius:var(--radius);
+  background:transparent;
+  border:none;
+  color:var(--text-secondary);
+  font-size:13px;
+  cursor:pointer;
+  transition:all var(--transition);
+  text-align:left;
+  font-family:var(--font);
+  margin-bottom:1px;
+}
+.nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-item.active{background:var(--bg-surface);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--border)}
+.nav-item .nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sidebar__bottom{
+  padding:12px;
+  border-top:1px solid var(--border);
+}
+.user-card{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:var(--radius);
+  background:var(--bg-panel);
+}
+.user-card__avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--blue);
+  display:grid;place-items:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.user-card__name{font-size:13px;font-weight:600}
+.user-card__role{font-size:11px;color:var(--text-muted)}
+.user-card__plan{
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:4px;
+  background:var(--cyan-bg);
+  color:var(--cyan);
+  margin-left:auto;
+}
+
+/* ===== MAIN ===== */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{
+  height:var(--topbar-h);
+  background:var(--bg-secondary);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:14px;
+  flex-shrink:0;
+}
+.breadcrumb{font-size:13px;color:var(--text-muted);white-space:nowrap}
+.breadcrumb span{color:var(--text-primary);font-weight:600;font-size:15px}
+.search-wrap{
+  flex:1;max-width:360px;
+  position:relative;
+}
+.search-wrap input{
+  width:100%;
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:7px 14px 7px 34px;
+  color:var(--text-primary);
+  font-size:13px;
+  outline:none;
+  font-family:var(--font);
+}
+.search-wrap input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(6,182,212,0.06)}
+.search-wrap .search-icon{position:absolute;left:10px;top:7px;font-size:14px;color:var(--text-muted)}
+.topbar__right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn-icon{
+  width:34px;height:34px;
+  border-radius:var(--radius);
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text-secondary);
+  display:grid;place-items:center;
+  cursor:pointer;
+  font-size:15px;
+  transition:all var(--transition);
+}
+.btn-icon:hover{background:var(--bg-hover);color:var(--text-primary)}
+.avatar-circle{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--teal);
+  display:grid;place-items:center;
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+  position:relative;
+}
+.notif-dot{
+  position:absolute;top:-2px;right:-2px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--red);
+  border:2px solid var(--bg-secondary);
+}
+
+/* ===== PAGE CONTENT ===== */
+.page-content{flex:1;overflow-y:auto;padding:24px}
+.page-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:24px;
+  gap:16px;
+}
+.page-header__title{font-size:22px;font-weight:700;letter-spacing:-0.4px}
+.page-header__sub{color:var(--text-secondary);font-size:13px;margin-top:2px}
+.bot-detail__head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.bot-detail__actions{display:flex;gap:6px;flex-wrap:wrap}
+.grid-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-4col{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.grid-dashboard{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  border-radius:var(--radius);
+  font-size:13px;
+  font-weight:600;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:all var(--transition);
+  font-family:var(--font);
+  white-space:nowrap;
+}
+.btn-primary{background:var(--cyan);color:#001319;border-color:var(--cyan)}
+.btn-primary:hover{background:#22D3EE}
+.btn-secondary{background:var(--bg-surface);color:var(--text-primary);border-color:var(--border)}
+.btn-secondary:hover{background:var(--bg-hover)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border-color:transparent}
+.btn-ghost:hover{color:var(--text-primary);background:var(--bg-hover)}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:rgba(239,68,68,0.3)}
+.btn-danger:hover{background:rgba(239,68,68,0.2)}
+.btn-success{background:var(--emerald-bg);color:var(--emerald);border-color:rgba(16,185,129,0.3)}
+.btn-xs{padding:4px 8px;font-size:11px;border-radius:var(--radius-xs)}
+.btn-sm{padding:6px 10px;font-size:12px}
+.btn-lg{padding:10px 20px;font-size:14px}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* ===== CARDS ===== */
+.card{
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow);
+}
+.card__header{
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.card__title{font-size:14px;font-weight:600}
+.card__body{padding:18px}
+.card__footer{
+  padding:12px 18px;
+  border-top:1px solid var(--border);
+  background:var(--bg-secondary);
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+/* ===== METRICS GRID ===== */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.metric-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px 18px;
+  box-shadow:var(--shadow);
+}
+.metric-card__label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.metric-card__value{font-size:26px;font-weight:700;line-height:1.1}
+.metric-card__change{font-size:12px;margin-top:6px}
+.metric-card__change.up{color:var(--emerald)}
+.metric-card__change.down{color:var(--red)}
+
+/* ===== TABLES ===== */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{
+  text-align:left;
+  padding:10px 14px;
+  color:var(--text-muted);
+  font-weight:500;
+  font-size:12px;
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+td{
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  vertical-align:middle;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg-hover)}
+
+/* ===== STATUS ===== */
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  font-weight:600;
+  padding:3px 10px;
+  border-radius:999px;
+}
+.status-online{background:var(--emerald-bg);color:var(--emerald)}
+.status-offline{background:var(--red-bg);color:var(--red)}
+.status-pending{background:var(--amber-bg);color:var(--amber)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.status-error{background:var(--red-bg);color:var(--red)}
+.text-muted{color:var(--text-muted)}
+
+/* ===== TAGS ===== */
+.tag{
+  display:inline-flex;
+  padding:2px 8px;
+  border-radius:var(--radius-xs);
+  font-size:11px;
+  font-weight:600;
+  background:var(--bg-surface);
+  color:var(--text-secondary);
+  border:1px solid var(--border);
+}
+.tag-cyan{background:var(--cyan-bg);color:var(--cyan);border-color:rgba(6,182,212,0.3)}
+.tag-emerald{background:var(--emerald-bg);color:var(--emerald);border-color:rgba(16,185,129,0.3)}
+.tag-amber{background:var(--amber-bg);color:var(--amber);border-color:rgba(245,158,11,0.3)}
+.tag-red{background:var(--red-bg);color:var(--red);border-color:rgba(239,68,68,0.3)}
+
+/* ===== TABS ===== */
+.tabs{
+  display:flex;
+  gap:2px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:20px;
+}
+.tab{
+  padding:10px 16px;
+  background:transparent;
+  border:none;
+  color:var(--text-secondary);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  font-family:var(--font);
+  transition:all var(--transition);
+}
+.tab:hover{color:var(--text-primary)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* ===== FORMS ===== */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:4px}
+.form-input,.form-select,.form-textarea{
+  width:100%;
+  background:var(--bg-secondary);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:9px 12px;
+  color:var(--text-primary);
+  font-size:13px;
+  outline:none;
+  font-family:var(--font);
+  transition:border-color var(--transition);
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(6,182,212,0.08)}
+.form-textarea{min-height:100px;resize:vertical;font-family:var(--mono);font-size:12px}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-inline{display:flex;align-items:center;gap:10px}
+
+/* ===== MODAL ===== */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(2,6,12,0.75);
+  backdrop-filter:blur(2px);
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  width:500px;
+  max-width:92%;
+  max-height:90vh;
+  overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  transform:scale(0.95);
+  transition:transform 0.2s;
+}
+.modal-overlay.open .modal{transform:scale(1)}
+.modal__header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.modal__title{font-size:16px;font-weight:600}
+.modal__close{
+  background:none;border:none;
+  color:var(--text-muted);font-size:22px;
+  cursor:pointer;padding:4px;line-height:1;
+}
+.modal__close:hover{color:var(--text-primary)}
+.modal__body{padding:20px;overflow-y:auto;max-height:60vh}
+.modal__footer{
+  padding:14px 20px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+/* ===== TOAST ===== */
+.toast-container{
+  position:fixed;
+  bottom:20px;right:20px;
+  z-index:300;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.toast{
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--cyan);
+  border-radius:var(--radius);
+  padding:12px 16px;
+  min-width:280px;
+  max-width:400px;
+  box-shadow:var(--shadow-md);
+  animation:toastIn 0.25s ease;
+}
+.toast-success{border-left-color:var(--emerald)}
+.toast-error{border-left-color:var(--red)}
+.toast-warning{border-left-color:var(--amber)}
+.toast-info{border-left-color:var(--blue)}
+.toast__title{font-size:13px;font-weight:600}
+.toast__msg{font-size:12px;color:var(--text-secondary);margin-top:2px}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SKELETON ===== */
+.skeleton{background:var(--bg-surface);border-radius:var(--radius);animation:pulse 1.5s ease-in-out infinite}
+.skeleton-text{height:14px;margin-bottom:8px;width:80%}
+.skeleton-text.short{width:50%}
+.skeleton-card{height:100px;margin-bottom:14px}
+.skeleton-table{height:40px;margin-bottom:4px}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:0.7}}
+
+/* ===== EMPTY STATE ===== */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state__icon{font-size:48px;margin-bottom:12px;opacity:0.5}
+.empty-state__title{font-size:18px;font-weight:600;margin-bottom:6px}
+.empty-state__desc{color:var(--text-secondary);font-size:13px;margin-bottom:16px;max-width:400px;margin-left:auto;margin-right:auto}
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-dialog{text-align:center;padding:10px 0}
+.confirm-dialog__icon{font-size:40px;margin-bottom:10px}
+.confirm-dialog__title{font-size:17px;font-weight:600;margin-bottom:4px}
+.confirm-dialog__desc{color:var(--text-secondary);font-size:13px;margin-bottom:18px}
+
+/* ===== ONBOARDING ===== */
+.onboarding-step{text-align:center;padding:30px 20px}
+.onboarding-step__icon{font-size:52px;margin-bottom:12px}
+.onboarding-step__title{font-size:20px;font-weight:700;margin-bottom:8px}
+.onboarding-step__desc{color:var(--text-secondary);font-size:14px;margin-bottom:24px;max-width:380px;margin-left:auto;margin-right:auto}
+.onboarding-progress{display:flex;justify-content:center;gap:6px;margin-bottom:24px}
+.onboarding-progress .dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background var(--transition)}
+.onboarding-progress .dot.active{background:var(--cyan)}
+.onboarding-progress .dot.done{background:var(--emerald)}
+
+/* ===== BOT DETAIL TABS CONTENT ===== */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ===== CHARTS (CSS) ===== */
+.chart-bar{display:flex;align-items:flex-end;gap:6px;height:160px;padding:10px 0}
+.chart-bar__item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.chart-bar__fill{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height 0.5s ease}
+.chart-bar__label{font-size:10px;color:var(--text-muted);margin-top:4px}
+
+/* ===== ACTIVITY LIST ===== */
+.activity-list{list-style:none}
+.activity-item{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.activity-item:last-child{border-bottom:none}
+.activity-item__dot{
+  width:8px;height:8px;border-radius:50%;
+  margin-top:6px;flex-shrink:0;
+}
+.activity-item__content{flex:1;min-width:0}
+.activity-item__title{font-size:13px;font-weight:500}
+.activity-item__meta{font-size:11px;color:var(--text-muted);margin-top:1px}
+
+/* ===== INTEGRATION CARDS ===== */
+.integ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.integ-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:18px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  transition:border-color var(--transition);
+}
+.integ-card:hover{border-color:var(--border-focus)}
+.integ-card__icon{font-size:32px;margin-bottom:8px}
+.integ-card__name{font-size:14px;font-weight:600;margin-bottom:2px}
+.integ-card__desc{font-size:11px;color:var(--text-muted);margin-bottom:12px}
+
+/* ===== BILLING PLANS ===== */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.plan-card{
+  background:var(--bg-panel);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  padding:24px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  position:relative;
+}
+.plan-card.popular{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan)}
+.plan-card__badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--cyan);color:#001319;
+  font-size:11px;font-weight:700;
+  padding:3px 12px;border-radius:999px;
+}
+.plan-card__name{font-size:16px;font-weight:700;margin-bottom:4px}
+.plan-card__price{font-size:32px;font-weight:700;margin-bottom:4px}
+.plan-card__price span{font-size:14px;font-weight:400;color:var(--text-muted)}
+.plan-card__desc{font-size:12px;color:var(--text-secondary);margin-bottom:16px}
+.plan-card__features{list-style:none;text-align:left;margin-bottom:18px}
+.plan-card__features li{font-size:12px;padding:4px 0;color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+.plan-card__features li:before{content:'✓';color:var(--emerald);font-weight:700}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton-loading{display:block}
+.skeleton-loaded{display:none}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1200px){
+  .metrics-grid{grid-template-columns:repeat(2,1fr)}
+  .plans-grid,.integ-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:900px){
+  .sidebar{position:fixed;transform:translateX(-100%);z-index:150;height:100vh;max-height:100vh;top:0;left:0}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar__nav{flex:1;overflow-y:auto;min-height:0}
+  .sidebar__bottom{flex-shrink:0}
+  .main{margin-left:0}
+  .mobile-menu{display:grid!important}
+  .plans-grid,.integ-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .metrics-grid{grid-template-columns:1fr}
+  .search-wrap{display:none}
+  .page-content{padding:12px}
+  .form-row{grid-template-columns:1fr}
+  .grid-2col,.grid-4col,.grid-dashboard{grid-template-columns:1fr !important}
+  .page-header{flex-direction:column;gap:10px;align-items:flex-start}
+  .bot-detail__head{flex-wrap:wrap;gap:6px}
+  .bot-detail__actions{flex-direction:column;width:100%}
+  .bot-detail__actions .btn{width:100%;justify-content:center}
+  .tabs{overflow-x:auto;white-space:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+  .tab{flex-shrink:0;white-space:nowrap}
+  .modal{width:100% !important;max-width:96% !important;margin:0 auto}
+  .modal__body{padding:14px}
+  .modal__footer{padding:12px 14px;flex-wrap:wrap}
+  .user-card{flex-wrap:wrap}
+  .user-card__plan{margin-left:0}
+  .page-header__title{font-size:18px}
+  .page-header__sub{word-break:break-all;overflow-wrap:anywhere;font-size:12px;max-width:100%;white-space:normal;min-width:0}
+  .page-header__sub code{word-break:break-all;font-size:11px;display:inline-block;max-width:100%}
+  .page-header > div{min-width:0;max-width:100%}
+  .page-header{max-width:100%;overflow:hidden;min-width:0}
+  .page-header > div:last-child{flex-wrap:wrap !important;gap:4px !important}
+  .topbar{padding:0 10px;gap:8px}
+  .breadcrumb{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+  body{overflow-y:auto}
+}
+.mobile-menu{display:none}
+.search-results{display:none;position:absolute;top:100%;left:0;right:0;margin-top:4px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-md);z-index:50;max-height:300px;overflow-y:auto}
+.search-results.active{display:block}
+.search-results__item{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--border);transition:background var(--transition)}
+.search-results__item:last-child{border-bottom:none}
+.search-results__item:hover{background:var(--bg-hover)}
+.search-results__item.disabled{color:var(--text-muted);cursor:default;text-align:center}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#06B6D4"/><path d="M20.5 9.5L12.5 17.5L8.5 13.5" stroke="#0B0F14" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-name">BotForge</span>
+    </div>
+    <nav class="sidebar__nav" id="main-nav"></nav>
+    <div class="sidebar__bottom">
+      <div class="user-card">
+        <div class="user-card__avatar">AK</div>
+        <div><div class="user-card__name">Alex Kern</div><div class="user-card__role">Owner</div></div>
+        <div class="user-card__plan">Pro</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button class="btn-icon mobile-menu" id="mobileToggle">☰</button>
+      <div class="breadcrumb">BotForge / <span id="breadcrumb">Dashboard</span></div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Search bots, commands, logs..." id="globalSearch">
+        <div class="search-results" id="searchResults"></div>
+      </div>
+      <div class="topbar__right">
+        <button class="btn-icon" title="Notifications" onclick="toggleNotif()">🔔</button>
+        <button class="btn-icon" title="Help" onclick="showHelp()">❓</button>
+        <div class="avatar-circle" onclick="navigate('settings')">AK</div>
+      </div>
+    </header>
+    <div class="page-content" id="pageContent"></div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<script>
+/* ===== DATA ===== */
+const DATA = {
+  bots: [
+    { id:'b1', name:'SupportBot', username:'@support_acme_bot', token:'72******AC', status:'online', mode:'webhook', users:12480, cmds:34, groups:12, chats:18, lastErr:'—', lastMsg:'10:42:11', created:'2026-01-15' },
+    { id:'b2', name:'SalesBot', username:'@sales_acme_bot', token:'41******B2', status:'online', mode:'polling', users:8432, cmds:21, groups:5, chats:9, lastErr:'—', lastMsg:'10:41:58', created:'2026-02-20' },
+    { id:'b3', name:'NotifyBot', username:'@notify_acme_bot', token:'98******D1', status:'offline', mode:'webhook', users:2190, cmds:12, groups:0, chats:3, lastErr:'2026-07-11 14:32', lastMsg:'10:40:02', created:'2026-03-05' },
+    { id:'b4', name:'AnalyticsBot', username:'@analytics_acme_bot', token:'23******E7', status:'error', mode:'webhook', users:5640, cmds:18, groups:8, chats:14, lastErr:'Webhook timeout', lastMsg:'10:35:22', created:'2026-01-28' },
+    { id:'b5', name:'FeedbackBot', username:'@feedback_acme_bot', token:'56******F3', status:'online', mode:'polling', users:3201, cmds:9, groups:3, chats:6, lastErr:'—', lastMsg:'10:38:19', created:'2026-04-12' },
+    { id:'b6', name:'DealBot', username:'@DealBot63_bot', token:'67******9A', status:'online', mode:'webhook', users:15420, cmds:28, groups:22, chats:31, lastErr:'—', lastMsg:'10:43:05', created:'2025-11-08' },
+  ],
+  logs: [
+    { id:1, bot:'SupportBot', event:'Message processed: /help', time:'10:42:11', level:'info' },
+    { id:2, bot:'SalesBot', event:'Webhook received', time:'10:41:58', level:'info' },
+    { id:3, bot:'NotifyBot', event:'Connection timeout — retry 3/5', time:'10:40:02', level:'error' },
+    { id:4, bot:'FeedbackBot', event:'Command /start executed', time:'10:38:19', level:'info' },
+    { id:5, bot:'AnalyticsBot', event:'Webhook response 504', time:'10:35:22', level:'error' },
+    { id:6, bot:'DealBot', event:'Broadcast completed: 15420 users', time:'10:30:00', level:'info' },
+    { id:7, bot:'SupportBot', event:'Token rotated by admin', time:'10:22:15', level:'warn' },
+    { id:8, bot:'SalesBot', event:'Polling cycle started', time:'10:20:00', level:'info' },
+    { id:9, bot:'System', event:'Backup completed', time:'10:15:00', level:'info' },
+    { id:10, bot:'System', event:'SSL certificate renewed', time:'09:00:00', level:'info' },
+  ],
+  team: [
+    { id:'u1', name:'Alex Kern', email:'alex@botforge.io', role:'Owner', bots:'All', avatar:'AK', joined:'2025-10-01' },
+    { id:'u2', name:'Denis Volkov', email:'denis@botforge.io', role:'Admin', bots:'SupportBot, SalesBot', avatar:'DV', joined:'2025-11-15' },
+    { id:'u3', name:'Katya Morozova', email:'katya@botforge.io', role:'Editor', bots:'SupportBot, FeedbackBot', avatar:'KM', joined:'2026-01-20' },
+    { id:'u4', name:'Mike Chen', email:'mike@botforge.io', role:'Viewer', bots:'All', avatar:'MC', joined:'2026-03-10' },
+    { id:'u5', name:'Elena Petrova', email:'elena@botforge.io', role:'Editor', bots:'DealBot', avatar:'EP', joined:'2026-04-05' },
+  ],
+  commands: [
+    { cmd:'/start', desc:'Welcome message', bot:'SupportBot', type:'built-in', usage:2840 },
+    { cmd:'/help', desc:'Help center', bot:'SupportBot', type:'built-in', usage:1520 },
+    { cmd:'/price', desc:'Price list', bot:'SalesBot', type:'custom', usage:890 },
+    { cmd:'/status', desc:'System status', bot:'DealBot', type:'custom', usage:430 },
+    { cmd:'/feedback', desc:'Send feedback', bot:'FeedbackBot', type:'custom', usage:210 },
+    { cmd:'/subscribe', desc:'Subscribe to updates', bot:'NotifyBot', type:'custom', usage:110 },
+  ],
+  audit: [
+    { id:'a1', user:'Alex Kern', action:'Added bot DealBot', time:'2026-07-12 10:22', ip:'192.168.1.10' },
+    { id:'a2', user:'Denis Volkov', action:'Edited command /start', time:'2026-07-12 09:15', ip:'192.168.1.22' },
+    { id:'a3', user:'Katya Morozova', action:'Started broadcast', time:'2026-07-12 08:45', ip:'192.168.1.35' },
+    { id:'a4', user:'Alex Kern', action:'Changed team role', time:'2026-07-11 16:30', ip:'192.168.1.10' },
+    { id:'a5', user:'Mike Chen', action:'Viewed analytics', time:'2026-07-11 15:22', ip:'192.168.1.50' },
+  ],
+  integrations: [
+    { name:'OpenAI', desc:'AI-powered responses', icon:'🤖', connected:true },
+    { name:'CRM Hub', desc:'Sync contacts and deals', icon:'📊', connected:true },
+    { name:'Webhook', desc:'Custom webhook endpoints', icon:'🔗', connected:true },
+    { name:'Slack', desc:'Team notifications', icon:'💬', connected:false },
+    { name:'Google Sheets', desc:'Log exports', icon:'📋', connected:false },
+    { name:'Zapier', desc:'500+ app integrations', icon:'⚡', connected:false },
+  ],
+  metrics: {
+    totalBots: 6, activeBots: 4, totalUsers: 47363, msgToday: 8421, errors24h: 3, uptime: 99.97,
+    avgResponse: 124, newUsersWeek: 2840, msgGrowth: 8.1
+  }
+};
+
+/* ===== NAV STRUCTURE ===== */
+const NAV = [
+  { group:'Overview', items:[
+    { id:'dashboard', label:'Dashboard', icon:'📊' },
+    { id:'bots', label:'My Bots', icon:'🤖' },
+    { id:'analytics', label:'Analytics', icon:'📈' },
+  ]},
+  { group:'Manage', items:[
+    { id:'commands', label:'Commands & Flows', icon:'⚡' },
+    { id:'broadcasts', label:'Broadcasts', icon:'📢' },
+    { id:'integrations', label:'Integrations', icon:'🔌' },
+  ]},
+  { group:'Monitor', items:[
+    { id:'logs', label:'Logs & Events', icon:'📄' },
+    { id:'audit', label:'Audit Log', icon:'🔍' },
+    { id:'team', label:'Team & Roles', icon:'👥' },
+  ]},
+  { group:'System', items:[
+    { id:'settings', label:'Settings', icon:'⚙️' },
+    { id:'billing', label:'Billing', icon:'💳' },
+  ]},
+];
+
+/* ===== STATE ===== */
+let STATE = { page:'dashboard', botDetail:null, botTab:'overview', onboarded:false, onboardingStep:0 };
+
+/* ===== INIT ===== */
+function init(){
+  renderNav();
+  updateUserUI(localStorage.getItem('botforge_username') || 'Alex Kern');
+  navigate('dashboard');
+  document.addEventListener('click', handleGlobalClick);
+  document.getElementById('mobileToggle').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
+  document.getElementById('globalSearch').addEventListener('input', handleSearch);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); document.getElementById('searchResults').classList.remove('active'); } });
+  if(!localStorage.getItem('botforge_onboarded')) setTimeout(showOnboarding, 800);
+}
+function renderNav(){
+  const nav = document.getElementById('main-nav');
+  nav.innerHTML = NAV.map(g=>`
+    <div class="nav-group">
+      <div class="nav-group__title">${g.group}</div>
+      ${g.items.map(i=>`<button class="nav-item" data-page="${i.id}"><span class="nav-icon">${i.icon}</span>${i.label}</button>`).join('')}
+    </div>
+  `).join('');
+}
+function handleGlobalClick(e){
+  let el;
+  if(el = e.target.closest('.nav-item')){ navigate(el.dataset.page); return }
+  if(el = e.target.closest('[data-action]')){ handleAction(el.dataset.action, el.dataset); return }
+  if(el = e.target.closest('.tab')){ handleTabClick(el); return }
+  if(!e.target.closest('.search-wrap')){ document.getElementById('searchResults').classList.remove('active'); }
+}
+function setActive(page){
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active', el.dataset.page===page));
+}
+function navigate(page, params){
+  STATE.page = page;
+  setActive(page);
+  const titles = {
+    dashboard:'Dashboard', bots:'My Bots', analytics:'Analytics',
+    commands:'Commands & Flows', broadcasts:'Broadcasts', integrations:'Integrations',
+    logs:'Logs & Events', audit:'Audit Log', team:'Team & Roles',
+    settings:'Settings', billing:'Billing', 'bot-detail':'Bot Details'
+  };
+  document.getElementById('breadcrumb').textContent = titles[page]||page;
+  const content = document.getElementById('pageContent');
+  if(page==='bot-detail'&&params?.botId){
+    STATE.botDetail = params.botId;
+    content.innerHTML = showBotDetail(params.botId);
+  } else {
+    content.innerHTML = pageRenderers[page] ? pageRenderers[page]() : pageNotFound(page);
+  }
+  if(page==='dashboard') showSkeleton('pageContent',500);
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+/* ===== SKELETON ===== */
+function showSkeleton(id, ms){
+  const el = document.getElementById(id);
+  el.style.opacity='0.5';
+  setTimeout(()=>el.style.opacity='1', ms);
+}
+
+/* ===== PAGE RENDERERS ===== */
+const pageRenderers = {};
+
+/* --- DASHBOARD --- */
+pageRenderers.dashboard = function(){
+  const m = DATA.metrics;
+  return `
+  <div class="page-header">
+    <div><div class="page-header__title">Dashboard</div><div class="page-header__sub">Overview of your bot ecosystem</div></div>
+    <button class="btn btn-primary" onclick="openAddBot()">+ Add Bot</button>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card"><div class="metric-card__label">Active Bots</div><div class="metric-card__value">${m.activeBots}/${m.totalBots}</div><div class="metric-card__change up">↑ ${m.activeBots} online</div></div>
+    <div class="metric-card"><div class="metric-card__label">Total Users</div><div class="metric-card__value">${(m.totalUsers).toLocaleString()}</div><div class="metric-card__change up">↑ ${m.newUsersWeek.toLocaleString()} this week</div></div>
+    <div class="metric-card"><div class="metric-card__label">Messages Today</div><div class="metric-card__value">${(m.msgToday).toLocaleString()}</div><div class="metric-card__change up">↑ ${m.msgGrowth}%</div></div>
+    <div class="metric-card"><div class="metric-card__label">Errors (24h)</div><div class="metric-card__value" style="color:${m.errors24h>0?'var(--red)':'var(--emerald)'}">${m.errors24h}</div><div class="metric-card__change ${m.errors24h>0?'down':'up'}">${m.errors24h>0?'↑ from 1':'↓ 0 errors'}</div></div>
+  </div>
+  <div class="grid-dashboard" style="margin-bottom:24px">
+    <div class="card">
+      <div class="card__header"><div class="card__title">Activity (7 days)</div><span class="tag tag-cyan">+${m.msgGrowth}%</span></div>
+      <div class="card__body">
+        <div class="chart-bar" id="activityChart">
+          ${[12000,18000,15000,22000,19000,25000,21000].map((v,i)=>
+            `<div class="chart-bar__item"><div class="chart-bar__fill" style="height:${v/25000*140}px;background:var(--cyan)"></div><div class="chart-bar__label">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</div></div>`
+          ).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card__header"><div class="card__title">Bot Status</div></div>
+      <div class="card__body">
+        ${DATA.bots.map(b=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">
+            <span>${b.name}</span>
+            <span class="status status-${b.status}"><span class="status-dot"></span>${b.status}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__header"><div class="card__title">Recent Events</div><button class="btn btn-ghost btn-sm" onclick="navigate('logs')">View All</button></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>Bot</th><th>Event</th><th>Time</th><th>Level</th></tr></thead><tbody>
+        ${DATA.logs.slice(0,5).map(l=>`<tr><td><strong>${l.bot}</strong></td><td>${l.event}</td><td class="text-muted">${l.time}</td><td><span class="tag tag-${l.level==='error'?'red':l.level==='warn'?'amber':'emerald'}">${l.level}</span></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- MY BOTS --- */
+pageRenderers.bots = function(){
+  return `
+  <div class="page-header">
+    <div><div class="page-header__title">My Bots</div><div class="page-header__sub">${DATA.bots.length} bots connected · ${DATA.metrics.activeBots} active</div></div>
+    <button class="btn btn-primary" onclick="openAddBot()">+ Add Bot</button>
+  </div>
+  <div class="card">
+    <div class="card__body table-wrap">
+      <table>
+        <thead><tr><th>Bot</th><th>Status</th><th>Mode</th><th>Users</th><th>Commands</th><th>Groups</th><th>Token</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${DATA.bots.map(b=>`
+            <tr style="cursor:pointer">
+              <td><strong>${b.name}</strong><br><span style="color:var(--text-muted);font-size:12px">${b.username}</span></td>
+              <td><span class="status status-${b.status}"><span class="status-dot"></span>${b.status}</span></td>
+              <td><span class="tag tag-${b.mode==='webhook'?'cyan':'amber'}">${b.mode}</span></td>
+              <td>${b.users.toLocaleString()}</td>
+              <td>${b.cmds}</td>
+              <td>${b.groups}</td>
+              <td><code style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${b.token}</code></td>
+              <td>
+                <div style="display:flex;gap:4px">
+                  <button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();navigate('bot-detail',{botId:'${b.id}'})">Manage</button>
+                  <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();testBot('${b.id}')">📨</button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+};
+
+/* --- BOT DETAIL --- */
+function showBotDetail(botId){
+  const b = DATA.bots.find(x=>x.id===botId);
+  if(!b) return '<div class="empty-state"><div class="empty-state__icon">🤖</div><div class="empty-state__title">Bot not found</div></div>';
+  return `
+  <div class="page-header">
+    <div>
+      <div class="bot-detail__head">
+        <button class="btn btn-ghost btn-sm" onclick="navigate('bots')">← Back</button>
+        <div class="page-header__title">${b.name}</div>
+        <span class="status status-${b.status}"><span class="status-dot"></span>${b.status}</span>
+      </div>
+      <div class="page-header__sub">${b.username} · Token: <code style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${b.token}</code> · ${b.mode} mode</div>
+    </div>
+    <div class="bot-detail__actions">
+      <button class="btn btn-secondary btn-sm" onclick="testBot('${b.id}')">📨 Test Message</button>
+      <button class="btn btn-secondary btn-sm">🔄 Reconnect</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmRotate('${b.id}')">Rotate Token</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__body">
+      <div class="tabs">
+        <button class="tab active" data-tab="overview" data-bot="${b.id}">Overview</button>
+        <button class="tab" data-tab="commands" data-bot="${b.id}">Commands</button>
+        <button class="tab" data-tab="chats" data-bot="${b.id}">Chats</button>
+        <button class="tab" data-tab="logs" data-bot="${b.id}">Logs</button>
+        <button class="tab" data-tab="settings" data-bot="${b.id}">Settings</button>
+      </div>
+      <div class="tab-content active" id="tab-overview-${b.id}">
+        <div class="grid-4col" style="margin-bottom:20px">
+          <div class="metric-card"><div class="metric-card__label">Users</div><div class="metric-card__value">${b.users.toLocaleString()}</div></div>
+          <div class="metric-card"><div class="metric-card__label">Commands</div><div class="metric-card__value">${b.cmds}</div></div>
+          <div class="metric-card"><div class="metric-card__label">Groups</div><div class="metric-card__value">${b.groups}</div></div>
+          <div class="metric-card"><div class="metric-card__label">Chats</div><div class="metric-card__value">${b.chats}</div></div>
+        </div>
+        <div class="grid-2col">
+          <div>
+            <div class="form-group"><label class="form-label">Bot Info</label></div>
+            <div style="font-size:13px;color:var(--text-secondary)">
+              <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--text-primary)">Created:</strong> ${b.created}</div>
+              <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--text-primary)">Last message:</strong> ${b.lastMsg}</div>
+              <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong style="color:var(--text-primary)">Last error:</strong> ${b.lastErr}</div>
+              <div style="padding:6px 0"><strong style="color:var(--text-primary)">API calls (24h):</strong> 12,450</div>
+            </div>
+          </div>
+          <div>
+            <div class="form-group"><label class="form-label">Quick Actions</label></div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <button class="btn btn-secondary btn-sm" onclick="testBot('${b.id}')">📨 Send Test Message</button>
+              <button class="btn btn-secondary btn-sm">📊 View Analytics</button>
+              <button class="btn btn-secondary btn-sm">⊞ Manage Webhooks</button>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete('${b.id}')">🗑️ Delete Bot</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-commands-${b.id}">
+        <div class="table-wrap">
+          <table><thead><tr><th>Command</th><th>Description</th><th>Type</th><th>Usage</th><th></th></tr></thead><tbody>
+            ${DATA.commands.filter(c=>c.bot===b.name).map(c=>`
+              <tr><td><code style="font-family:var(--mono);color:var(--cyan)">${c.cmd}</code></td><td>${c.desc}</td><td><span class="tag tag-${c.type==='built-in'?'emerald':'amber'}">${c.type}</span></td><td>${c.usage}</td><td><button class="btn btn-ghost btn-xs">✏️</button></td></tr>
+            `).join('')}
+          </tbody></table>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:12px">+ Add Command</button>
+      </div>
+      <div class="tab-content" id="tab-chats-${b.id}">
+        <div class="empty-state"><div class="empty-state__icon">💬</div><div class="empty-state__title">Connected Chats</div><div class="empty-state__desc">${b.chats} chats connected · ${b.groups} groups</div><button class="btn btn-secondary btn-sm">Manage Chats</button></div>
+      </div>
+      <div class="tab-content" id="tab-logs-${b.id}">
+        <div class="table-wrap">
+          <table><thead><tr><th>Time</th><th>Event</th><th>Level</th></tr></thead><tbody>
+            ${DATA.logs.filter(l=>l.bot===b.name).map(l=>`<tr><td class="text-muted">${l.time}</td><td>${l.event}</td><td><span class="tag tag-${l.level==='error'?'red':l.level==='warn'?'amber':'emerald'}">${l.level}</span></td></tr>`).join('')}
+          </tbody></table>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-settings-${b.id}">
+        <div style="max-width:500px">
+          <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" value="${b.name}"></div>
+          <div class="form-group"><label class="form-label">Polling Interval</label><select class="form-select"><option>5s</option><option>10s</option><option>30s</option><option selected>60s</option></select></div>
+          <div class="form-group"><label class="form-label">Webhook URL</label><input class="form-input" value="https://botforge.io/webhook/${b.id}" placeholder="https://..."></div>
+          <div class="form-group"><label class="form-label">Rate Limit (msg/s)</label><input class="form-input" type="number" value="30"></div>
+          <button class="btn btn-primary" onclick="showToast('Settings saved','success')">Save Settings</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* --- ANALYTICS --- */
+pageRenderers.analytics = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Analytics</div><div class="page-header__sub">Bot performance and usage metrics</div></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn btn-secondary btn-sm">7 Days</button>
+      <button class="btn btn-ghost btn-sm">30 Days</button>
+      <button class="btn btn-ghost btn-sm">90 Days</button>
+    </div>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card"><div class="metric-card__label">Avg Response Time</div><div class="metric-card__value">${DATA.metrics.avgResponse}ms</div><div class="metric-card__change up">↓ 12ms from last week</div></div>
+    <div class="metric-card"><div class="metric-card__label">Uptime</div><div class="metric-card__value">${DATA.metrics.uptime}%</div><div class="metric-card__change up">All systems nominal</div></div>
+    <div class="metric-card"><div class="metric-card__label">API Calls</div><div class="metric-card__value">284k</div><div class="metric-card__change up">↑ 15.2%</div></div>
+    <div class="metric-card"><div class="metric-card__label">Active Users</div><div class="metric-card__value">8,421</div><div class="metric-card__change up">↑ 5.4%</div></div>
+  </div>
+  <div class="grid-2col" style="margin-bottom:24px">
+    <div class="card"><div class="card__header"><div class="card__title">Messages per Bot</div></div>
+      <div class="card__body">
+        <div class="chart-bar" style="height:120px">
+          ${DATA.bots.map((b,i)=>`<div class="chart-bar__item"><div class="chart-bar__fill" style="height:${(b.users/16000*100)}px;background:${['var(--cyan)','var(--blue)','var(--teal)','var(--emerald)','var(--amber)','var(--red)'][i%6]}"></div><div class="chart-bar__label" style="font-size:9px">${b.name.slice(0,6)}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card__header"><div class="card__title">Error Distribution</div></div>
+      <div class="card__body">
+        <div class="chart-bar" style="height:120px">
+          ${[3,1,0,5,2,0].map((v,i)=>`<div class="chart-bar__item"><div class="chart-bar__fill" style="height:${v/5*100}px;background:var(--red)"></div><div class="chart-bar__label" style="font-size:9px">${DATA.bots[i].name.slice(0,6)}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card"><div class="card__header"><div class="card__title">Top Commands</div></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>Command</th><th>Bot</th><th>Usage</th><th>% of Total</th></tr></thead><tbody>
+        ${DATA.commands.map(c=>`<tr><td><code style="font-family:var(--mono);color:var(--cyan)">${c.cmd}</code></td><td>${c.bot}</td><td>${c.usage}</td><td>${(c.usage/6000*100).toFixed(1)}%</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- COMMANDS --- */
+pageRenderers.commands = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Commands & Automations</div><div class="page-header__sub">Manage bot commands, auto-replies, and flows</div></div>
+    <button class="btn btn-primary" onclick="showToast('Command designer opened','success')">+ New Command</button>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card__header"><div class="card__title">Bot Commands</div><span class="tag tag-cyan">${DATA.commands.length} total</span></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>Command</th><th>Description</th><th>Bot</th><th>Type</th><th>Usage</th><th></th></tr></thead><tbody>
+        ${DATA.commands.map(c=>`<tr><td><code style="font-family:var(--mono);color:var(--cyan)">${c.cmd}</code></td><td>${c.desc}</td><td>${c.bot}</td><td><span class="tag tag-${c.type==='built-in'?'emerald':'amber'}">${c.type}</span></td><td>${c.usage}</td><td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-xs">✏️</button><button class="btn btn-ghost btn-xs">🗑️</button></div></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__header"><div class="card__title">Auto-Reply Rules</div><button class="btn btn-secondary btn-sm">+ Add Rule</button></div>
+    <div class="card__body">
+      <div class="empty-state" style="padding:30px">
+        <div class="empty-state__icon">🤖</div>
+        <div class="empty-state__title">No auto-reply rules yet</div>
+        <div class="empty-state__desc">Create rules to automatically respond to keywords or patterns</div>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Auto-reply wizard opened','success')">Create Rule</button>
+      </div>
+    </div>
+  </div>`;
+};
+
+/* --- BROADCASTS --- */
+pageRenderers.broadcasts = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Broadcasts</div><div class="page-header__sub">Send mass messages to bot users</div></div>
+    <button class="btn btn-primary" onclick="showToast('Broadcast wizard opened','success')">New Broadcast</button>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card__header"><div class="card__title">Create Broadcast</div></div>
+    <div class="card__body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Target Bot</label><select class="form-select">${DATA.bots.map(b=>`<option>${b.name}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">Audience</label><select class="form-select"><option>All users</option><option>Active last 7 days</option><option>Inactive 30+ days</option><option>Custom segment</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Message Text</label><textarea class="form-textarea" id="broadcastMsg" placeholder="Write your broadcast message... Supports Markdown formatting."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Schedule</label><select class="form-select"><option>Send now</option><option>Schedule for later</option></select></div>
+        <div class="form-group"><label class="form-label">Preview</label><button class="btn btn-secondary" style="width:100%" onclick="showToast('Preview sent to your Telegram','success')">Send Preview</button></div>
+      </div>
+      <button class="btn btn-primary" onclick="sendBroadcast()">Send Broadcast</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__header"><div class="card__title">Broadcast History</div></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>Date</th><th>Bot</th><th>Audience</th><th>Sent</th><th>Delivered</th><th>Status</th></tr></thead><tbody>
+        <tr><td>2026-07-12</td><td>DealBot</td><td>All users</td><td>15,420</td><td>14,892</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+        <tr><td>2026-07-10</td><td>SupportBot</td><td>Active 7d</td><td>8,210</td><td>7,984</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+        <tr><td>2026-07-08</td><td>SalesBot</td><td>All users</td><td>8,432</td><td>8,102</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- INTEGRATIONS --- */
+pageRenderers.integrations = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Integrations</div><div class="page-header__sub">Connect external services and APIs</div></div></div>
+  <div class="integ-grid">
+    ${DATA.integrations.map(i=>`
+      <div class="integ-card">
+        <div class="integ-card__icon">${i.icon}</div>
+        <div class="integ-card__name">${i.name}</div>
+        <div class="integ-card__desc">${i.desc}</div>
+        <button class="btn ${i.connected?'btn-success':'btn-secondary'} btn-sm" onclick="showToast('${i.connected?'Disconnected':'Connected'} ${i.name}','${i.connected?'warning':'success'}')">${i.connected?'Connected ✓':'Connect'}</button>
+      </div>
+    `).join('')}
+  </div>`;
+};
+
+/* --- LOGS --- */
+pageRenderers.logs = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Logs & Events</div><div class="page-header__sub">System activity and bot events</div></div>
+    <div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm">Export</button><button class="btn btn-ghost btn-sm">Clear Filters</button></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <select class="form-select" style="width:auto;padding:6px 10px;font-size:12px"><option>All bots</option>${DATA.bots.map(b=>`<option>${b.name}</option>`).join('')}</select>
+    <select class="form-select" style="width:auto;padding:6px 10px;font-size:12px"><option>All levels</option><option>Info</option><option>Warning</option><option>Error</option></select>
+    <input class="form-input" style="width:200px;padding:6px 10px;font-size:12px" placeholder="Search events...">
+  </div>
+  <div class="card">
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>#</th><th>Bot</th><th>Event</th><th>Time</th><th>Level</th></tr></thead><tbody>
+        ${DATA.logs.map(l=>`<tr><td style="color:var(--text-muted)">#${l.id}</td><td><strong>${l.bot}</strong></td><td>${l.event}</td><td style="color:var(--text-muted);font-size:12px">${l.time}</td><td><span class="tag tag-${l.level==='error'?'red':l.level==='warn'?'amber':'emerald'}">${l.level}</span></td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- AUDIT --- */
+pageRenderers.audit = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Audit Log</div><div class="page-header__sub">Track all platform changes and actions</div></div></div>
+  <div class="card">
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>User</th><th>Action</th><th>Time</th><th>IP</th></tr></thead><tbody>
+        ${DATA.audit.map(a=>`<tr><td><strong>${a.user}</strong></td><td>${a.action}</td><td style="color:var(--text-muted);font-size:12px">${a.time}</td><td style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">${a.ip}</td></tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- TEAM --- */
+pageRenderers.team = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Team & Roles</div><div class="page-header__sub">${DATA.team.length} members · Role-based access control</div></div>
+    <button class="btn btn-primary" onclick="showToast('Invite link copied','success')">+ Invite Member</button>
+  </div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="card__header"><div class="card__title">Members</div></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Bot Access</th><th>Joined</th><th></th></tr></thead><tbody>
+        ${DATA.team.map(u=>`
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:50%;background:var(--blue);display:grid;place-items:center;font-size:10px;font-weight:700">${u.avatar}</div><strong>${u.name}</strong></div></td><td style="color:var(--text-muted)">${u.email}</td><td><span class="tag tag-${u.role==='Owner'?'cyan':u.role==='Admin'?'emerald':u.role==='Editor'?'amber':''}">${u.role}</span></td><td style="font-size:12px">${u.bots}</td><td style="color:var(--text-muted);font-size:12px">${u.joined}</td><td><button class="btn btn-ghost btn-xs">⚙️</button></td></tr>
+        `).join('')}
+      </tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__header"><div class="card__title">Role Permissions</div></div>
+    <div class="card__body table-wrap">
+      <table><thead><tr><th>Permission</th><th>Owner</th><th>Admin</th><th>Editor</th><th>Viewer</th></tr></thead><tbody>
+        <tr><td>View bots</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>Edit commands</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+        <tr><td>Send broadcasts</td><td>✓</td><td>✓</td><td>✓</td><td>—</td></tr>
+        <tr><td>Manage integrations</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Invite members</td><td>✓</td><td>✓</td><td>—</td><td>—</td></tr>
+        <tr><td>Delete bots</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>Billing & plans</td><td>✓</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody></table>
+    </div>
+  </div>`;
+};
+
+/* --- SETTINGS --- */
+pageRenderers.settings = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Settings</div><div class="page-header__sub">Account and platform preferences</div></div></div>
+  <div class="grid-2col">
+    <div class="card">
+      <div class="card__header"><div class="card__title">General</div></div>
+      <div class="card__body">
+        <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="settingsName" value="${localStorage.getItem('botforge_username')||'Alex Kern'}"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="settingsEmail" value="alex@botforge.io"></div>
+        <div class="form-group"><label class="form-label">Timezone</label><select class="form-select"><option>UTC+4 (Samara)</option><option>UTC+3 (Moscow)</option><option>UTC+0 (London)</option></select></div>
+        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card__header"><div class="card__title">Default Bot Config</div></div>
+      <div class="card__body">
+        <div class="form-group"><label class="form-label">Default Mode</label><select class="form-select"><option>Webhook</option><option>Polling</option></select></div>
+        <div class="form-group"><label class="form-label">Rate Limit (msg/s)</label><input class="form-input" type="number" value="30"></div>
+        <div class="form-group"><label class="form-label">Retry Attempts</label><input class="form-input" type="number" value="3"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card__header"><div class="card__title">Notifications</div></div>
+      <div class="card__body">
+        <div class="form-group"><label class="form-label">Email Alerts</label><select class="form-select"><option>On errors only</option><option>All events</option><option>Disabled</option></select></div>
+        <div class="form-group"><label class="form-label">Telegram Alerts</label><select class="form-select"><option>Enabled</option><option>Disabled</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card__header"><div class="card__title">Danger Zone</div></div>
+      <div class="card__body">
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Irreversible actions. Proceed with caution.</p>
+        <button class="btn btn-danger btn-sm" onclick="confirmAction('Delete all bot data? This cannot be undone.')">Delete All Bots</button>
+        <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="confirmAction('Export all data before proceeding?')">Export Data</button>
+      </div>
+    </div>
+  </div>`;
+};
+
+function saveSettings(){
+  const name = document.getElementById('settingsName').value.trim();
+  if(!name){ showToast('Name cannot be empty','error'); return; }
+  localStorage.setItem('botforge_username', name);
+  updateUserUI(name);
+  showToast('✅ Settings saved','success');
+}
+
+function updateUserUI(name){
+  if(!name) name = localStorage.getItem('botforge_username') || 'Alex Kern';
+  const initials = name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+  document.querySelectorAll('.user-card__name').forEach(el=>el.textContent = name);
+  document.querySelectorAll('.user-card__avatar, .avatar-circle').forEach(el=>el.textContent = initials);
+}
+
+/* --- BILLING --- */
+pageRenderers.billing = function(){
+  return `
+  <div class="page-header"><div><div class="page-header__title">Billing</div><div class="page-header__sub">Manage your subscription and usage</div></div></div>
+  <div class="plans-grid" style="margin-bottom:24px">
+    <div class="plan-card">
+      <div class="plan-card__name">Starter</div>
+      <div class="plan-card__price">$0<span>/mo</span></div>
+      <div class="plan-card__desc">For testing and small projects</div>
+      <ul class="plan-card__features">
+        <li>Up to 2 bots</li>
+        <li>1,000 users per bot</li>
+        <li>Basic analytics</li>
+        <li>Community support</li>
+      </ul>
+      <button class="btn btn-secondary" style="width:100%">Current Plan</button>
+    </div>
+    <div class="plan-card popular">
+      <div class="plan-card__badge">Popular</div>
+      <div class="plan-card__name">Pro</div>
+      <div class="plan-card__price">$29<span>/mo</span></div>
+      <div class="plan-card__desc">For growing businesses</div>
+      <ul class="plan-card__features">
+        <li>Up to 10 bots</li>
+        <li>Unlimited users</li>
+        <li>Advanced analytics</li>
+        <li>Team collaboration (5 seats)</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="btn btn-primary" style="width:100%">Upgrade</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-card__name">Enterprise</div>
+      <div class="plan-card__price">$99<span>/mo</span></div>
+      <div class="plan-card__desc">For large-scale operations</div>
+      <ul class="plan-card__features">
+        <li>Unlimited bots</li>
+        <li>Unlimited users</li>
+        <li>Custom integrations</li>
+        <li>Unlimited team seats</li>
+        <li>Dedicated support</li>
+        <li>SLA guarantee</li>
+      </ul>
+      <button class="btn btn-secondary" style="width:100%">Contact Sales</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card__header"><div class="card__title">Usage This Month</div></div>
+    <div class="card__body">
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div><div style="font-size:12px;color:var(--text-muted)">API Calls</div><div style="font-size:20px;font-weight:700">284,320</div><div style="font-size:12px;color:var(--text-muted)">of 500,000</div></div>
+        <div><div style="font-size:12px;color:var(--text-muted)">Bots</div><div style="font-size:20px;font-weight:700">6</div><div style="font-size:12px;color:var(--text-muted)">of 10</div></div>
+        <div><div style="font-size:12px;color:var(--text-muted)">Team Members</div><div style="font-size:20px;font-weight:700">5</div><div style="font-size:12px;color:var(--text-muted)">of 5</div></div>
+        <div><div style="font-size:12px;color:var(--text-muted)">Storage</div><div style="font-size:20px;font-weight:700">2.4 GB</div><div style="font-size:12px;color:var(--text-muted)">of 10 GB</div></div>
+      </div>
+    </div>
+  </div>`;
+};
+
+function pageNotFound(page){ return `<div class="empty-state"><div class="empty-state__icon">🔧</div><div class="empty-state__title">${page}</div><div class="empty-state__desc">Page under construction</div></div>`; }
+
+/* ===== ACTIONS ===== */
+function handleAction(action, data){
+  const actions = {
+    'testBot':()=>testBot(data.botId),
+    'deleteBot':()=>confirmDelete(data.botId),
+    'rotateToken':()=>confirmRotate(data.botId),
+  };
+  if(actions[action]) actions[action]();
+  else if(action.startsWith('navigate:')) navigate(action.split(':')[1]);
+}
+
+/* ===== MODALS ===== */
+function openAddBot(){
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal__header"><div class="modal__title">Add Telegram Bot</div><button class="modal__close" onclick="closeModal()">×</button></div>
+      <div class="modal__body">
+        <div class="form-group"><label class="form-label">Bot Token</label><input class="form-input" id="newBotToken" placeholder="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"></div>
+        <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="newBotName" placeholder="My Awesome Bot"></div>
+        <div class="form-group"><label class="form-label">Mode</label><select class="form-select" id="newBotMode"><option value="webhook">Webhook</option><option value="polling">Polling</option></select></div>
+        <p class="form-hint">🔒 Token is encrypted at rest. Never shared with third parties.</p>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveNewBot()">Add Bot</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function saveNewBot(){
+  const token = document.getElementById('newBotToken').value.trim();
+  if(!token){ showToast('Bot token is required','error'); return; }
+  const name = document.getElementById('newBotName').value || 'New Bot';
+  const mode = document.getElementById('newBotMode').value;
+  DATA.bots.push({ id:'b'+Date.now(), name, username:'@'+name.toLowerCase().replace(/\s/g,'_'), token:token.slice(0,2)+'******'+token.slice(-2), status:'pending', mode, users:0, cmds:0, groups:0, chats:0, lastErr:'—', lastMsg:'—', created:new Date().toISOString().slice(0,10) });
+  closeModal();
+  showToast(`Bot "${name}" added successfully`,'success');
+  navigate('bots');
+}
+function confirmDelete(botId){
+  const b = DATA.bots.find(x=>x.id===botId);
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal" style="width:400px">
+      <div class="modal__header"><div class="modal__title">Delete Bot</div><button class="modal__close" onclick="closeModal()">×</button></div>
+      <div class="modal__body">
+        <div class="confirm-dialog">
+          <div class="confirm-dialog__icon">⚠️</div>
+          <div class="confirm-dialog__title">Delete "${b?b.name:'this bot'}"?</div>
+          <div class="confirm-dialog__desc">This action cannot be undone. All data, commands, and analytics will be permanently removed.</div>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="doDeleteBot('${botId}')">Delete Forever</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+function doDeleteBot(botId){
+  const idx = DATA.bots.findIndex(x=>x.id===botId);
+  if(idx>=0) DATA.bots.splice(idx,1);
+  closeModal();
+  showToast('Bot deleted','warning');
+  navigate('bots');
+}
+function confirmRotate(botId){
+  const b = DATA.bots.find(x=>x.id===botId);
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal" style="width:400px">
+      <div class="modal__header"><div class="modal__title">Rotate Token</div><button class="modal__close" onclick="closeModal()">×</button></div>
+      <div class="modal__body">
+        <div class="confirm-dialog">
+          <div class="confirm-dialog__icon">🔑</div>
+          <div class="confirm-dialog__title">Rotate token for ${b?b.name:'this bot'}?</div>
+          <div class="confirm-dialog__desc">The current token will be revoked immediately. You'll need to update your bot server with the new one.</div>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="doRotate('${botId}')">Rotate Token</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+function doRotate(botId){
+  const b = DATA.bots.find(x=>x.id===botId);
+  if(b) b.token = Math.random().toString(36).slice(2,4)+'******'+Math.random().toString(36).slice(2,4).toUpperCase();
+  closeModal();
+  showToast('Token rotated successfully','success');
+  if(STATE.page==='bot-detail') navigate('bot-detail',{botId});
+}
+function testBot(botId){
+  const b = DATA.bots.find(x=>x.id===botId);
+  showToast(`📨 Test message sent to ${b?b.name:'bot'}`,'success');
+}
+
+/* ===== TABS ===== */
+function handleTabClick(el){
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  const tabId = el.dataset.tab;
+  const botId = el.dataset.bot;
+  if(tabId==='overview' && botId) document.getElementById('tab-overview-'+botId).classList.add('active');
+  else if(tabId==='commands' && botId) document.getElementById('tab-commands-'+botId).classList.add('active');
+  else if(tabId==='chats' && botId) document.getElementById('tab-chats-'+botId).classList.add('active');
+  else if(tabId==='logs' && botId) document.getElementById('tab-logs-'+botId).classList.add('active');
+  else if(tabId==='settings' && botId) document.getElementById('tab-settings-'+botId).classList.add('active');
+}
+
+/* ===== NOTIFICATIONS ===== */
+function toggleNotif(){
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal" style="width:450px">
+      <div class="modal__header"><div class="modal__title">Notifications</div><button class="modal__close" onclick="closeModal()">×</button></div>
+      <div class="modal__body">
+        <div style="padding:12px;border-left:3px solid var(--error);margin-bottom:10px;background:rgba(239,68,68,0.1)">
+          <strong>AnalyticsBot error</strong><br>
+          <span style="font-size:12px;color:var(--text-muted)">Webhook timeout — 2 min ago</span>
+        </div>
+        <div style="padding:12px;border-left:3px solid var(--success);margin-bottom:10px;background:rgba(34,197,94,0.1)">
+          <strong>SupportBot online</strong><br>
+          <span style="font-size:12px;color:var(--text-muted)">Reconnected successfully — 15 min ago</span>
+        </div>
+        <div style="padding:12px;border-left:3px solid var(--info);margin-bottom:10px;background:rgba(59,130,246,0.1)">
+          <strong>Broadcast completed</strong><br>
+          <span style="font-size:12px;color:var(--text-muted)">15,420 users reached — 1 hour ago</span>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+        <button class="btn btn-primary" onclick="showToast('All notifications marked as read','success');closeModal()">Mark all as read</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+
+function showHelp(){
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal" style="width:500px">
+      <div class="modal__header"><div class="modal__title">Help & Documentation</div><button class="modal__close" onclick="closeModal()">×</button></div>
+      <div class="modal__body">
+        <div style="margin-bottom:14px"><strong>🤖 Adding a Bot</strong><br><span style="font-size:13px;color:var(--text-muted)">Go to My Bots → Add Bot. Paste your Telegram bot token from @BotFather.</span></div>
+        <div style="margin-bottom:14px"><strong>⚡ Commands & Flows</strong><br><span style="font-size:13px;color:var(--text-muted)">Create command handlers with visual flow builder. Supports inline keyboards, media, and conditions.</span></div>
+        <div style="margin-bottom:14px"><strong>📢 Broadcasts</strong><br><span style="font-size:13px;color:var(--text-muted)">Send mass messages to all bot users. Schedule for later or send immediately.</span></div>
+        <div style="margin-bottom:14px"><strong>📈 Analytics</strong><br><span style="font-size:13px;color:var(--text-muted)">Track user growth, command usage, and engagement metrics in real-time.</span></div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+        <a href="https://t.me/BotForgeSupport" class="btn btn-primary" target="_blank">Contact Support</a>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+
+function sendBroadcast(){
+  const msg = document.getElementById('broadcastMsg').value.trim();
+  if(!msg){ showToast('Message cannot be empty','error'); return; }
+  const totalUsers = DATA.bots.reduce((s,b)=>s+b.users,0);
+  showToast(`📢 Broadcast sent to ${totalUsers.toLocaleString()} users`,'success');
+}
+
+/* ===== SEARCH ===== */
+function handleSearch(e){
+  const q = e.target.value.trim().toLowerCase();
+  const results = document.getElementById('searchResults');
+  if(!q){ results.classList.remove('active'); return; }
+  const matches = [];
+  DATA.bots.filter(b=>b.name.toLowerCase().includes(q)||b.username.toLowerCase().includes(q))
+    .forEach(b=>matches.push({type:'bot',label:b.name,sub:b.username,id:b.id}));
+  DATA.commands.filter(c=>c.cmd.includes(q)||c.desc.toLowerCase().includes(q))
+    .forEach(c=>matches.push({type:'cmd',label:c.cmd,sub:c.desc,id:null}));
+  if(!matches.length){
+    results.innerHTML='<div class="search-results__item disabled">No results found</div>';
+  } else {
+    results.innerHTML=matches.slice(0,8).map((m,i)=>
+      `<div class="search-results__item" data-idx="${i}"><strong>${m.label}</strong><div style="font-size:11px;color:var(--text-muted)">${m.sub}</div></div>`
+    ).join('');
+    results.querySelectorAll('.search-results__item').forEach((el,i)=>{
+      el.onclick=()=>{
+        results.classList.remove('active');
+        document.getElementById('globalSearch').value='';
+        if(matches[i].type==='bot') navigate('bot-detail',{botId:matches[i].id});
+        else navigate('commands');
+      };
+    });
+  }
+  results.classList.add('active');
+}
+
+/* ===== TOASTS ===== */
+function showToast(title, level='info'){
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast toast-'+level;
+  t.innerHTML = `<div class="toast__title">${title}</div>`;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+
+/* ===== CONFIRM ACTION ===== */
+function confirmAction(msg){
+  const overlay = document.getElementById('modalOverlay');
+  overlay.innerHTML = `
+    <div class="modal" style="width:400px">
+      <div class="modal__header"><div class="modal__title">Confirm</div></div>
+      <div class="modal__body"><div class="confirm-dialog"><div class="confirm-dialog__icon">⚠️</div><div class="confirm-dialog__desc">${msg}</div></div></div>
+      <div class="modal__footer"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="closeModal();showToast('Action executed','success')">Confirm</button></div>
+    </div>`;
+  overlay.classList.add('open');
+}
+
+/* ===== START ===== */
+function showOnboarding(){
+  const overlay = document.getElementById('modalOverlay');
+  let step = 0;
+  const steps = [
+    { icon:'🚀', title:'Welcome to BotForge', desc:'Connect your Telegram bots, manage commands, send broadcasts, and track analytics — all in one enterprise-grade platform.' },
+    { icon:'⚡', title:'Add Your First Bot', desc:'Enter your bot token from @BotFather. We\'ll handle the rest — webhook setup, commands sync, and monitoring.' },
+    { icon:'👥', title:'Invite Your Team', desc:'Set up role-based access control. Add admins, editors, and viewers with granular permissions per bot.' },
+  ];
+  function renderStep(){
+    const s = steps[step];
+    overlay.innerHTML = `
+      <div class="modal" style="width:500px">
+        <div class="modal__header"><div class="modal__title">BotForge Setup</div><button class="modal__close" onclick="closeModal();localStorage.setItem('botforge_onboarded','1')">×</button></div>
+        <div class="modal__body">
+          <div class="onboarding-step">
+            <div class="onboarding-progress">
+              ${steps.map((_,i)=>`<div class="dot ${i<step?'done':i===step?'active':''}"></div>`).join('')}
+            </div>
+            <div class="onboarding-step__icon">${s.icon}</div>
+            <div class="onboarding-step__title">${s.title}</div>
+            <div class="onboarding-step__desc">${s.desc}</div>
+          </div>
+        </div>
+        <div class="modal__footer">
+          <button class="btn btn-ghost" onclick="closeModal();localStorage.setItem('botforge_onboarded','1');showToast('Setup skipped — you can always revisit','info')">Skip</button>
+          ${step>0?`<button class="btn btn-secondary" onclick="showOnboardingStep(${step-1})">Back</button>`:''}
+          <button class="btn btn-primary" onclick="showOnboardingStep(${step+1})">${step<2?'Next':'Get Started'}</button>
+        </div>
+      </div>`;
+    overlay.classList.add('open');
+  }
+  window.showOnboardingStep = function(n){
+    if(n>=3){ closeModal(); localStorage.setItem('botforge_onboarded','1'); showToast('🎉 You\'re all set! Add your first bot.','success'); return; }
+    step = n; renderStep();
+  };
+  renderStep();
+}
+init();
+</script>
+</body>
+</html>
