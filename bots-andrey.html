@@ -245,7 +245,7 @@ body::after {
       <li><strong>/admin</strong> — админка</li>
     </ul>
     <div class="bot-stack"><span class="stack-tag">Python</span><span class="stack-tag">Docker</span><span class="stack-tag">Ozon API</span><span class="stack-tag">SQLite</span></div>
-    <a class="bot-btn" href="https://t.me/DealBot63_bot" target="_blank">🛒 Открыть бот</a>
+    <a class="bot-btn" href="https://t.me/DealBot63_bot" target="_blank" onclick="return openTelegram('DealBot63_bot')">🛒 Открыть бот</a>
   </div>
 
   <!-- ===== 2. GlamBot ===== -->
@@ -267,7 +267,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="https://t.me/nail163_bot" target="_blank">💅 Открыть бот</a>
+    <a class="bot-btn" href="https://t.me/nail163_bot" target="_blank" onclick="return openTelegram('nail163_bot')">💅 Открыть бот</a>
   </div>
 
   <!-- ===== 3. BeautyBot ===== -->
@@ -289,7 +289,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">aiogram 3</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span>
     </div>
-    <a class="bot-btn" href="https://t.me/Nailselegantstudio_bot" target="_blank">👩‍🦰 Открыть бот</a>
+    <a class="bot-btn" href="https://t.me/Nailselegantstudio_bot" target="_blank" onclick="return openTelegram('Nailselegantstudio_bot')">👩‍🦰 Открыть бот</a>
   </div>
 
   <!-- ===== 4. FinBot ===== -->
@@ -311,7 +311,7 @@ body::after {
     <div class="bot-stack" style="border:none;padding-top:0;margin-top:0;">
       <span class="stack-tag">Python</span><span class="stack-tag">SQLite</span><span class="stack-tag">DashScope</span><span class="stack-tag">Whisper</span><span class="stack-tag">qwen-vl-max</span>
     </div>
-    <a class="bot-btn" href="https://t.me/finpro63_bot" target="_blank">💰 Открыть бот</a>
+    <a class="bot-btn" href="https://t.me/finpro63_bot" target="_blank" onclick="return openTelegram('finpro63_bot')">💰 Открыть бот</a>
   </div>
 
   <!-- ===== 5. BotForge ===== -->
@@ -432,7 +432,33 @@ function closeDebiModal(){
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape') closeDebiModal();
 });
-</script>
+
+// Открывает бота в приложении Telegram напрямую (tg:// protocol),
+// минуя браузер и DNS — обходит VPN-блокировку t.me
+function openTelegram(username){
+  var tgUrl = 'tg://resolve?domain=' + username;
+  var httpsUrl = 'https://t.me/' + username;
+  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  if(isMobile){
+    // Пробуем открыть приложение Telegram через tg:// protocol
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = tgUrl;
+    document.body.appendChild(iframe);
+
+    // Фолбэк: если через 2с приложение не открылось — открываем через web
+    setTimeout(function(){
+      document.body.removeChild(iframe);
+      window.open(httpsUrl, '_blank');
+    }, 2000);
+    return false;
+  }
+
+  // На компе — обычная ссылка
+  return true;
+}
+
 
 </body>
 </html>
