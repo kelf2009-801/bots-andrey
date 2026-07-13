@@ -663,62 +663,29 @@ tr:hover td{background:var(--bg-hover)}
 
 <script>
 /* ===== DATA ===== */
-const DATA = {
-  bots: [
-    { id:'b1', name:'SupportBot', username:'@support_acme_bot', token:'72******AC', status:'online', mode:'webhook', users:12480, cmds:34, groups:12, chats:18, lastErr:'—', lastMsg:'10:42:11', created:'2026-01-15' },
-    { id:'b2', name:'SalesBot', username:'@sales_acme_bot', token:'41******B2', status:'online', mode:'polling', users:8432, cmds:21, groups:5, chats:9, lastErr:'—', lastMsg:'10:41:58', created:'2026-02-20' },
-    { id:'b3', name:'NotifyBot', username:'@notify_acme_bot', token:'98******D1', status:'offline', mode:'webhook', users:2190, cmds:12, groups:0, chats:3, lastErr:'2026-07-11 14:32', lastMsg:'10:40:02', created:'2026-03-05' },
-    { id:'b4', name:'AnalyticsBot', username:'@analytics_acme_bot', token:'23******E7', status:'error', mode:'webhook', users:5640, cmds:18, groups:8, chats:14, lastErr:'Webhook timeout', lastMsg:'10:35:22', created:'2026-01-28' },
-    { id:'b5', name:'FeedbackBot', username:'@feedback_acme_bot', token:'56******F3', status:'online', mode:'polling', users:3201, cmds:9, groups:3, chats:6, lastErr:'—', lastMsg:'10:38:19', created:'2026-04-12' },
-    { id:'b6', name:'DealBot', username:'@DealBot63_bot', token:'67******9A', status:'online', mode:'webhook', users:15420, cmds:28, groups:22, chats:31, lastErr:'—', lastMsg:'10:43:05', created:'2025-11-08' },
-  ],
-  logs: [
-    { id:1, bot:'SupportBot', event:'Message processed: /help', time:'10:42:11', level:'info' },
-    { id:2, bot:'SalesBot', event:'Webhook received', time:'10:41:58', level:'info' },
-    { id:3, bot:'NotifyBot', event:'Connection timeout — retry 3/5', time:'10:40:02', level:'error' },
-    { id:4, bot:'FeedbackBot', event:'Command /start executed', time:'10:38:19', level:'info' },
-    { id:5, bot:'AnalyticsBot', event:'Webhook response 504', time:'10:35:22', level:'error' },
-    { id:6, bot:'DealBot', event:'Broadcast completed: 15420 users', time:'10:30:00', level:'info' },
-    { id:7, bot:'SupportBot', event:'Token rotated by admin', time:'10:22:15', level:'warn' },
-    { id:8, bot:'SalesBot', event:'Polling cycle started', time:'10:20:00', level:'info' },
-    { id:9, bot:'System', event:'Backup completed', time:'10:15:00', level:'info' },
-    { id:10, bot:'System', event:'SSL certificate renewed', time:'09:00:00', level:'info' },
-  ],
-  team: [
-    { id:'u1', name:'Alex Kern', email:'alex@botforge.io', role:'Owner', bots:'All', avatar:'AK', joined:'2025-10-01' },
-    { id:'u2', name:'Denis Volkov', email:'denis@botforge.io', role:'Admin', bots:'SupportBot, SalesBot', avatar:'DV', joined:'2025-11-15' },
-    { id:'u3', name:'Katya Morozova', email:'katya@botforge.io', role:'Editor', bots:'SupportBot, FeedbackBot', avatar:'KM', joined:'2026-01-20' },
-    { id:'u4', name:'Mike Chen', email:'mike@botforge.io', role:'Viewer', bots:'All', avatar:'MC', joined:'2026-03-10' },
-    { id:'u5', name:'Elena Petrova', email:'elena@botforge.io', role:'Editor', bots:'DealBot', avatar:'EP', joined:'2026-04-05' },
-  ],
-  commands: [
-    { cmd:'/start', desc:'Welcome message', bot:'SupportBot', type:'built-in', usage:2840 },
-    { cmd:'/help', desc:'Help center', bot:'SupportBot', type:'built-in', usage:1520 },
-    { cmd:'/price', desc:'Price list', bot:'SalesBot', type:'custom', usage:890 },
-    { cmd:'/status', desc:'System status', bot:'DealBot', type:'custom', usage:430 },
-    { cmd:'/feedback', desc:'Send feedback', bot:'FeedbackBot', type:'custom', usage:210 },
-    { cmd:'/subscribe', desc:'Subscribe to updates', bot:'NotifyBot', type:'custom', usage:110 },
-  ],
-  audit: [
-    { id:'a1', user:'Alex Kern', action:'Added bot DealBot', time:'2026-07-12 10:22', ip:'192.168.1.10' },
-    { id:'a2', user:'Denis Volkov', action:'Edited command /start', time:'2026-07-12 09:15', ip:'192.168.1.22' },
-    { id:'a3', user:'Katya Morozova', action:'Started broadcast', time:'2026-07-12 08:45', ip:'192.168.1.35' },
-    { id:'a4', user:'Alex Kern', action:'Changed team role', time:'2026-07-11 16:30', ip:'192.168.1.10' },
-    { id:'a5', user:'Mike Chen', action:'Viewed analytics', time:'2026-07-11 15:22', ip:'192.168.1.50' },
-  ],
-  integrations: [
-    { name:'OpenAI', desc:'AI-powered responses', icon:'🤖', connected:true },
-    { name:'CRM Hub', desc:'Sync contacts and deals', icon:'📊', connected:true },
-    { name:'Webhook', desc:'Custom webhook endpoints', icon:'🔗', connected:true },
-    { name:'Slack', desc:'Team notifications', icon:'💬', connected:false },
-    { name:'Google Sheets', desc:'Log exports', icon:'📋', connected:false },
-    { name:'Zapier', desc:'500+ app integrations', icon:'⚡', connected:false },
-  ],
-  metrics: {
-    totalBots: 6, activeBots: 4, totalUsers: 47363, msgToday: 8421, errors24h: 3, uptime: 99.97,
-    avgResponse: 124, newUsersWeek: 2840, msgGrowth: 8.1
-  }
-};
+/* ===== STATIC DATA (команды/аудит/интеграции — заглушки) ===== */
+const STATIC_COMMANDS = [
+  { cmd:'/start', desc:'Главное меню', bot:'GlamBot', type:'built-in', usage:2840 },
+  { cmd:'/help', desc:'Справка', bot:'GlamBot', type:'built-in', usage:1520 },
+  { cmd:'/ask', desc:'Вопрос AI-консультанту', bot:'GlamBot', type:'custom', usage:890 },
+  { cmd:'/admin', desc:'Админ-панель', bot:'GlamBot', type:'custom', usage:430 },
+  { cmd:'/parse', desc:'Добавить товар', bot:'DealBot63', type:'custom', usage:210 },
+  { cmd:'/stats', desc:'Статистика', bot:'FinBot', type:'custom', usage:110 },
+];
+const STATIC_AUDIT = [
+  { id:'a1', user:'Андрей', action:'Запустил GlamBot', time:'2026-07-13 14:15', ip:'192.168.1.10' },
+  { id:'a2', user:'Андрей', action:'Запустил BeautyBot', time:'2026-07-13 15:38', ip:'192.168.1.10' },
+  { id:'a3', user:'Андрей', action:'Запустил FinBot', time:'2026-07-13 16:56', ip:'192.168.1.10' },
+];
+const STATIC_TEAM = [
+  { id:'u1', name:'Андрей', email:'kelf2026@ya.ru', role:'Owner', bots:'All', avatar:'АН', joined:'2025-10-01' },
+];
+const STATIC_INTEGRATIONS = [
+  { name:'OmniRoute', desc:'AI-шлюз → DashScope (бесплатно)', icon:'🌐', connected:true },
+  { name:'DashScope', desc:'AI модели: glm-5.2, whisper, qwen-vl', icon:'🤖', connected:true },
+  { name:'Docker', desc:'Контейнеры ботов', icon:'🐳', connected:true },
+  { name:'Telegram', desc:'Bot API', icon:'✈️', connected:true },
+];
 
 /* ===== NAV STRUCTURE ===== */
 const NAV = [
@@ -747,15 +714,44 @@ const NAV = [
 let STATE = { page:'dashboard', botDetail:null, botTab:'overview', onboarded:false, onboardingStep:0 };
 
 /* ===== INIT ===== */
+let DATA = { bots: [], logs: [], metrics: { totalBots:0, activeBots:0, totalUsers:0, msgToday:0, errors24h:0, uptime:0, avgResponse:0, newUsersWeek:0, msgGrowth:0 }, commands:[], audit:[], team:[], integrations:[] };
+
+async function loadAPI(){
+  try{
+    const resp = await fetch('/api/data');
+    if(resp.ok){
+      const data = await resp.json();
+      DATA.bots = data.bots || [];
+      DATA.logs = data.logs || [];
+      DATA.metrics = data.metrics || DATA.metrics;
+      DATA.commands = STATIC_COMMANDS;
+      DATA.audit = STATIC_AUDIT;
+      DATA.team = STATIC_TEAM;
+      DATA.integrations = STATIC_INTEGRATIONS;
+      console.log('✅ Данные загружены из API:', DATA.bots.length, 'ботов');
+    }
+  }catch(e){ console.error('API error:', e); }
+}
+
 function init(){
   renderNav();
-  updateUserUI(localStorage.getItem('botforge_username') || 'Alex Kern');
-  navigate('dashboard');
+  updateUserUI(localStorage.getItem('botforge_username') || 'Андрей');
+  loadAPI().then(()=>{
+    navigate('dashboard');
+    // Автообновление каждые 30 секунд + перерисовка
+    setInterval(()=>{
+      loadAPI().then(()=>{
+        // Перерисовываем текущую страницу
+        navigate(STATE.page, {botId: STATE.botDetail});
+      });
+    }, 30000);
+  });
   document.addEventListener('click', handleGlobalClick);
   document.getElementById('mobileToggle').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
   document.getElementById('globalSearch').addEventListener('input', handleSearch);
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); document.getElementById('searchResults').classList.remove('active'); } });
-  if(!localStorage.getItem('botforge_onboarded')) setTimeout(showOnboarding, 800);
+  // Онбординг отключён — сразу показываем дашборд
+  // if(!localStorage.getItem('botforge_onboarded')) setTimeout(showOnboarding, 800);
 }
 function renderNav(){
   const nav = document.getElementById('main-nav');
@@ -792,6 +788,16 @@ function navigate(page, params){
     content.innerHTML = showBotDetail(params.botId);
   } else {
     content.innerHTML = pageRenderers[page] ? pageRenderers[page]() : pageNotFound(page);
+  }
+  // Перерисовываем после загрузки данных из API (если ещё пусто)
+  if(DATA.bots.length === 0 && page !== 'settings' && page !== 'billing'){
+    loadAPI().then(()=>{
+      if(page==='bot-detail'&&params?.botId){
+        content.innerHTML = showBotDetail(params.botId);
+      } else {
+        content.innerHTML = pageRenderers[page] ? pageRenderers[page]() : pageNotFound(page);
+      }
+    });
   }
   if(page==='dashboard') showSkeleton('pageContent',500);
   document.getElementById('sidebar').classList.remove('open');
@@ -1072,9 +1078,9 @@ pageRenderers.broadcasts = function(){
     <div class="card__header"><div class="card__title">Broadcast History</div></div>
     <div class="card__body table-wrap">
       <table><thead><tr><th>Date</th><th>Bot</th><th>Audience</th><th>Sent</th><th>Delivered</th><th>Status</th></tr></thead><tbody>
-        <tr><td>2026-07-12</td><td>DealBot</td><td>All users</td><td>15,420</td><td>14,892</td><td><span class="tag tag-emerald">Completed</span></td></tr>
-        <tr><td>2026-07-10</td><td>SupportBot</td><td>Active 7d</td><td>8,210</td><td>7,984</td><td><span class="tag tag-emerald">Completed</span></td></tr>
-        <tr><td>2026-07-08</td><td>SalesBot</td><td>All users</td><td>8,432</td><td>8,102</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+        <tr><td>2026-07-13</td><td>DealBot63</td><td>All users</td><td>15,420</td><td>14,892</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+        <tr><td>2026-07-10</td><td>GlamBot</td><td>Active 7d</td><td>8,210</td><td>7,984</td><td><span class="tag tag-emerald">Completed</span></td></tr>
+        <tr><td>2026-07-08</td><td>FinBot</td><td>All users</td><td>8,432</td><td>8,102</td><td><span class="tag tag-emerald">Completed</span></td></tr>
       </tbody></table>
     </div>
   </div>`;
@@ -1398,13 +1404,13 @@ function toggleNotif(){
     <div class="modal" style="width:450px">
       <div class="modal__header"><div class="modal__title">Notifications</div><button class="modal__close" onclick="closeModal()">×</button></div>
       <div class="modal__body">
-        <div style="padding:12px;border-left:3px solid var(--error);margin-bottom:10px;background:rgba(239,68,68,0.1)">
-          <strong>AnalyticsBot error</strong><br>
-          <span style="font-size:12px;color:var(--text-muted)">Webhook timeout — 2 min ago</span>
+        <div style="padding:12px;border-left:3px solid var(--success);margin-bottom:10px;background:rgba(34,197,94,0.1)">
+          <strong>DealBot63 online</strong><br>
+          <span style="font-size:12px;color:var(--text-muted)">Bot запущен — 5 min ago</span>
         </div>
         <div style="padding:12px;border-left:3px solid var(--success);margin-bottom:10px;background:rgba(34,197,94,0.1)">
-          <strong>SupportBot online</strong><br>
-          <span style="font-size:12px;color:var(--text-muted)">Reconnected successfully — 15 min ago</span>
+          <strong>GlamBot online</strong><br>
+          <span style="font-size:12px;color:var(--text-muted)">Bot запущен — 15 min ago</span>
         </div>
         <div style="padding:12px;border-left:3px solid var(--info);margin-bottom:10px;background:rgba(59,130,246,0.1)">
           <strong>Broadcast completed</strong><br>
