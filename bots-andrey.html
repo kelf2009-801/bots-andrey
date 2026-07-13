@@ -195,11 +195,11 @@ body::after {
 </section>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">6</div><div class="stat-label">Ботов</div></div>
-  <div class="stat"><div class="stat-num">3</div><div class="stat-label">Тарифа</div></div>
-  <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Команд</div></div>
-  <div class="stat"><div class="stat-num">1</div><div class="stat-label">Дашборд</div></div>
-  <div class="stat"><div class="stat-num">4</div><div class="stat-label">AI-модели</div></div>
+  <div class="stat"><div class="stat-num" data-count="6">0</div><div class="stat-label">Ботов</div></div>
+  <div class="stat"><div class="stat-num" data-count="3">0</div><div class="stat-label">Тарифа</div></div>
+  <div class="stat"><div class="stat-num" data-count="15" data-suffix="+">0</div><div class="stat-label">Команд</div></div>
+  <div class="stat"><div class="stat-num" data-count="1">0</div><div class="stat-label">Дашборд</div></div>
+  <div class="stat"><div class="stat-num" data-count="4">0</div><div class="stat-label">AI-модели</div></div>
 </div>
 
 <div class="section-title">Наши боты</div>
@@ -356,5 +356,31 @@ body::after {
 </footer>
 
 </div>
+
+<script>
+// Анимация накручивания цифр при загрузке
+(function(){
+  var nums = document.querySelectorAll('.stat-num');
+  nums.forEach(function(el, i){
+    var target = parseInt(el.dataset.count);
+    var suffix = el.dataset.suffix || '';
+    var duration = 1200 + i * 150;
+    var start = Date.now();
+    setTimeout(function(){
+      function tick(){
+        var elapsed = Date.now() - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var val = Math.floor(target * eased);
+        el.textContent = val + (progress >= 1 ? suffix : '');
+        if(progress < 1) requestAnimationFrame(tick);
+        else el.textContent = target + suffix;
+      }
+      tick();
+    }, 300 + i * 120);
+  });
+})();
+</script>
+
 </body>
 </html>
