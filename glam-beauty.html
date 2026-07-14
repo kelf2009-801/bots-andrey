@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glam & Beauty — Студия ногтей и бровей Сызрань</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* === DESIGN TOKENS — Beauty Premium === */
+        :root {
+            --bg: #0d0e12;
+            --bg-elevated: #14151a;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.14);
+            --text: #f5f5f7;
+            --text-2: #d4d4d8;
+            --text-muted: #8b8b94;
+            --text-dim: #5a5a62;
+
+            /* Beauty palette */
+            --pink: #F79CE0;
+            --pink-soft: #ffb0e8;
+            --pink-deep: #d264b8;
+            --rose: #ff6b9d;
+            --cyan: #55CDFF;
+            --gold: #ffd700;
+            --lavender: #c7a2ff;
+
+            --grad-text: linear-gradient(180deg, #fff 0%, #8b8b94 100%);
+            --grad-pink: linear-gradient(135deg, #F79CE0, #ff6b9d, #d264b8);
+            --grad-cyan-pink: linear-gradient(135deg, #55CDFF, #F79CE0);
+            --grad-rose-gold: linear-gradient(135deg, #ffd700, #ff6b9d);
+
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --r-sm:4px;--r-md:6px;--r-lg:8px;--r-xl:12px;--r-2xl:16px;--r-3xl:24px;
+            --sh-glow-pink: 0 0 60px rgba(247,156,224,0.4);
+            --sh-glow-cyan: 0 0 60px rgba(85,205,255,0.3);
+            --sh-lg: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; overflow-x:hidden; max-width:100%; width:100%; }
+        body {
+            font-family:var(--font);
+            background:var(--bg);
+            color:var(--text);
+            line-height:1.6;
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
+            max-width:100%;
+            width:100%;
+            position:relative;
+        }
+
+        /* Force no horizontal scroll on all wrappers */
+        .hero,.mockup-section,.section,.logos,.cta,.footer,.nav,.bento-section {
+            max-width:100%;
+            overflow-x:hidden;
+        }
+
+        /* === AURORA BACKGROUND — pink/cyan/rose === */
+        .aurora { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .aurora::before, .aurora::after, .aurora-3 {
+            content:''; position:absolute; border-radius:50%;
+            filter:blur(100px); opacity:0.25;
+        }
+        .aurora::before {
+            top:-100px; left:50%; transform:translateX(-50%);
+            width:700px; height:700px;
+            background:radial-gradient(circle, #F79CE0, transparent 70%);
+            animation: drift1 20s ease-in-out infinite;
+        }
+        .aurora::after {
+            top:200px; left:20%;
+            width:500px; height:500px;
+            background:radial-gradient(circle, #55CDFF, transparent 70%);
+            animation: drift2 25s ease-in-out infinite;
+        }
+        .aurora-3 {
+            position:fixed; top:400px; right:10%;
+            width:600px; height:600px;
+            background:radial-gradient(circle, rgba(255,107,157,0.15), transparent 70%);
+            filter:blur(120px); z-index:0; pointer-events:none;
+            animation: drift3 30s ease-in-out infinite;
+            overflow:hidden;
+        }
+        @keyframes drift1 { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-40%) translateY(50px)} }
+        @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,-30px)} }
+        @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-60px,40px)} }
+
+        .grid-overlay {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size:60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+        }
+
+        /* === NAVBAR === */
+        .nav {
+            position:fixed; top:0; left:0; right:0; z-index:100;
+            background:rgba(13,14,18,0.7);
+            backdrop-filter:blur(20px) saturate(180%);
+            border-bottom:1px solid var(--border);
+            transition:all 0.3s;
+        }
+        .nav-scrolled { background:rgba(13,14,18,0.9); }
+        .nav-inner {
+            max-width:1200px; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:14px 24px; height:60px;
+            overflow:hidden;
+        }
+        .nav-logo { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; letter-spacing:-0.02em; text-decoration:none; color:var(--text); }
+        .nav-logo svg { width:24px; height:24px; }
+        .nav-links { display:flex; gap:4px; align-items:center; list-style:none; }
+        .nav-links a { color:var(--text-muted); text-decoration:none; font-size:14px; font-weight:500; padding:6px 12px; border-radius:var(--r-md); transition:color 0.15s, background 0.15s; }
+        .nav-links a:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+        .nav-cta { display:flex; gap:8px; align-items:center; }
+        .btn-nav { color:var(--text-muted); text-decoration:none; font-size:14px; padding:6px 12px; border-radius:var(--r-md); transition:color 0.15s; }
+        .btn-nav:hover { color:var(--text); }
+        .btn-signup {
+            background:var(--grad-pink); color:#fff;
+            padding:8px 16px; border-radius:var(--r-md);
+            font-size:14px; font-weight:600; text-decoration:none;
+            transition:opacity 0.15s, box-shadow 0.2s;
+        }
+        .btn-signup:hover { opacity:0.9; box-shadow:var(--sh-glow-pink); }
+
+        /* === HERO === */
+        .hero {
+            position:relative; z-index:1;
+            padding:140px 24px 80px; text-align:center;
+            max-width:900px; margin:0 auto;
+            width:100%;
+        }
+        .hero-badge {
+            display:inline-flex; align-items:center; gap:8px;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:6px 14px 6px 6px; border-radius:20px;
+            font-size:13px; color:var(--text-2);
+            margin-bottom:32px;
+            transition:border-color 0.2s;
+            text-decoration:none;
+        }
+        .hero-badge:hover { border-color:var(--border-hover); }
+        .hero-badge .tag {
+            background:var(--grad-pink); color:#fff;
+            padding:2px 8px; border-radius:16px;
+            font-size:11px; font-weight:700;
+        }
+        .hero h1 {
+            font-size:clamp(40px, 7vw, 72px);
+            font-weight:800; letter-spacing:-0.04em;
+            line-height:1.05; margin-bottom:24px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .hero h1 .pink-text {
+            background:var(--grad-pink);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+        }
+        .hero p {
+            font-size:20px; color:var(--text-muted);
+            max-width:580px; margin:0 auto 40px;
+            line-height:1.4;
+        }
+        .hero-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        .btn {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:14px 28px; border-radius:var(--r-md);
+            font-size:15px; font-weight:600; text-decoration:none;
+            border:none; cursor:pointer; transition:all 0.15s;
+            font-family:var(--font);
+        }
+        .btn-primary {
+            background:var(--grad-pink); color:#fff;
+        }
+        .btn-primary:hover { box-shadow:var(--sh-glow-pink); transform:translateY(-1px); }
+        .btn-cyan {
+            background:var(--grad-cyan-pink); color:#fff;
+        }
+        .btn-cyan:hover { box-shadow:var(--sh-glow-cyan); transform:translateY(-1px); }
+        .btn-ghost {
+            background:rgba(255,255,255,0.05); color:var(--text);
+            border:1px solid var(--border);
+        }
+        .btn-ghost:hover { background:rgba(255,255,255,0.08); border-color:var(--border-hover); }
+
+        /* === BOT CARDS === */
+        .bots-section {
+            position:relative; z-index:1;
+            max-width:1100px; margin:0 auto;
+            padding:60px 24px;
+            width:100%;
+        }
+        .bots-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+        .bot-card {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-2xl);
+            padding:40px;
+            transition:all 0.3s;
+            position:relative;
+            overflow:hidden;
+        }
+        .bot-card::before {
+            content:''; position:absolute; inset:0;
+            opacity:0.06; transition:opacity 0.3s;
+        }
+        .bot-card.glam::before { background:var(--grad-pink); }
+        .bot-card.beauty::before { background:var(--grad-cyan-pink); }
+        .bot-card:hover { transform:translateY(-4px); border-color:var(--border-hover); }
+        .bot-card:hover::before { opacity:0.12; }
+        .bot-card-content { position:relative; z-index:1; }
+        .bot-icon { font-size:48px; margin-bottom:16px; }
+        .bot-card h3 { font-size:24px; font-weight:700; margin-bottom:8px; }
+        .bot-username { font-family:var(--font-mono); font-size:13px; color:var(--pink); margin-bottom:16px; }
+        .bot-card.beauty .bot-username { color:var(--cyan); }
+        .bot-card p { font-size:14px; color:var(--text-muted); margin-bottom:24px; line-height:1.5; }
+        .bot-services { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px; }
+        .bot-services span {
+            font-size:12px; padding:4px 10px; border-radius:12px;
+            background:rgba(255,255,255,0.04); color:var(--text-2);
+            border:1px solid var(--border);
+        }
+
+        /* === APP MOCKUP === */
+        .mockup-section {
+            position:relative; z-index:1;
+            max-width:1100px; margin:0 auto;
+            padding:80px 24px;
+            width:100%;
+        }
+        .mockup-label { text-align:center; margin-bottom:40px; }
+        .mockup-label h2 {
+            font-size:clamp(28px,4vw,40px);
+            font-weight:700; letter-spacing:-0.03em;
+            margin-bottom:12px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .mockup-label p { color:var(--text-muted); font-size:18px; }
+        .app-window {
+            background:var(--bg-elevated);
+            border:1px solid var(--border);
+            border-radius:var(--r-2xl);
+            overflow:hidden;
+            box-shadow:var(--sh-lg), 0 0 100px rgba(247,156,224,0.15);
+            transform:perspective(2000px) rotateX(3deg);
+            transition:transform 0.5s ease;
+            max-width:100%;
+        }
+        .app-window:hover { transform:perspective(2000px) rotateX(0deg); }
+        .app-titlebar {
+            display:flex; align-items:center; gap:8px;
+            padding:10px 16px;
+            border-bottom:1px solid var(--border);
+            background:rgba(255,255,255,0.02);
+        }
+        .app-dot { width:12px; height:12px; border-radius:50%; }
+        .app-dot.r { background:#FF5F57; }
+        .app-dot.y { background:#FEBC2E; }
+        .app-dot.g { background:#28C840; }
+        .app-url {
+            margin:0 auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-md);
+            padding:4px 14px; font-size:12px;
+            color:var(--text-muted);
+            font-family:var(--font-mono);
+        }
+        .app-body { display:flex; min-height:400px; overflow:hidden; }
+        .app-sidebar {
+            width:220px; border-right:1px solid var(--border);
+            padding:16px 8px;
+            background:rgba(0,0,0,0.3);
+            flex-shrink:0;
+        }
+        .app-sidebar-item {
+            display:flex; align-items:center; gap:10px;
+            padding:8px 12px; border-radius:var(--r-sm);
+            font-size:13px; color:var(--text-muted);
+            margin-bottom:2px;
+        }
+        .app-sidebar-item.active { background:rgba(247,156,224,0.15); color:var(--text); }
+        .app-sidebar-section { font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; padding:16px 12px 6px; }
+        .app-main { flex:1; padding:24px; display:flex; flex-direction:column; gap:16px; overflow:hidden; min-width:0; }
+        .app-chat-msg { display:flex; gap:10px; align-items:flex-start; max-width:100%; }
+        .app-avatar { width:32px; height:32px; border-radius:50%; flex-shrink:0; }
+        .app-avatar.bot { background:var(--grad-pink); }
+        .app-avatar.user { background:var(--grad-cyan-pink); }
+        .app-msg-bubble {
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:10px 14px; border-radius:var(--r-lg);
+            font-size:14px; color:var(--text-2);
+            max-width:70%;
+            word-break:break-word;
+            overflow-wrap:break-word;
+        }
+        .app-msg-bubble.bot { background:rgba(247,156,224,0.08); border-color:rgba(247,156,224,0.2); }
+        .app-input {
+            margin-top:auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-lg);
+            padding:12px 16px; font-size:14px; color:var(--text-dim);
+            display:flex; align-items:center; gap:8px;
+        }
+        .app-input .send-btn {
+            margin-left:auto;
+            background:var(--grad-pink);
+            width:28px; height:28px; border-radius:var(--r-sm);
+            display:flex; align-items:center; justify-content:center;
+            font-size:14px;
+        }
+
+        /* === SECTIONS === */
+        .section { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:80px 24px; width:100%; }
+        .section-title { text-align:center; margin-bottom:60px; }
+        .section-title h2 {
+            font-size:clamp(32px,5vw,48px);
+            font-weight:700; letter-spacing:-0.03em;
+            line-height:1.1; margin-bottom:16px;
+            max-width:720px; margin:0 auto 16px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .section-title p { font-size:18px; color:var(--text-muted); max-width:560px; margin:0 auto; }
+
+        /* === BENTO GRID === */
+        .bento { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .bento-card {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            padding:32px;
+            transition:all 0.2s;
+            position:relative; overflow:hidden;
+        }
+        .bento-card:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-2px); }
+        .bento-card.large { grid-column:span 2; }
+        .bento-icon {
+            width:44px; height:44px; border-radius:var(--r-md);
+            display:flex; align-items:center; justify-content:center;
+            font-size:22px; margin-bottom:16px;
+        }
+        .bento-card h3 { font-size:20px; font-weight:600; margin-bottom:8px; }
+        .bento-card p { font-size:14px; color:var(--text-muted); line-height:1.5; }
+        .bento-price { font-size:16px; font-weight:700; margin-top:12px; color:var(--pink); }
+        .bento-card.beauty .bento-price { color:var(--cyan); }
+
+        /* === STATS === */
+        .stats {
+            display:grid; grid-template-columns:repeat(4,1fr);
+            gap:32px; text-align:center;
+            padding:80px 24px;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+        }
+        .stat-num {
+            font-size:56px; font-weight:800;
+            letter-spacing:-0.03em;
+            background:var(--grad-pink);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .stat-label { font-size:15px; color:var(--text-muted); margin-top:4px; }
+
+        /* === HOW IT WORKS === */
+        .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin-top:48px; }
+        .step {
+            text-align:center; padding:32px;
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            position:relative;
+        }
+        .step-num {
+            font-size:14px; font-weight:700;
+            background:var(--grad-pink);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:12px;
+        }
+        .step h3 { font-size:20px; font-weight:600; margin-bottom:8px; }
+        .step p { font-size:14px; color:var(--text-muted); }
+
+        /* === PRICING === */
+        .pricing { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:48px; }
+        .price-card {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            padding:36px;
+            transition:all 0.2s;
+        }
+        .price-card:hover { border-color:var(--border-hover); transform:translateY(-4px); }
+        .price-card.glam { box-shadow:0 0 40px rgba(247,156,224,0.2); }
+        .price-card.beauty { box-shadow:0 0 40px rgba(85,205,255,0.2); }
+        .price-card-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+        .price-card-icon { font-size:32px; }
+        .price-card-name { font-size:20px; font-weight:700; }
+        .price-list { list-style:none; }
+        .price-list li {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:12px 0; border-bottom:1px solid var(--border);
+            font-size:14px;
+        }
+        .price-list li:last-child { border-bottom:none; }
+        .price-list .service-name { color:var(--text-2); }
+        .price-list .service-price { font-weight:600; color:var(--pink); }
+        .price-card.beauty .price-list .service-price { color:var(--cyan); }
+        .price-card-footer { margin-top:24px; }
+
+        /* === CTA === */
+        .cta { position:relative; z-index:1; text-align:center; padding:120px 24px; }
+        .cta-glow {
+            position:absolute; top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            width:700px; height:500px;
+            background:radial-gradient(ellipse, rgba(247,156,224,0.2), transparent 70%);
+            filter:blur(40px); z-index:-1;
+        }
+        .cta h2 {
+            font-size:clamp(32px,5vw,48px);
+            font-weight:700; letter-spacing:-0.03em;
+            margin-bottom:20px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .cta p { color:var(--text-muted); font-size:18px; margin-bottom:36px; max-width:560px; margin-left:auto; margin-right:auto; }
+
+        /* === FOOTER === */
+        .footer { border-top:1px solid var(--border); padding:48px 24px; }
+        .footer-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; }
+        .footer-brand { font-size:16px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        .footer-brand svg { width:24px; height:24px; }
+        .footer p { font-size:13px; color:var(--text-dim); }
+        .footer-col h4 { font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text-2); }
+        .footer-col a { display:block; font-size:13px; color:var(--text-dim); text-decoration:none; margin-bottom:8px; transition:color 0.15s; }
+        .footer-col a:hover { color:var(--text); }
+        .footer-bottom { max-width:1100px; margin:48px auto 0; padding-top:24px; border-top:1px solid var(--border); display:flex; justify-content:space-between; font-size:13px; color:var(--text-dim); flex-wrap:wrap; gap:16px; }
+
+        /* === MOBILE NAV === */
+        .nav-burger { display:none; background:none; border:none; cursor:pointer; color:var(--text); font-size:24px; padding:4px 8px; }
+        .nav-mobile-menu {
+            display:none; position:fixed; top:60px; left:0; right:0;
+            background:rgba(13,14,18,0.95); backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--border);
+            padding:16px 24px; z-index:99;
+            flex-direction:column; gap:4px;
+        }
+        .nav-mobile-menu.open { display:flex; }
+        .nav-mobile-menu a { color:var(--text-2); text-decoration:none; font-size:16px; padding:12px 16px; border-radius:var(--r-md); transition:background 0.15s; }
+        .nav-mobile-menu a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+
+        /* === TABLET (max-width: 1024px) === */
+        @media (max-width:1024px) {
+            .nav-inner { max-width:100%; }
+            .bento { grid-template-columns:repeat(2,1fr); }
+            .bento-card.large { grid-column:span 2; }
+            .bots-grid { grid-template-columns:1fr; }
+        }
+
+        /* === MOBILE (max-width: 768px) === */
+        @media (max-width:768px) {
+            .nav-links { display:none; }
+            .nav-burger { display:block; }
+            .nav-cta .btn-nav { display:none; }
+            .nav-cta .btn-signup { display:none; }
+            .nav-logo { font-size:15px; }
+            .nav-logo svg { width:20px; height:20px; }
+
+            .hero { padding:100px 16px 60px; }
+            .hero h1 { font-size:clamp(32px,9vw,44px); line-height:1.1; }
+            .hero p { font-size:17px; padding:0 8px; }
+            .hero-cta { flex-direction:column; width:100%; max-width:320px; margin:0 auto; }
+            .hero-cta .btn { width:100%; justify-content:center; }
+            .hero-badge { font-size:12px; padding:5px 10px 5px 4px; }
+            .hero-badge .tag { font-size:10px; }
+
+            .bots-section { padding:40px 16px; }
+            .bots-grid { grid-template-columns:1fr; gap:16px; }
+            .bot-card { padding:28px 20px; }
+
+            .mockup-section { padding:60px 16px; }
+            .mockup-label h2 { font-size:26px; }
+            .app-window { transform:none; }
+            .app-window:hover { transform:none; }
+            .app-sidebar { display:none; }
+            .app-main { padding:16px; }
+            .app-msg-bubble { max-width:85%; font-size:13px; }
+            .app-input { font-size:12px; padding:10px 12px; }
+
+            .section { padding:60px 16px; }
+            .section-title { margin-bottom:40px; }
+            .section-title h2 { font-size:26px; }
+            .section-title p { font-size:16px; }
+
+            .bento { grid-template-columns:1fr; gap:12px; }
+            .bento-card { padding:24px; }
+            .bento-card.large { grid-column:span 1; }
+
+            .stats { grid-template-columns:repeat(2,1fr); gap:24px; padding:48px 16px; }
+            .stat-num { font-size:40px; }
+            .stat-label { font-size:13px; }
+
+            .steps { grid-template-columns:1fr; gap:16px; }
+            .step { padding:24px; }
+
+            .pricing { grid-template-columns:1fr; gap:16px; }
+            .price-card { padding:28px 20px; }
+
+            .cta { padding:80px 16px; }
+            .cta h2 { font-size:28px; }
+            .cta p { font-size:16px; }
+            .cta .btn { width:100%; max-width:320px; justify-content:center; font-size:16px; padding:14px 24px; }
+
+            .footer { padding:40px 16px; }
+            .footer-inner { grid-template-columns:1fr; gap:32px; }
+            .footer-bottom { flex-direction:column; text-align:center; gap:8px; }
+        }
+
+        /* === SMALL MOBILE (max-width: 480px) === */
+        @media (max-width:480px) {
+            .hero h1 { font-size:30px; }
+            .hero p { font-size:16px; }
+            .hero-badge { font-size:11px; }
+            .mockup-label h2 { font-size:22px; }
+            .app-titlebar { padding:8px 12px; }
+            .app-url { font-size:11px; padding:3px 10px; }
+            .app-msg-bubble { max-width:90%; font-size:12px; padding:8px 12px; }
+            .app-input { font-size:11px; padding:8px 10px; }
+            .section-title h2 { font-size:24px; }
+            .bento-card { padding:20px; }
+            .bento-card h3 { font-size:18px; }
+            .bento-card p { font-size:13px; }
+            .stats { grid-template-columns:1fr; gap:20px; }
+            .stat-num { font-size:36px; }
+            .price-card { padding:24px 16px; }
+            .cta h2 { font-size:24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- AURORA BG -->
+<div class="aurora"></div>
+<div class="aurora-3"></div>
+<div class="grid-overlay"></div>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M16 2C8 2 2 8 2 16s6 14 14 14 14-6 14-14S24 2 16 2zm0 24c-5.5 0-10-4.5-10-10S10.5 6 16 6s10 4.5 10 10-4.5 10-10 10z" fill="url(#g1)"/><circle cx="16" cy="16" r="4" fill="url(#g1)"/><defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#F79CE0"/><stop offset="1" stop-color="#55CDFF"/></linearGradient></defs></svg>
+            Glam & Beauty
+        </a>
+        <ul class="nav-links">
+            <li><a href="#services">Услуги</a></li>
+            <li><a href="#pricing">Цены</a></li>
+            <li><a href="#how">Запись</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+        <div class="nav-cta">
+            <a href="tg://resolve?domain=nail163_bot" class="btn-signup">💅 Записаться</a>
+            <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
+        </div>
+    </div>
+    <div class="nav-mobile-menu" id="mobileMenu">
+        <a href="#services" onclick="toggleMobileMenu()">Услуги</a>
+        <a href="#pricing" onclick="toggleMobileMenu()">Цены</a>
+        <a href="#how" onclick="toggleMobileMenu()">Запись</a>
+        <a href="#contact" onclick="toggleMobileMenu()">Контакты</a>
+        <a href="tg://resolve?domain=nail163_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">💅 GlamBot — Записаться →</a>
+        <a href="tg://resolve?domain=Nailselegantstudio_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">✨ BeautyBot — Записаться →</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <a href="#services" class="hero-badge">
+        <span class="tag">NEW</span>
+        Запись через Telegram — без звонков и ожидания →
+    </a>
+    <h1>
+        <span class="pink-text">Красота</span> в каждом<br>
+        прикосновении
+    </h1>
+    <p>
+        Студия ногтей и бровей в Сызрани. Маникюр, педикюр, дизайн,
+        брови и ресницы. Запишись через Telegram-бота за 30 секунд.
+    </p>
+    <div class="hero-cta">
+        <a href="tg://resolve?domain=nail163_bot" class="btn btn-primary">💅 GlamBot — Ногти →</a>
+        <a href="tg://resolve?domain=Nailselegantstudio_bot" class="btn btn-cyan">✨ BeautyBot — Брови →</a>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-top:24px">✓ Запись 24/7 &nbsp; ✓ Мастер подберёт время &nbsp; ✓ Напоминания перед визитом</p>
+</section>
+
+<!-- BOT CARDS -->
+<section class="bots-section" id="bots">
+    <div class="section-title">
+        <h2>Два бота — два сервиса</h2>
+        <p>Выбери своего мастера и записывайся в один клик</p>
+    </div>
+    <div class="bots-grid">
+        <div class="bot-card glam">
+            <div class="bot-card-content">
+                <div class="bot-icon">💅</div>
+                <h3>GlamBot — Ногти</h3>
+                <div class="bot-username">@nail163_bot</div>
+                <p>Запись на маникюр, педикюр и дизайн ногтей. Мастера с 5+ лет опыта. Гель-лак, наращивание, artistic-дизайн.</p>
+                <div class="bot-services">
+                    <span>💅 Маникюр</span>
+                    <span>🦶 Педикюр</span>
+                    <span>🎨 Дизайн</span>
+                    <span>💎 Наращивание</span>
+                    <span>⏰ Расписание</span>
+                </div>
+                <a href="tg://resolve?domain=nail163_bot" class="btn btn-primary" style="width:100%;justify-content:center">Открыть GlamBot →</a>
+            </div>
+        </div>
+        <div class="bot-card beauty">
+            <div class="bot-card-content">
+                <div class="bot-icon">✨</div>
+                <h3>BeautyBot — Брови и ресницы</h3>
+                <div class="bot-username">@Nailselegantstudio_bot</div>
+                <p>Брови: архитектура, окрашивание, ламинирование. Ресницы: наращивание, ламинирование, окрашивание. Татуаж.</p>
+                <div class="bot-services">
+                    <span>🎯 Брови</span>
+                    <span>👁️ Ресницы</span>
+                    <span>💄 Татуаж</span>
+                    <span>🎨 Окрашивание</span>
+                    <span>⏰ Запись</span>
+                </div>
+                <a href="tg://resolve?domain=Nailselegantstudio_bot" class="btn btn-cyan" style="width:100%;justify-content:center">Открыть BeautyBot →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- APP MOCKUP -->
+<div class="mockup-section">
+    <div class="mockup-label">
+        <h2>Запись за 30 секунд</h2>
+        <p>Не звони. Не жди. Открой бота — и время твоё.</p>
+    </div>
+    <div class="app-window">
+        <div class="app-titlebar">
+            <div class="app-dot r"></div>
+            <div class="app-dot y"></div>
+            <div class="app-dot g"></div>
+            <div class="app-url">t.me/nail163_bot</div>
+        </div>
+        <div class="app-body">
+            <div class="app-sidebar">
+                <div class="app-sidebar-item active">💅 Запись</div>
+                <div class="app-sidebar-item">📅 Расписание</div>
+                <div class="app-sidebar-item">🎨 Дизайн</div>
+                <div class="app-sidebar-section">УСЛУГИ</div>
+                <div class="app-sidebar-item">💅 Маникюр</div>
+                <div class="app-sidebar-item">🦶 Педикюр</div>
+                <div class="app-sidebar-item">💎 Наращивание</div>
+                <div class="app-sidebar-section">МОЙ АККАУНТ</div>
+                <div class="app-sidebar-item">👤 Мои записи</div>
+                <div class="app-sidebar-item">⭐ Отзывы</div>
+            </div>
+            <div class="app-main">
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        💅 <b>Привет!</b> Я GlamBot. Запишу тебя к мастеру за 30 секунд.<br><br>
+                        Выбери услугу:
+                    </div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">💅 Маникюр + покрытие</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        ✅ Отлично! <b>Маникюр + покрытие гель-лак</b><br>
+                        💰 Цена: 1 500 ₽<br>
+                        ⏱ Занято: ~1.5 часа<br><br>
+                        Выбери дату:
+                    </div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">📅 Завтра, 15:00</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        🎉 <b>Записана!</b><br>
+                        📅 Завтра, 15:00<br>
+                        💅 Маникюр + покрытие<br>
+                        👩 Мастер: Елена<br><br>
+                        📍 ул. Ленина, 42<br>
+                        ⏰ Напомню за час до визита
+                    </div>
+                </div>
+                <div class="app-input">
+                    💬 Выбери услугу или задай вопрос...
+                    <div class="send-btn">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SERVICES BENTO -->
+<section class="section" id="services">
+    <div class="section-title">
+        <h2>Наши услуги</h2>
+        <p>От классического маникюра до авторского дизайна</p>
+    </div>
+    <div class="bento">
+        <div class="bento-card large">
+            <div class="bento-icon" style="background:rgba(247,156,224,0.15)">💅</div>
+            <h3>Маникюр и педикюр</h3>
+            <p>Классика, аппаратный, комбинированный. Гель-лак, покрытие, снятие. Работа с натуральными ногтями и наращивание.</p>
+            <div class="bento-price">от 1 500 ₽</div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(85,205,255,0.15)">🎨</div>
+            <h3>Дизайн ногтей</h3>
+            <p>Авторские рисунки, втирки, стразы, фольга.</p>
+            <div class="bento-price">от 200 ₽/ноготь</div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(255,107,157,0.15)">💎</div>
+            <h3>Наращивание</h3>
+            <p>Гель, акрил, комбинированное. Любая форма и длина.</p>
+            <div class="bento-price">от 2 500 ₽</div>
+        </div>
+        <div class="bento-card large beauty">
+            <div class="bento-icon" style="background:rgba(199,162,255,0.15)">🎯</div>
+            <h3>Брови: архитектура и окрашивание</h3>
+            <p>Подбор формы под овал лица. Окрашивание краской или хной. Ламинирование. Окрашивание в технике microblading.</p>
+            <div class="bento-price">от 800 ₽</div>
+        </div>
+        <div class="bento-card beauty">
+            <div class="bento-icon" style="background:rgba(85,205,255,0.15)">👁️</div>
+            <h3>Ресницы</h3>
+            <p>Наращивание, ламинирование, окрашивание.</p>
+            <div class="bento-price">от 1 200 ₽</div>
+        </div>
+        <div class="bento-card beauty">
+            <div class="bento-icon" style="background:rgba(255,215,0,0.15)">💄</div>
+            <h3>Татуаж</h3>
+            <p>Перманентный макияж. Брови, губы, межресничка.</p>
+            <div class="bento-price">от 3 500 ₽</div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+    <div class="stats">
+        <div><div class="stat-num">500+</div><div class="stat-label">Постоянных клиентов</div></div>
+        <div><div class="stat-num">4.9★</div><div class="stat-label">Средняя оценка</div></div>
+        <div><div class="stat-num">5 лет</div><div class="stat-label">Опыта мастеров</div></div>
+        <div><div class="stat-num">30 сек</div><div class="stat-label">Запись через бот</div></div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+    <div class="section-title">
+        <h2>Как записаться</h2>
+        <p>Три шага — и ты у мастера</p>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">ШАГ 01</div>
+            <h3>📱 Открой бота</h3>
+            <p>Нажми кнопку — Telegram откроется сам. Выбери услугу: маникюр, брови, ресницы.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">ШАГ 02</div>
+            <h3>📅 Выбери время</h3>
+            <p>Бот покажет свободные слоты. Выбери удобную дату и время. Мастер подтвердит.</p>
+        </div>
+        <div class="step">
+            <div class="step-num">ШАГ 03</div>
+            <h3>✨ Приходи</h3>
+            <p>Бот напомнит за час до визита. Приходи — мастер уже ждёт. Красота готова!</p>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+    <div class="section-title">
+        <h2>Прайс-лист</h2>
+        <p>Прозрачные цены. Без сюрпризов.</p>
+    </div>
+    <div class="pricing">
+        <div class="price-card glam">
+            <div class="price-card-header">
+                <span class="price-card-icon">💅</span>
+                <span class="price-card-name">GlamBot — Ногти</span>
+            </div>
+            <ul class="price-list">
+                <li><span class="service-name">Маникюр + покрытие</span><span class="service-price">1 500 ₽</span></li>
+                <li><span class="service-name">Маникюр + снятие + покрытие</span><span class="service-price">1 800 ₽</span></li>
+                <li><span class="service-name">Педикюр + покрытие</span><span class="service-price">2 000 ₽</span></li>
+                <li><span class="service-name">Дизайн (1 ноготь)</span><span class="service-price">200 ₽</span></li>
+                <li><span class="service-name">Наращивание (гель)</span><span class="service-price">2 500 ₽</span></li>
+                <li><span class="service-name">Наращивание (акрил)</span><span class="service-price">2 800 ₽</span></li>
+                <li><span class="service-name">Снятие покрытия</span><span class="service-price">300 ₽</span></li>
+            </ul>
+            <div class="price-card-footer">
+                <a href="tg://resolve?domain=nail163_bot" class="btn btn-primary" style="width:100%;justify-content:center">💅 Записаться →</a>
+            </div>
+        </div>
+        <div class="price-card beauty">
+            <div class="price-card-header">
+                <span class="price-card-icon">✨</span>
+                <span class="price-card-name">BeautyBot — Брови и ресницы</span>
+            </div>
+            <ul class="price-list">
+                <li><span class="service-name">Брови: окрашивание</span><span class="service-price">800 ₽</span></li>
+                <li><span class="service-name">Брови: хна</span><span class="service-price">1 000 ₽</span></li>
+                <li><span class="service-name">Брови: ламинирование</span><span class="service-price">1 500 ₽</span></li>
+                <li><span class="service-name">Ресницы: наращивание</span><span class="service-price">1 200 ₽</span></li>
+                <li><span class="service-name">Ресницы: ламинирование</span><span class="service-price">1 800 ₽</span></li>
+                <li><span class="service-name">Татуаж бровей</span><span class="service-price">3 500 ₽</span></li>
+                <li><span class="service-name">Татуаж губ</span><span class="service-price">4 000 ₽</span></li>
+            </ul>
+            <div class="price-card-footer">
+                <a href="tg://resolve?domain=Nailselegantstudio_bot" class="btn btn-cyan" style="width:100%;justify-content:center">✨ Записаться →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+    <div class="cta-glow"></div>
+    <h2>Красота ждёт тебя</h2>
+    <p>Запишись прямо сейчас — через бота, без звонков и ожидания. 30 секунд и время твоё.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="tg://resolve?domain=nail163_bot" class="btn btn-primary">💅 GlamBot — Ногти →</a>
+        <a href="tg://resolve?domain=Nailselegantstudio_bot" class="btn btn-cyan">✨ BeautyBot — Брови →</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <div class="footer-brand">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M16 2C8 2 2 8 2 16s6 14 14 14 14-6 14-14S24 2 16 2z" fill="url(#g2)"/><circle cx="16" cy="16" r="4" fill="url(#g2)"/><defs><linearGradient id="g2" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#F79CE0"/><stop offset="1" stop-color="#55CDFF"/></linearGradient></defs></svg>
+                Glam & Beauty
+            </div>
+            <p>Студия ногтей и бровей в Сызрани. Запись через Telegram-ботов 24/7.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Боты</h4>
+            <a href="tg://resolve?domain=nail163_bot">💅 GlamBot — Ногти</a>
+            <a href="tg://resolve?domain=Nailselegantstudio_bot">✨ BeautyBot — Брови</a>
+        </div>
+        <div class="footer-col">
+            <h4>Услуги</h4>
+            <a href="#services">Маникюр</a>
+            <a href="#services">Брови</a>
+            <a href="#services">Ресницы</a>
+            <a href="#pricing">Прайс</a>
+        </div>
+        <div class="footer-col">
+            <h4>Контакты</h4>
+            <a href="tg://resolve?domain=nail163_bot">Telegram GlamBot</a>
+            <a href="tg://resolve?domain=Nailselegantstudio_bot">Telegram BeautyBot</a>
+            <a href="#">Сызрань, ул. Ленина 42</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 Glam & Beauty Studio. Сызрань.</span>
+        <span>Запись 24/7 через Telegram 💅✨</span>
+    </div>
+</footer>
+
+<script>
+    function toggleMobileMenu() {
+        document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('mobileMenu');
+        const burger = document.querySelector('.nav-burger');
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !burger.contains(e.target)) {
+            menu.classList.remove('open');
+        }
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            document.getElementById('mobileMenu').classList.remove('open');
+        }
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.bento-card, .step, .price-card, .stat-num, .bot-card, .section-title').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        });
+    });
+</script>
+</body>
+</html>
