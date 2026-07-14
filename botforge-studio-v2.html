@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BotForge Studio — AI-боты под ключ для бизнеса</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* === DESIGN TOKENS (из Vercel) === */
+        :root {
+            --bg: #000000;
+            --bg-elevated: #0A0A0A;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.14);
+            --text: #FAFAFA;
+            --text-2: #DBDBDB;
+            --text-muted: #888888;
+            --text-dim: #666666;
+            --accent: #7928ca;
+            --accent-glow: rgba(121,40,202,0.4);
+
+            /* Vercel multi-color gradient */
+            --grad-rainbow: linear-gradient(to top, #00E5FF 0%, #9500FF 25%, #FF1744 50%, #FFD000 75%, #00FF95 100%);
+            --grad-yellow-blue: linear-gradient(to right, #FFDC30 0%, #38A2FF 100%);
+            --grad-text: linear-gradient(180deg, #fff 0%, #888 100%);
+            --grad-brand: linear-gradient(135deg, #7928ca, #5E6AD2);
+
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+
+            --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-2xl: 16px;
+            --sh-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --sh-md: 0 4px 12px rgba(0,0,0,0.4);
+            --sh-lg: 0 8px 32px rgba(0,0,0,0.5);
+            --sh-glow: 0 0 60px rgba(121,40,202,0.4);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html {
+            scroll-behavior:smooth;
+            overflow-x:hidden;
+            max-width:100%;
+            width:100%;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height:1.6;
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
+            max-width:100%;
+            width:100%;
+            position:relative;
+        }
+
+        /* Force no horizontal scroll on all wrappers */
+        .hero, .mockup-section, .section, .logos, .cta, .footer, .nav {
+            max-width:100%;
+            overflow-x:hidden;
+        }
+
+        /* === AURORA BACKGROUND === */
+        .aurora { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .aurora::before, .aurora::after, .aurora-3 {
+            content:''; position:absolute; border-radius:50%;
+            filter:blur(100px); opacity:0.3;
+        }
+        .aurora::before {
+            top:-100px; left:50%; transform:translateX(-50%);
+            width:700px; height:700px;
+            background:radial-gradient(circle, #7928ca, transparent 70%);
+            animation: drift1 20s ease-in-out infinite;
+        }
+        .aurora::after {
+            top:200px; left:20%;
+            width:500px; height:500px;
+            background:radial-gradient(circle, #38A2FF, transparent 70%);
+            animation: drift2 25s ease-in-out infinite;
+        }
+        .aurora-3 {
+            position:fixed; top:400px; right:10%;
+            width:600px; height:600px;
+            background:radial-gradient(circle, rgba(255,220,48,0.15), transparent 70%);
+            filter:blur(120px); z-index:0; pointer-events:none;
+            animation: drift3 30s ease-in-out infinite;
+            overflow:hidden;
+        }
+        @keyframes drift1 { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-40%) translateY(50px)} }
+        @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,-30px)} }
+        @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-60px,40px)} }
+
+        /* Grid overlay (subtle) */
+        .grid-overlay {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%);
+        }
+
+        /* === NAVBAR === */
+        .nav {
+            position:fixed; top:0; left:0; right:0; z-index:100;
+            background:rgba(0,0,0,0.7);
+            backdrop-filter:blur(20px) saturate(180%);
+            border-bottom:1px solid var(--border);
+            transition:all 0.3s;
+        }
+        .nav-scrolled { background:rgba(0,0,0,0.9); }
+        .nav-inner {
+            max-width:1200px; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:14px 24px; height:60px;
+            overflow:hidden;
+        }
+        .nav-logo { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; letter-spacing:-0.02em; text-decoration:none; color:var(--text); }
+        .nav-logo svg { width:24px; height:24px; }
+        .nav-links { display:flex; gap:4px; align-items:center; list-style:none; }
+        .nav-links a {
+            color:var(--text-muted); text-decoration:none;
+            font-size:14px; font-weight:500; padding:6px 12px;
+            border-radius:var(--r-md); transition:color 0.15s, background 0.15s;
+        }
+        .nav-links a:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+        .nav-cta { display:flex; gap:8px; align-items:center; }
+        .btn-nav { color:var(--text-muted); text-decoration:none; font-size:14px; padding:6px 12px; border-radius:var(--r-md); transition:color 0.15s; }
+        .btn-nav:hover { color:var(--text); }
+        .btn-signup {
+            background:var(--text); color:var(--bg);
+            padding:8px 16px; border-radius:var(--r-md);
+            font-size:14px; font-weight:600; text-decoration:none;
+            transition:opacity 0.15s, box-shadow 0.2s;
+        }
+        .btn-signup:hover { opacity:0.9; box-shadow:var(--sh-glow); }
+
+        /* === HERO === */
+        .hero {
+            position:relative; z-index:1;
+            padding:140px 24px 80px; text-align:center;
+            max-width:900px; margin:0 auto;
+            width:100%;
+        }
+        .hero-badge {
+            display:inline-flex; align-items:center; gap:8px;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:6px 14px 6px 6px; border-radius:20px;
+            font-size:13px; color:var(--text-2);
+            margin-bottom:32px;
+            transition:border-color 0.2s;
+            text-decoration:none;
+        }
+        .hero-badge:hover { border-color:var(--border-hover); }
+        .hero-badge .tag {
+            background:var(--grad-rainbow); color:#000;
+            padding:2px 8px; border-radius:16px;
+            font-size:11px; font-weight:700;
+        }
+        .hero h1 {
+            font-size:clamp(44px, 7vw, 80px);
+            font-weight:800; letter-spacing:-0.04em;
+            line-height:1.05; margin-bottom:24px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .hero h1 .rainbow-text {
+            background:var(--grad-rainbow);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+        }
+        .hero p {
+            font-size:20px; color:var(--text-muted);
+            max-width:580px; margin:0 auto 40px;
+            line-height:1.4;
+        }
+        .hero-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        .btn {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:12px 24px; border-radius:var(--r-md);
+            font-size:15px; font-weight:600; text-decoration:none;
+            border:none; cursor:pointer; transition:all 0.15s;
+            font-family:var(--font);
+        }
+        .btn-primary {
+            background:var(--text); color:var(--bg);
+        }
+        .btn-primary:hover { box-shadow:var(--sh-glow); transform:translateY(-1px); }
+        .btn-ghost {
+            background:rgba(255,255,255,0.05); color:var(--text);
+            border:1px solid var(--border);
+        }
+        .btn-ghost:hover { background:rgba(255,255,255,0.08); border-color:var(--border-hover); }
+
+        /* === CLIENT LOGOS === */
+        .logos {
+            position:relative; z-index:1;
+            padding:40px 24px;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+            background:rgba(255,255,255,0.01);
+        }
+        .logos-inner { max-width:1100px; margin:0 auto; }
+        .logos-label {
+            text-align:center; font-size:12px; font-weight:600;
+            color:var(--text-dim); letter-spacing:0.1em;
+            text-transform:uppercase; margin-bottom:24px;
+        }
+        .logos-row {
+            display:flex; justify-content:space-around; align-items:center;
+            gap:32px; flex-wrap:wrap; opacity:0.6;
+        }
+        .logos-row span { font-size:18px; font-weight:700; color:var(--text-2); letter-spacing:-0.02em; }
+
+        /* === APP MOCKUP === */
+        .mockup-section {
+            position:relative; z-index:1;
+            max-width:1100px; margin:0 auto;
+            padding:100px 24px;
+            width:100%;
+        }
+        .mockup-label {
+            text-align:center; margin-bottom:40px;
+        }
+        .mockup-label h2 {
+            font-size:clamp(28px, 4vw, 40px);
+            font-weight:700; letter-spacing:-0.03em;
+            margin-bottom:12px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .mockup-label p { color:var(--text-muted); font-size:18px; }
+        .app-window {
+            background:var(--bg-elevated);
+            border:1px solid var(--border);
+            border-radius:var(--r-2xl);
+            overflow:hidden;
+            box-shadow:var(--sh-lg), 0 0 100px rgba(121,40,202,0.15);
+            transform:perspective(2000px) rotateX(3deg);
+            transition:transform 0.5s ease;
+            max-width:100%;
+        }
+        .app-window:hover { transform:perspective(2000px) rotateX(0deg); }
+        .app-titlebar {
+            display:flex; align-items:center; gap:8px;
+            padding:10px 16px;
+            border-bottom:1px solid var(--border);
+            background:rgba(255,255,255,0.02);
+        }
+        .app-dot { width:12px; height:12px; border-radius:50%; }
+        .app-dot.r { background:#FF5F57; }
+        .app-dot.y { background:#FEBC2E; }
+        .app-dot.g { background:#28C840; }
+        .app-url {
+            margin:0 auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-md);
+            padding:4px 14px; font-size:12px;
+            color:var(--text-muted);
+            font-family:var(--font-mono);
+        }
+        .app-body { display:flex; min-height:420px; overflow:hidden; }
+        .app-sidebar {
+            width:220px; border-right:1px solid var(--border);
+            padding:16px 8px;
+            background:rgba(0,0,0,0.3);
+            flex-shrink:0;
+        }
+        .app-sidebar-item {
+            display:flex; align-items:center; gap:10px;
+            padding:8px 12px; border-radius:var(--r-sm);
+            font-size:13px; color:var(--text-muted);
+            margin-bottom:2px;
+        }
+        .app-sidebar-item.active { background:rgba(121,40,202,0.15); color:var(--text); }
+        .app-sidebar-section {
+            font-size:10px; color:var(--text-dim);
+            text-transform:uppercase; letter-spacing:0.1em;
+            padding:16px 12px 6px;
+        }
+        .app-main { flex:1; padding:24px; display:flex; flex-direction:column; gap:16px; overflow:hidden; min-width:0; }
+        .app-chat-msg {
+            display:flex; gap:10px; align-items:flex-start;
+            max-width:100%;
+        }
+        .app-avatar {
+            width:32px; height:32px; border-radius:50%;
+            flex-shrink:0;
+        }
+        .app-avatar.bot { background:var(--grad-rainbow); }
+        .app-avatar.user { background:var(--grad-yellow-blue); }
+        .app-msg-bubble {
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:10px 14px; border-radius:var(--r-lg);
+            font-size:14px; color:var(--text-2);
+            max-width:70%;
+            word-break:break-word;
+            overflow-wrap:break-word;
+        }
+        .app-msg-bubble.bot {
+            background:rgba(121,40,202,0.08);
+            border-color:rgba(121,40,202,0.2);
+        }
+        .app-input {
+            margin-top:auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-lg);
+            padding:12px 16px;
+            font-size:14px; color:var(--text-dim);
+            display:flex; align-items:center; gap:8px;
+        }
+        .app-input .send-btn {
+            margin-left:auto;
+            background:var(--grad-rainbow);
+            width:28px; height:28px; border-radius:var(--r-sm);
+            display:flex; align-items:center; justify-content:center;
+            font-size:14px;
+        }
+
+        /* === SECTIONS === */
+        .section { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:100px 24px; width:100%; }
+        .section-title { text-align:center; margin-bottom:60px; }
+        .section-title h2 {
+            font-size:clamp(32px, 5vw, 52px);
+            font-weight:700; letter-spacing:-0.03em;
+            line-height:1.1; margin-bottom:16px;
+            max-width:760px; margin:0 auto 16px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .section-title p {
+            font-size:18px; color:var(--text-muted);
+            max-width:560px; margin:0 auto;
+        }
+
+        /* === BENTO GRID === */
+        .bento {
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:16px;
+        }
+        .bento-card {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            padding:32px;
+            transition:all 0.2s;
+            position:relative; overflow:hidden;
+        }
+        .bento-card::before {
+            content:''; position:absolute; inset:0;
+            background:var(--grad-rainbow);
+            opacity:0; transition:opacity 0.3s;
+            z-index:-1;
+        }
+        .bento-card:hover {
+            background:var(--bg-card-hover);
+            border-color:var(--border-hover);
+            transform:translateY(-2px);
+        }
+        .bento-card.large { grid-column:span 2; }
+        .bento-icon {
+            width:44px; height:44px; border-radius:var(--r-md);
+            display:flex; align-items:center; justify-content:center;
+            font-size:22px; margin-bottom:16px;
+        }
+        .bento-card h3 { font-size:20px; font-weight:600; margin-bottom:8px; letter-spacing:-0.01em; }
+        .bento-card p { font-size:14px; color:var(--text-muted); line-height:1.5; }
+        .bento-visual {
+            margin-top:20px; padding:16px;
+            background:rgba(0,0,0,0.4);
+            border:1px solid var(--border);
+            border-radius:var(--r-md);
+            font-family:var(--font-mono); font-size:12px;
+            color:var(--text-muted);
+            overflow:hidden;
+            word-break:break-word;
+        }
+
+        /* === STATS === */
+        .stats {
+            display:grid; grid-template-columns:repeat(4,1fr);
+            gap:32px; text-align:center;
+            padding:80px 24px;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+        }
+        .stat-num {
+            font-size:56px; font-weight:800;
+            letter-spacing:-0.03em;
+            background:var(--grad-rainbow);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .stat-label { font-size:15px; color:var(--text-muted); margin-top:4px; }
+
+        /* === HOW IT WORKS === */
+        .steps {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:32px; margin-top:48px;
+        }
+        .step {
+            text-align:center; padding:32px;
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            position:relative;
+        }
+        .step-num {
+            font-size:14px; font-weight:700;
+            background:var(--grad-rainbow);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            margin-bottom:12px;
+        }
+        .step h3 { font-size:20px; font-weight:600; margin-bottom:8px; }
+        .step p { font-size:14px; color:var(--text-muted); }
+
+        /* === PRICING === */
+        .pricing {
+            display:grid; grid-template-columns:repeat(3,1fr);
+            gap:24px; margin-top:48px;
+        }
+        .price-card {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            padding:36px;
+            text-align:center;
+            transition:all 0.2s;
+            position:relative;
+        }
+        .price-card:hover { border-color:var(--border-hover); transform:translateY(-4px); }
+        .price-card.featured {
+            border-color:rgba(121,40,202,0.4);
+            box-shadow:var(--sh-glow);
+        }
+        .price-card.featured::before {
+            content:'ПОПУЛЯРНЫЙ';
+            position:absolute; top:-12px; left:50%;
+            transform:translateX(-50%);
+            background:var(--grad-rainbow); color:#000;
+            padding:4px 12px; border-radius:16px;
+            font-size:11px; font-weight:700;
+        }
+        .price-name { font-size:16px; font-weight:700; margin-bottom:8px; }
+        .price-amount {
+            font-size:48px; font-weight:800;
+            letter-spacing:-0.03em; margin:12px 0;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .price-amount .currency { font-size:24px; font-weight:600; color:var(--text-muted); }
+        .price-desc { font-size:14px; color:var(--text-muted); margin-bottom:24px; }
+        .price-features { list-style:none; text-align:left; margin-bottom:28px; }
+        .price-features li {
+            font-size:14px; color:var(--text-2);
+            padding:8px 0; padding-left:28px;
+            position:relative;
+        }
+        .price-features li::before {
+            content:'✓'; position:absolute; left:0;
+            color:#00FF95; font-weight:700;
+        }
+
+        /* === CTA === */
+        .cta {
+            position:relative; z-index:1;
+            text-align:center; padding:140px 24px;
+        }
+        .cta-glow {
+            position:absolute; top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            width:700px; height:500px;
+            background:radial-gradient(ellipse, rgba(121,40,202,0.2), transparent 70%);
+            filter:blur(40px); z-index:-1;
+        }
+        .cta h2 {
+            font-size:clamp(32px,5vw,52px);
+            font-weight:700; letter-spacing:-0.03em;
+            margin-bottom:20px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .cta p { color:var(--text-muted); font-size:18px; margin-bottom:36px; max-width:560px; margin-left:auto; margin-right:auto; }
+
+        /* === FOOTER === */
+        .footer {
+            border-top:1px solid var(--border);
+            padding:48px 24px;
+        }
+        .footer-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:48px; }
+        .footer-brand { font-size:16px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        .footer-brand svg { width:24px; height:24px; }
+        .footer p { font-size:13px; color:var(--text-dim); }
+        .footer-col h4 { font-size:13px; font-weight:600; margin-bottom:12px; color:var(--text-2); }
+        .footer-col a { display:block; font-size:13px; color:var(--text-dim); text-decoration:none; margin-bottom:8px; transition:color 0.15s; }
+        .footer-col a:hover { color:var(--text); }
+        .footer-bottom { max-width:1100px; margin:48px auto 0; padding-top:24px; border-top:1px solid var(--border); display:flex; justify-content:space-between; font-size:13px; color:var(--text-dim); flex-wrap:wrap; gap:16px; }
+
+        /* === MOBILE NAV (burger) === */
+        .nav-burger {
+            display:none;
+            background:none; border:none; cursor:pointer;
+            color:var(--text); font-size:24px; padding:4px 8px;
+        }
+        .nav-mobile-menu {
+            display:none;
+            position:fixed; top:60px; left:0; right:0;
+            background:rgba(0,0,0,0.95);
+            backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--border);
+            padding:16px 24px;
+            z-index:99;
+            flex-direction:column;
+            gap:4px;
+        }
+        .nav-mobile-menu.open { display:flex; }
+        .nav-mobile-menu a {
+            color:var(--text-2); text-decoration:none;
+            font-size:16px; padding:12px 16px;
+            border-radius:var(--r-md);
+            transition:background 0.15s;
+        }
+        .nav-mobile-menu a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+
+        /* === TABLET (max-width: 1024px) === */
+        @media (max-width:1024px) {
+            .nav-inner { max-width:100%; }
+            .bento { grid-template-columns:repeat(2, 1fr); }
+            .bento-card.large { grid-column:span 2; }
+            .mockup-section, .section { max-width:100%; }
+            .logos-row { gap:20px; }
+        }
+
+        /* === MOBILE (max-width: 768px) === */
+        @media (max-width:768px) {
+            .nav-links { display:none; }
+            .nav-burger { display:block; }
+            .nav-cta .btn-nav { display:none; }
+            .nav-cta .btn-signup { display:none; }
+            .nav-logo { font-size:15px; }
+            .nav-logo svg { width:20px; height:20px; }
+
+            .hero { padding:100px 16px 60px; }
+            .hero h1 { font-size:clamp(32px, 9vw, 44px); line-height:1.1; }
+            .hero p { font-size:17px; padding:0 8px; }
+            .hero-cta { flex-direction:column; width:100%; max-width:320px; margin:0 auto; }
+            .hero-cta .btn { width:100%; justify-content:center; }
+            .hero-badge { font-size:12px; padding:5px 10px 5px 4px; }
+            .hero-badge .tag { font-size:10px; }
+
+            .logos { padding:32px 16px; }
+            .logos-row { flex-wrap:wrap; justify-content:center; gap:16px; }
+            .logos-row span { font-size:15px; }
+
+            .mockup-section { padding:60px 16px; }
+            .mockup-label h2 { font-size:26px; }
+            .app-window { transform:none; }
+            .app-window:hover { transform:none; }
+            .app-sidebar { display:none; }
+            .app-main { padding:16px; }
+            .app-msg-bubble { max-width:85%; font-size:13px; }
+            .app-input { font-size:12px; padding:10px 12px; }
+
+            .section { padding:60px 16px; }
+            .section-title { margin-bottom:40px; }
+            .section-title h2 { font-size:26px; }
+            .section-title p { font-size:16px; }
+
+            .bento { grid-template-columns:1fr; gap:12px; }
+            .bento-card { padding:24px; }
+            .bento-card.large { grid-column:span 1; }
+            .bento-visual { font-size:11px; padding:12px; }
+
+            .stats { grid-template-columns:repeat(2,1fr); gap:24px; padding:48px 16px; }
+            .stat-num { font-size:40px; }
+            .stat-label { font-size:13px; }
+
+            .steps { grid-template-columns:1fr; gap:16px; }
+            .step { padding:24px; }
+
+            .pricing { grid-template-columns:1fr; gap:16px; }
+            .price-card { padding:28px 20px; }
+            .price-card.featured { box-shadow:0 0 40px rgba(121,40,202,0.3); }
+            .price-amount { font-size:40px; }
+            .price-features li { font-size:13px; }
+
+            .cta { padding:80px 16px; }
+            .cta h2 { font-size:28px; }
+            .cta p { font-size:16px; }
+            .cta .btn { width:100%; max-width:320px; justify-content:center; font-size:16px; padding:14px 24px; }
+
+            .footer { padding:40px 16px; }
+            .footer-inner { grid-template-columns:1fr; gap:32px; }
+            .footer-bottom { flex-direction:column; text-align:center; gap:8px; }
+        }
+
+        /* === SMALL MOBILE (max-width: 480px) === */
+        @media (max-width:480px) {
+            .hero h1 { font-size:30px; }
+            .hero p { font-size:16px; }
+            .hero-badge { font-size:11px; }
+
+            .logos-row span { font-size:14px; }
+
+            .mockup-label h2 { font-size:22px; }
+            .app-titlebar { padding:8px 12px; }
+            .app-url { font-size:11px; padding:3px 10px; }
+            .app-msg-bubble { max-width:90%; font-size:12px; padding:8px 12px; }
+            .app-input { font-size:11px; padding:8px 10px; }
+
+            .section-title h2 { font-size:24px; }
+            .bento-card { padding:20px; }
+            .bento-card h3 { font-size:18px; }
+            .bento-card p { font-size:13px; }
+
+            .stats { grid-template-columns:1fr; gap:20px; }
+            .stat-num { font-size:36px; }
+
+            .price-card { padding:24px 16px; }
+            .price-amount { font-size:36px; }
+            .price-name { font-size:14px; }
+
+            .cta h2 { font-size:24px; }
+        }
+
+        /* === ANIMATED GRADIENT MESH === */
+        .mesh-bg {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            background:
+                radial-gradient(at 20% 30%, rgba(121,40,202,0.12) 0%, transparent 50%),
+                radial-gradient(at 80% 20%, rgba(56,162,255,0.10) 0%, transparent 50%),
+                radial-gradient(at 40% 80%, rgba(255,220,48,0.06) 0%, transparent 50%),
+                radial-gradient(at 70% 60%, rgba(0,255,149,0.06) 0%, transparent 50%);
+            background-size:200% 200%;
+            animation:meshMove 20s ease-in-out infinite;
+            overflow:hidden;
+        }
+        @keyframes meshMove {
+            0%,100% { background-position:0% 0%, 100% 0%, 0% 100%, 100% 100%; }
+            50% { background-position:100% 100%, 0% 100%, 100% 0%, 0% 0%; }
+        }
+
+        /* === PULSING GRID === */
+        .grid-pulse {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            background-image:
+                linear-gradient(rgba(121,40,202,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(121,40,202,0.04) 1px, transparent 1px);
+            background-size:60px 60px;
+            mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 80%);
+            -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%, #000 20%, transparent 80%);
+            animation:gridPulse 8s ease-in-out infinite;
+            overflow:hidden;
+        }
+        @keyframes gridPulse {
+            0%,100% { opacity:0.3; }
+            50% { opacity:0.7; }
+        }
+
+        /* === FLOATING ORBS === */
+        .orb {
+            position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+            filter:blur(60px); overflow:hidden;
+        }
+        .orb-1 {
+            top:10%; left:5%; width:300px; height:300px;
+            background:radial-gradient(circle, #7928ca, transparent 70%);
+            opacity:0.25;
+            animation:orbFloat1 15s ease-in-out infinite;
+        }
+        .orb-2 {
+            top:60%; left:80%; width:250px; height:250px;
+            background:radial-gradient(circle, #38A2FF, transparent 70%);
+            opacity:0.22;
+            animation:orbFloat2 18s ease-in-out infinite;
+        }
+        .orb-3 {
+            top:30%; left:60%; width:200px; height:200px;
+            background:radial-gradient(circle, #FF1744, transparent 70%);
+            opacity:0.15;
+            animation:orbFloat3 12s ease-in-out infinite;
+        }
+        .orb-4 {
+            top:80%; left:30%; width:350px; height:350px;
+            background:radial-gradient(circle, #00FF95, transparent 70%);
+            opacity:0.12;
+            animation:orbFloat4 22s ease-in-out infinite;
+        }
+        .orb-5 {
+            top:5%; left:70%; width:180px; height:180px;
+            background:radial-gradient(circle, #FFD000, transparent 70%);
+            opacity:0.15;
+            animation:orbFloat5 16s ease-in-out infinite;
+        }
+        @keyframes orbFloat1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-30px)} }
+        @keyframes orbFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,20px)} }
+        @keyframes orbFloat3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,40px)} }
+        @keyframes orbFloat4 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,-30px)} }
+        @keyframes orbFloat5 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,50px)} }
+
+        /* === STARS / PARTICLES (CSS-only box-shadow) === */
+        .stars {
+            position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+        }
+        .stars::before, .stars::after {
+            content:''; position:absolute; width:2px; height:2px;
+            background:transparent; border-radius:50%;
+        }
+        .stars::before {
+            box-shadow:
+                50px 80px #fff, 120px 200px rgba(255,255,255,0.6),
+                200px 50px rgba(121,40,202,0.8), 300px 150px rgba(255,255,255,0.5),
+                400px 90px #fff, 500px 220px rgba(56,162,255,0.7),
+                600px 30px rgba(255,255,255,0.4), 700px 180px #fff,
+                800px 110px rgba(255,220,48,0.6), 900px 60px rgba(255,255,255,0.5),
+                100px 350px rgba(121,40,202,0.5), 250px 400px #fff,
+                400px 320px rgba(255,255,255,0.6), 550px 380px rgba(56,162,255,0.5),
+                700px 300px rgba(255,255,255,0.4), 850px 420px #fff,
+                150px 500px rgba(255,255,255,0.3), 350px 580px rgba(121,40,202,0.6),
+                500px 500px #fff, 650px 550px rgba(255,255,255,0.4),
+                800px 520px rgba(56,162,255,0.5), 50px 650px rgba(255,255,255,0.3),
+                200px 700px #fff, 400px 680px rgba(255,220,48,0.5),
+                600px 720px rgba(255,255,255,0.4), 800px 660px rgba(121,40,202,0.5),
+                300px 80px rgba(255,255,255,0.7), 450px 130px rgba(121,40,202,0.6),
+                550px 280px #fff, 680px 230px rgba(56,162,255,0.6),
+                750px 400px rgba(255,255,255,0.5), 880px 350px #fff;
+            animation:twinkle 4s ease-in-out infinite alternate;
+        }
+        .stars::after {
+            box-shadow:
+                180px 120px rgba(255,255,255,0.5), 320px 250px #fff,
+                470px 180px rgba(121,40,202,0.6), 620px 100px rgba(255,255,255,0.4),
+                770px 220px rgba(56,162,255,0.5), 890px 160px #fff,
+                130px 300px rgba(255,220,48,0.4), 290px 450px rgba(255,255,255,0.6),
+                440px 380px #fff, 590px 480px rgba(121,40,202,0.5),
+                740px 350px rgba(255,255,255,0.3), 860px 500px #fff,
+                80px 600px rgba(255,255,255,0.4), 230px 620px rgba(56,162,255,0.5),
+                380px 550px #fff, 530px 670px rgba(255,255,255,0.3),
+                680px 610px rgba(121,40,202,0.4), 830px 580px rgba(255,255,255,0.5);
+            animation:twinkle 6s ease-in-out infinite alternate-reverse;
+            animation-delay:2s;
+        }
+        @keyframes twinkle {
+            0% { opacity:0.3; }
+            100% { opacity:0.9; }
+        }
+
+        /* === NOISE TEXTURE OVERLAY === */
+        .noise-overlay {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            opacity:0.03; mix-blend-mode:overlay;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            overflow:hidden;
+        }
+
+        /* === LIGHT RAYS / BEAMS === */
+        .light-rays {
+            position:fixed; inset:0; z-index:0; pointer-events:none;
+            overflow:hidden; opacity:0.5;
+        }
+        .ray {
+            position:absolute; top:-50%; width:2px; height:200%;
+            background:linear-gradient(to bottom, transparent, rgba(121,40,202,0.15), transparent);
+            filter:blur(1px);
+            transform-origin:top center;
+        }
+        .ray-1 { left:15%; transform:rotate(15deg); animation:rayPulse 7s ease-in-out infinite; }
+        .ray-2 { left:35%; transform:rotate(-10deg); animation:rayPulse 9s ease-in-out infinite 1s; }
+        .ray-3 { left:55%; transform:rotate(20deg); animation:rayPulse 8s ease-in-out infinite 2s; background:linear-gradient(to bottom, transparent, rgba(56,162,255,0.12), transparent); }
+        .ray-4 { left:75%; transform:rotate(-15deg); animation:rayPulse 10s ease-in-out infinite 0.5s; }
+        .ray-5 { left:90%; transform:rotate(8deg); animation:rayPulse 6s ease-in-out infinite 1.5s; background:linear-gradient(to bottom, transparent, rgba(255,220,48,0.10), transparent); }
+        @keyframes rayPulse {
+            0%,100% { opacity:0.2; width:2px; }
+            50% { opacity:0.8; width:3px; }
+        }
+
+        /* === ADDITIONAL ANIMATED BLOBS === */
+        .blob-extra {
+            position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+            filter:blur(80px); overflow:hidden;
+        }
+        .blob-extra-1 {
+            bottom:10%; right:15%; width:400px; height:400px;
+            background:radial-gradient(circle, rgba(149,0,255,0.2), transparent 70%);
+            animation:blobDrift1 14s ease-in-out infinite;
+        }
+        .blob-extra-2 {
+            top:50%; left:10%; width:350px; height:350px;
+            background:radial-gradient(circle, rgba(0,229,255,0.15), transparent 70%);
+            animation:blobDrift2 16s ease-in-out infinite;
+        }
+        .blob-extra-3 {
+            top:20%; right:30%; width:280px; height:280px;
+            background:radial-gradient(circle, rgba(255,23,68,0.12), transparent 70%);
+            animation:blobDrift3 18s ease-in-out infinite;
+        }
+        @keyframes blobDrift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-60px,-40px) scale(1.1)} }
+        @keyframes blobDrift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(70px,30px) scale(0.9)} }
+        @keyframes blobDrift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-50px) scale(1.15)} }
+
+        /* === REDUCE HEAVY EFFECTS ON MOBILE === */
+        @media (max-width:768px) {
+            .stars, .light-rays, .noise-overlay, .blob-extra { opacity:0.5; }
+            .orb { width:200px !important; height:200px !important; }
+            .mesh-bg { animation-duration:30s; }
+        }
+        @media (max-width:480px) {
+            .stars, .light-rays, .noise-overlay, .blob-extra { opacity:0.3; }
+            .orb { width:150px !important; height:150px !important; }
+        }
+        ::-webkit-scrollbar { width:8px; }
+        ::-webkit-scrollbar-track { background:transparent; }
+        ::-webkit-scrollbar-thumb { background:rgba(121,40,202,0.5); border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background:rgba(121,40,202,0.8); }
+        * { scrollbar-width:thin; scrollbar-color:rgba(121,40,202,0.5) transparent; }
+
+        /* === SHEEN-RETURN (блик на hover кнопок и pills) === */
+        .btn, .btn-primary, .btn-ghost, .btn-signup, .nav-links a, .hero-badge {
+            position:relative; overflow:hidden;
+            -webkit-mask-image:linear-gradient(#fff 0 0);
+        }
+        .btn::before, .btn-primary::before, .btn-ghost::before,
+        .btn-signup::before, .nav-links a::before, .hero-badge::before {
+            content:''; position:absolute; top:0; left:-150%;
+            width:100%; height:100%;
+            background:linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+            transform:skewX(-18deg);
+            pointer-events:none;
+            transition:none;
+        }
+        .btn:hover::before, .btn-primary:hover::before, .btn-ghost:hover::before,
+        .btn-signup:hover::before, .nav-links a:hover::before, .hero-badge:hover::before {
+            animation:sheen-return 0.6s ease;
+        }
+        @keyframes sheen-return {
+            0%   { left:-150%; }
+            100% { left:150%; }
+        }
+
+        /* === prefers-reduced-motion: отключаем ВСЕ анимации === */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration:0.001ms !important;
+                animation-iteration-count:1 !important;
+                transition-duration:0.001ms !important;
+                scroll-behavior:auto !important;
+            }
+            .aurora::before, .aurora::after, .aurora-3,
+            .mesh-bg, .grid-pulse,
+            .orb-1, .orb-2, .orb-3, .orb-4, .orb-5,
+            .stars::before, .stars::after,
+            .noise-overlay,
+            .ray-1, .ray-2, .ray-3, .ray-4, .ray-5,
+            .blob-extra-1, .blob-extra-2, .blob-extra-3 {
+                animation:none !important;
+            }
+            .btn::before, .btn-primary::before, .btn-ghost::before,
+            .btn-signup::before, .nav-links a::before, .hero-badge::before {
+                animation:none !important;
+                display:none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND LAYERS -->
+<div class="mesh-bg"></div>
+<div class="aurora"></div>
+<div class="aurora-3"></div>
+<div class="grid-overlay"></div>
+<div class="grid-pulse"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+<div class="orb orb-4"></div>
+<div class="orb orb-5"></div>
+<div class="blob-extra blob-extra-1"></div>
+<div class="blob-extra blob-extra-2"></div>
+<div class="blob-extra blob-extra-3"></div>
+<div class="stars"></div>
+<div class="light-rays">
+    <div class="ray ray-1"></div>
+    <div class="ray ray-2"></div>
+    <div class="ray ray-3"></div>
+    <div class="ray ray-4"></div>
+    <div class="ray ray-5"></div>
+</div>
+<div class="noise-overlay"></div>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 76 65" fill="none"><path d="M37.527 0L75.054 65H0L37.527 0z" fill="url(#g1)"/><defs><linearGradient id="g1" x1="0" y1="0" x2="75" y2="65" gradientUnits="userSpaceOnUse"><stop stop-color="#00E5FF"/><stop offset=".25" stop-color="#9500FF"/><stop offset=".5" stop-color="#FF1744"/><stop offset=".75" stop-color="#FFD000"/><stop offset="1" stop-color="#00FF95"/></linearGradient></defs></svg>
+            BotForge Studio
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Возможности</a></li>
+            <li><a href="#how">Как работаем</a></li>
+            <li><a href="#pricing">Цены</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+        <div class="nav-cta">
+            <a href="#" class="btn-nav">Войти</a>
+            <a href="#contact" class="btn-signup">Заказать бота</a>
+            <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
+        </div>
+    </div>
+    <div class="nav-mobile-menu" id="mobileMenu">
+        <a href="#features" onclick="toggleMobileMenu()">Возможности</a>
+        <a href="#how" onclick="toggleMobileMenu()">Как работаем</a>
+        <a href="#pricing" onclick="toggleMobileMenu()">Цены</a>
+        <a href="#contact" onclick="toggleMobileMenu()">Контакты</a>
+        <a href="#contact" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">Заказать бота →</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <a href="#how" class="hero-badge">
+        <span class="tag">NEW</span>
+        AI-боты с голосом и распознаванием чеков →
+    </a>
+    <h1>
+        <span class="rainbow-text">AI-боты</span> под ключ<br>
+        для вашего бизнеса
+    </h1>
+    <p>
+        Разработка Telegram-ботов под ключ: голосовые сообщения, распознавание чеков,
+        AI-консультант и дашборд управления. От идеи до запуска — за 7 дней.
+    </p>
+    <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Заказать бота →</a>
+        <a href="#features" class="btn btn-ghost">Смотреть демо</a>
+    </div>
+    <p style="font-size:13px;color:var(--text-dim);margin-top:24px">✓ Без предоплаты на консультации &nbsp; ✓ Docker + свой сервер &nbsp; ✓ Поддержка 24/7</p>
+</section>
+
+<!-- CLIENT LOGOS -->
+<section class="logos" id="proof">
+    <div class="logos-inner">
+        <div class="logos-label">Боты, которые уже работают в бизнесе</div>
+        <div class="logos-row">
+            <span>💰 FinBot</span>
+            <span>🛒 DealBot63</span>
+            <span>💅 GlamBot</span>
+            <span>💄 BeautyBot</span>
+            <span>🤖 DebiHackBot</span>
+            <span>📊 BotForge</span>
+        </div>
+        <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:20px">5 действующих ботов · 10 000+ обработанных команд · Реальный бизнес — реальные результаты</p>
+    </div>
+</section>
+
+<!-- APP MOCKUP -->
+<div class="mockup-section">
+    <div class="mockup-label">
+        <h2>Бот, который реально работает</h2>
+        <p>Не просто болталка. Реальный бизнес-инструмент.</p>
+    </div>
+    <div class="app-window">
+        <div class="app-titlebar">
+            <div class="app-dot r"></div>
+            <div class="app-dot y"></div>
+            <div class="app-dot g"></div>
+            <div class="app-url">t.me/finpro63_bot</div>
+        </div>
+        <div class="app-body">
+            <div class="app-sidebar">
+                <div class="app-sidebar-item active">💬 Финансист</div>
+                <div class="app-sidebar-item">📊 Статистика</div>
+                <div class="app-sidebar-item">📋 История</div>
+                <div class="app-sidebar-section">ВВОД</div>
+                <div class="app-sidebar-item">🎤 Голосом</div>
+                <div class="app-sidebar-item">📸 Фото чека</div>
+                <div class="app-sidebar-item">⌨️ Текстом</div>
+                <div class="app-sidebar-section">ДОХОД</div>
+                <div class="app-sidebar-item">💰 Добавить</div>
+                <div class="app-sidebar-section">ЭКСПОРТ</div>
+                <div class="app-sidebar-item">📁 Выгрузить</div>
+            </div>
+            <div class="app-main">
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">Кофе 250 руб</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        ✅ <b>Кофе</b> — 250 ₽<br>
+                        📁 Категория: 🍔 Еда<br>
+                        📅 Сегодня<br>
+                        💡 До конца месяца осталось 12 000 ₽
+                    </div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">📸 [фото чека с АЗС]</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        ✅ <b>Газомоторное топливо</b> — 1266.51 ₽<br>
+                        🏪 АГНКС-1 г. Сызрань<br>
+                        📁 Категория: 🚗 Транспорт<br>
+                        📦 1 товар в чеке
+                    </div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">🎤 «Сколько я потратил на еду в этом месяце?»</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        📊 За июнь: <b>23 500 ₽</b> из 30 000 ₽<br>
+                        78% лимита. Всё под контролем.
+                    </div>
+                </div>
+                <div class="app-input">
+                    💬 Напишите расход, пришлите чек или скажите голосом...
+                    <div class="send-btn">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES BENTO -->
+<section class="section" id="features">
+    <div class="section-title">
+        <h2>Всё, что нужно для бизнеса</h2>
+        <p>Полный стек технологий — от распознавания голоса до аналитики</p>
+    </div>
+    <div class="bento">
+        <div class="bento-card large">
+            <div class="bento-icon" style="background:rgba(121,40,202,0.15)">🤖</div>
+            <h3>Кастомные AI-боты под ключ</h3>
+            <p>Разрабатываем ботов под ваш бизнес: финансы, запись, продажи, аналитика, поддержка. AI-промпт настраивается под вашу нишу — бот общается как живой сотрудник, а не шаблонная бот-болталка.</p>
+            <div class="bento-visual">
+                <span style="color:#00FF95">●</span> AI-промпт из БД · <span style="color:#7928ca">glm-5.2</span> · OmniRoute
+            </div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(0,229,255,0.15)">🎤</div>
+            <h3>Голосовое управление</h3>
+            <p>Whisper large-v3 через Groq. Юзер говорит — бот понимает.</p>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(255,23,68,0.15)">📸</div>
+            <h3>OCR чеков</h3>
+            <p>qwen-vl-max читает чеки дословно: магазин, сумма, товары.</p>
+        </div>
+        <div class="bento-card large">
+            <div class="bento-icon" style="background:rgba(255,208,0,0.15)">📊</div>
+            <h3>Дашборд управления</h3>
+            <p>BotForge — единая панель управления всеми вашими ботами. Статистика, логи, рассылки, команда, интеграции. Запуск/стоп одним кликом, мониторинг 24/7.</p>
+            <div class="bento-visual">
+                <span style="color:#00FF95">●</span> 5 ботов online · <span style="color:#FFD000">10K+</span> пользователей
+            </div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(0,255,149,0.15)">🐳</div>
+            <h3>Docker deployment</h3>
+            <p>Изоляция, масштабирование, автоперезапуск. Production-ready.</p>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon" style="background:rgba(56,162,255,0.15)">💾</div>
+            <h3>AI-промпты из БД</h3>
+            <p>Промпт настраивается без передеплоя. Меняйте тон бота на лету.</p>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+    <div class="stats">
+        <div><div class="stat-num">10K+</div><div class="stat-label">Пользователей ботов</div></div>
+        <div><div class="stat-num">99.9%</div><div class="stat-label">Время работы</div></div>
+        <div><div class="stat-num">&lt;50ms</div><div class="stat-label">Ответ AI</div></div>
+        <div><div class="stat-num">4.9★</div><div class="stat-label">Оценка клиентов</div></div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+    <div class="section-title">
+        <h2>Как мы работаем</h2>
+        <p>От заявки до запуска — 3 простых шага</p>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-num">ШАГ 01</div>
+            <h3>💬 Заявка и анализ</h3>
+            <p>Вы пишете в Telegram, что нужен бот. Я задаю 5-7 вопросов: ниша, аудитория, ключевые функции. За 30 минут — ТЗ и оценка.</p>
+            <p style="color:var(--accent);font-size:13px;margin-top:12px">⏱ 1 день</p>
+        </div>
+        <div class="step">
+            <div class="step-num">ШАГ 02</div>
+            <h3>⚙️ Разработка и интеграции</h3>
+            <p>Пишу код на aiogram 3.x, подключаю AI (glm-5.2), голос (Groq Whisper), vision (qwen-vl-max). Docker-контейнер, БД, тестирование. Вы видите промежуточные результаты.</p>
+            <p style="color:var(--accent);font-size:13px;margin-top:12px">⏱ 3–5 дней</p>
+        </div>
+        <div class="step">
+            <div class="step-num">ШАГ 03</div>
+            <h3>🚀 Запуск и поддержка</h3>
+            <p>Деплой на ваш сервер или мой. Бот работает 24/7. Дашборд BotForge — управление без кода. Поддержка, обновления, новые функции по запросу.</p>
+            <p style="color:var(--accent);font-size:13px;margin-top:12px">⏱ 1 день + поддержка</p>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+    <div class="section-title">
+        <h2>Прозрачные цены</h2>
+        <p>Выберите тариф под ваш бизнес. Без скрытых платежей.</p>
+    </div>
+    <div class="pricing">
+        <div class="price-card">
+            <div class="price-name">СТАРТ</div>
+            <div class="price-amount">15 000 <span class="currency">₽</span></div>
+            <div class="price-desc">Базовый бот для малого бизнеса</div>
+            <ul class="price-features">
+                <li>1 Telegram-бот</li>
+                <li>AI-промпт под нишу</li>
+                <li>Текстовые команды</li>
+                <li>SQLite база данных</li>
+                <li>Docker deployment</li>
+                <li>Поддержка 30 дней</li>
+            </ul>
+            <a href="#contact" class="btn btn-ghost" style="width:100%;justify-content:center">Выбрать</a>
+        </div>
+        <div class="price-card featured">
+            <div class="price-name">ПРО</div>
+            <div class="price-amount">45 000 <span class="currency">₽</span></div>
+            <div class="price-desc">Полный функционал + голос + чеки</div>
+            <ul class="price-features">
+                <li>Всё из тарифа Старт</li>
+                <li>🎤 Голос (Groq Whisper)</li>
+                <li>📸 OCR чеков (qwen-vl-max)</li>
+                <li>📊 Дашборд BotForge</li>
+                <li>📢 Рассылки пользователям</li>
+                <li>AI-промпты из БД (версионирование)</li>
+                <li>До 15 функций в боте</li>
+                <li>Поддержка 90 дней</li>
+            </ul>
+            <a href="#contact" class="btn btn-primary" style="width:100%;justify-content:center">Выбрать ПРО</a>
+        </div>
+        <div class="price-card">
+            <div class="price-name">ENTERPRISE</div>
+            <div class="price-amount">от 120 000 <span class="currency">₽</span></div>
+            <div class="price-desc">Кастомная разработка под запрос</div>
+            <ul class="price-features">
+                <li>Всё из тарифа Про</li>
+                <li>Несколько ботов (экосистема)</li>
+                <li>API-интеграции (CRM, платёжки)</li>
+                <li>Кастомные модули</li>
+                <li>SLA 99.9% + приоритетная поддержка</li>
+                <li>Обучение команды</li>
+                <li>White-label решение</li>
+                <li>Поддержка 365 дней</li>
+            </ul>
+            <a href="#contact" class="btn btn-ghost" style="width:100%;justify-content:center">Обсудить</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+    <div class="cta-glow"></div>
+    <h2>Готовы запустить<br>свой AI-бот?</h2>
+    <p>Опишите задачу — подберём решение и рассчитаем цену. Ответ в течение часа.</p>
+    <a href="https://t.me/Vandrey63" class="btn btn-primary" style="font-size:17px;padding:16px 32px">Написать в Telegram →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>
+            <div class="footer-brand">
+                <svg viewBox="0 0 76 65" fill="none"><path d="M37.527 0L75.054 65H0L37.527 0z" fill="url(#g2)"/><defs><linearGradient id="g2" x1="0" y1="0" x2="75" y2="65" gradientUnits="userSpaceOnUse"><stop stop-color="#00E5FF"/><stop offset=".5" stop-color="#9500FF"/><stop offset="1" stop-color="#00FF95"/></linearGradient></defs></svg>
+                BotForge Studio
+            </div>
+            <p>AI-боты под ключ для бизнеса. Разработка, запуск, поддержка.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Продукт</h4>
+            <a href="#features">Возможности</a>
+            <a href="#pricing">Цены</a>
+            <a href="#how">Как работаем</a>
+        </div>
+        <div class="footer-col">
+            <h4>Компания</h4>
+            <a href="#">О нас</a>
+            <a href="#">Блог</a>
+            <a href="#">Контакты</a>
+        </div>
+        <div class="footer-col">
+            <h4>Контакты</h4>
+            <a href="https://t.me/Vandrey63">Telegram</a>
+            <a href="mailto:kelf2026@ya.ru">Email</a>
+            <a href="#">GitHub</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© 2026 BotForge Studio. Все права защищены.</span>
+        <span>Сделано с ❤ на DashScope + Groq</span>
+    </div>
+</footer>
+
+<script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('open');
+    }
+
+    // Close mobile menu on outside click
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('mobileMenu');
+        const burger = document.querySelector('.nav-burger');
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !burger.contains(e.target)) {
+            menu.classList.remove('open');
+        }
+    });
+
+    // Close mobile menu on resize to desktop
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            document.getElementById('mobileMenu').classList.remove('open');
+        }
+    });
+
+    // Navbar scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.bento-card, .step, .price-card, .stat-num, .section-title').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
