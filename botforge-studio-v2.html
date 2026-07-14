@@ -45,17 +45,18 @@
             overflow-x:hidden;
             max-width:100%;
             width:100%;
-        }
+        html { scroll-behavior:smooth; overflow-x:hidden; max-width:100%; width:100%; touch-action:pan-y; }
         body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
+            font-family:var(--font);
+            background:var(--bg);
+            color:var(--text);
             line-height:1.6;
             -webkit-font-smoothing:antialiased;
             overflow-x:hidden;
             max-width:100%;
             width:100%;
             position:relative;
+            touch-action:pan-y;
         }
 
         /* Force no horizontal scroll on all wrappers */
@@ -514,10 +515,7 @@
 
         /* === MOBILE NAV (burger) === */
         .nav-burger {
-            display:none;
-            background:none; border:none; cursor:pointer;
-            color:var(--text); font-size:24px; padding:4px 8px;
-        }
+            .nav-burger { display:none; background:none; border:none; cursor:pointer; color:var(--text); font-size:26px; padding:4px 8px; position:relative; z-index:101; }
         .nav-mobile-menu {
             display:none;
             position:fixed; top:60px; left:0; right:0;
