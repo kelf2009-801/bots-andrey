@@ -208,7 +208,11 @@ function loadFile(filename, li) {
   })
   .then(r => r.json())
   .then(data => {
-    const content = atob(data.content.replace(/\n/g, ''));
+    // Decode base64 as UTF-8 (atob gives Latin-1, need TextDecoder for Cyrillic)
+    const binary = atob(data.content.replace(/\n/g, ''));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const content = new TextDecoder('utf-8').decode(bytes);
     fileCache[filename] = { sha: data.sha, content: content };
 
     // Load into iframe
