@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DebiForge — AI-боты с характером</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900;950&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* === DESIGN TOKENS — Framer Bold === */
+        :root {
+            --bg: #000000;
+            --bg-elevated: #0a0a0a;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.14);
+            --text: #ffffff;
+            --text-2: #e4e4e7;
+            --text-muted: #888888;
+            --text-dim: #555555;
+
+            /* Framer accents — яркие */
+            --orange: #FF6B35;
+            --yellow: #FFD000;
+            --green: #00FF95;
+            --cyan: #00E5FF;
+            --pink: #FF0080;
+            --purple: #9500FF;
+
+            --grad-rainbow: linear-gradient(135deg, #FF6B35, #FFD000, #00FF95, #00E5FF, #9500FF, #FF0080);
+            --grad-warm: linear-gradient(135deg, #FF6B35, #FFD000);
+            --grad-cool: linear-gradient(135deg, #00E5FF, #9500FF);
+            --grad-text: linear-gradient(180deg, #fff 0%, #666 100%);
+
+            --font: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --r-sm:4px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:24px;
+            --sh-glow-orange: 0 0 60px rgba(255,107,53,0.4);
+            --sh-glow-cyan: 0 0 60px rgba(0,229,255,0.4);
+            --sh-lg: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; overflow-x:hidden; max-width:100%; width:100%; }
+        body {
+            font-family:var(--font);
+            background:var(--bg);
+            color:var(--text);
+            line-height:1.4;
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
+            max-width:100%;
+            width:100%;
+            position:relative;
+        }
+
+        .hero,.mockup-section,.section,.cta,.footer,.nav,.features-section {
+            max-width:100%;
+            overflow-x:hidden;
+        }
+
+        /* === AURORA — bold bright === */
+        .aurora { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .aurora::before, .aurora::after, .aurora-3 {
+            content:''; position:absolute; border-radius:50%;
+            filter:blur(100px); opacity:0.35;
+        }
+        .aurora::before {
+            top:-100px; left:50%; transform:translateX(-50%);
+            width:800px; height:800px;
+            background:radial-gradient(circle, #FF6B35, transparent 70%);
+            animation: drift1 20s ease-in-out infinite;
+        }
+        .aurora::after {
+            top:300px; left:10%;
+            width:600px; height:600px;
+            background:radial-gradient(circle, #9500FF, transparent 70%);
+            animation: drift2 25s ease-in-out infinite;
+        }
+        .aurora-3 {
+            position:fixed; top:500px; right:5%;
+            width:700px; height:700px;
+            background:radial-gradient(circle, rgba(0,229,255,0.2), transparent 70%);
+            filter:blur(120px); z-index:0; pointer-events:none;
+            animation: drift3 30s ease-in-out infinite;
+            overflow:hidden;
+        }
+        @keyframes drift1 { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-40%) translateY(50px)} }
+        @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,-30px)} }
+        @keyframes drift3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-60px,40px)} }
+
+        /* === NAVBAR === */
+        .nav {
+            position:fixed; top:0; left:0; right:0; z-index:100;
+            background:rgba(0,0,0,0.6);
+            backdrop-filter:blur(20px) saturate(180%);
+            border-bottom:1px solid var(--border);
+            transition:all 0.3s;
+        }
+        .nav-scrolled { background:rgba(0,0,0,0.9); }
+        .nav-inner {
+            max-width:1200px; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:16px 24px; height:64px;
+            overflow:hidden;
+        }
+        .nav-logo { display:flex; align-items:center; gap:10px; font-size:18px; font-weight:800; letter-spacing:-0.03em; text-decoration:none; color:var(--text); }
+        .nav-logo svg { width:28px; height:28px; }
+        .nav-links { display:flex; gap:4px; align-items:center; list-style:none; }
+        .nav-links a { color:var(--text-muted); text-decoration:none; font-size:15px; font-weight:500; padding:8px 14px; border-radius:var(--r-md); transition:all 0.15s; }
+        .nav-links a:hover { color:var(--text); background:rgba(255,255,255,0.05); }
+        .nav-cta { display:flex; gap:8px; align-items:center; }
+        .btn-signup {
+            background:var(--text); color:var(--bg);
+            padding:10px 20px; border-radius:var(--r-md);
+            font-size:15px; font-weight:700; text-decoration:none;
+            transition:all 0.15s;
+        }
+        .btn-signup:hover { box-shadow:var(--sh-glow-orange); transform:translateY(-1px); }
+
+        /* === HERO — BOLD === */
+        .hero {
+            position:relative; z-index:1;
+            padding:160px 24px 80px; text-align:center;
+            max-width:1000px; margin:0 auto;
+            width:100%;
+        }
+        .hero-badge {
+            display:inline-flex; align-items:center; gap:8px;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:6px 14px 6px 6px; border-radius:20px;
+            font-size:14px; color:var(--text-2);
+            margin-bottom:40px;
+            text-decoration:none;
+            transition:border-color 0.2s;
+        }
+        .hero-badge:hover { border-color:var(--border-hover); }
+        .hero-badge .tag {
+            background:var(--grad-warm); color:#000;
+            padding:2px 8px; border-radius:16px;
+            font-size:11px; font-weight:800;
+        }
+        .hero h1 {
+            font-size:clamp(48px, 9vw, 96px);
+            font-weight:900; letter-spacing:-0.05em;
+            line-height:1; margin-bottom:32px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .hero h1 .rainbow {
+            background:var(--grad-rainbow);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+        }
+        .hero p {
+            font-size:22px; color:var(--text-muted);
+            max-width:600px; margin:0 auto 48px;
+            line-height:1.4;
+            font-weight:400;
+        }
+        .hero-cta { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+        .btn {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:16px 32px; border-radius:var(--r-md);
+            font-size:17px; font-weight:700; text-decoration:none;
+            border:none; cursor:pointer; transition:all 0.15s;
+            font-family:var(--font);
+        }
+        .btn-primary {
+            background:var(--text); color:var(--bg);
+        }
+        .btn-primary:hover { box-shadow:var(--sh-glow-orange); transform:translateY(-2px); }
+        .btn-ghost {
+            background:rgba(255,255,255,0.05); color:var(--text);
+            border:1px solid var(--border);
+        }
+        .btn-ghost:hover { background:rgba(255,255,255,0.08); border-color:var(--border-hover); }
+
+        /* === APP MOCKUP === */
+        .mockup-section {
+            position:relative; z-index:1;
+            max-width:1100px; margin:0 auto;
+            padding:80px 24px;
+            width:100%;
+        }
+        .app-window {
+            background:var(--bg-elevated);
+            border:1px solid var(--border);
+            border-radius:var(--r-2xl);
+            overflow:hidden;
+            box-shadow:var(--sh-lg), 0 0 120px rgba(255,107,53,0.2);
+            transform:perspective(2000px) rotateX(4deg);
+            transition:transform 0.5s ease;
+            max-width:100%;
+        }
+        .app-window:hover { transform:perspective(2000px) rotateX(0deg); }
+        .app-titlebar {
+            display:flex; align-items:center; gap:8px;
+            padding:12px 16px;
+            border-bottom:1px solid var(--border);
+            background:rgba(255,255,255,0.02);
+        }
+        .app-dot { width:12px; height:12px; border-radius:50%; }
+        .app-dot.r { background:#FF5F57; }
+        .app-dot.y { background:#FEBC2E; }
+        .app-dot.g { background:#28C840; }
+        .app-url {
+            margin:0 auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-md);
+            padding:4px 14px; font-size:12px;
+            color:var(--text-muted);
+            font-family:var(--font-mono);
+        }
+        .app-body { display:flex; min-height:440px; overflow:hidden; }
+        .app-sidebar {
+            width:240px; border-right:1px solid var(--border);
+            padding:20px 12px;
+            background:rgba(0,0,0,0.3);
+            flex-shrink:0;
+        }
+        .app-sidebar-item {
+            display:flex; align-items:center; gap:12px;
+            padding:10px 14px; border-radius:var(--r-sm);
+            font-size:14px; color:var(--text-muted);
+            margin-bottom:4px; font-weight:500;
+        }
+        .app-sidebar-item.active { background:rgba(255,107,53,0.15); color:var(--text); }
+        .app-sidebar-section { font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; padding:16px 14px 8px; font-weight:700; }
+        .app-main { flex:1; padding:28px; display:flex; flex-direction:column; gap:20px; overflow:hidden; min-width:0; }
+        .app-chat-msg { display:flex; gap:12px; align-items:flex-start; max-width:100%; }
+        .app-avatar { width:36px; height:36px; border-radius:50%; flex-shrink:0; }
+        .app-avatar.bot { background:var(--grad-warm); }
+        .app-avatar.user { background:var(--grad-cool); }
+        .app-msg-bubble {
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            padding:12px 16px; border-radius:var(--r-lg);
+            font-size:15px; color:var(--text-2);
+            max-width:70%;
+            word-break:break-word;
+            overflow-wrap:break-word;
+        }
+        .app-msg-bubble.bot { background:rgba(255,107,53,0.08); border-color:rgba(255,107,53,0.2); }
+        .app-input {
+            margin-top:auto;
+            background:rgba(255,255,255,0.04);
+            border:1px solid var(--border);
+            border-radius:var(--r-lg);
+            padding:14px 18px; font-size:15px; color:var(--text-dim);
+            display:flex; align-items:center; gap:8px;
+        }
+        .app-input .send-btn {
+            margin-left:auto;
+            background:var(--grad-warm);
+            width:32px; height:32px; border-radius:var(--r-sm);
+            display:flex; align-items:center; justify-content:center;
+            font-size:16px; font-weight:700;
+        }
+
+        /* === FEATURES — крупные блоки === */
+        .section { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:100px 24px; width:100%; }
+        .section-title { text-align:center; margin-bottom:60px; }
+        .section-title h2 {
+            font-size:clamp(40px, 6vw, 64px);
+            font-weight:900; letter-spacing:-0.04em;
+            line-height:1.05; margin-bottom:16px;
+            max-width:800px; margin:0 auto 16px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .section-title p { font-size:20px; color:var(--text-muted); max-width:600px; margin:0 auto; }
+
+        .features-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+        .feature-block {
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-radius:var(--r-xl);
+            padding:40px;
+            transition:all 0.2s;
+            position:relative; overflow:hidden;
+            min-height:200px;
+            display:flex; flex-direction:column; justify-content:space-between;
+        }
+        .feature-block:hover { background:var(--bg-card-hover); border-color:var(--border-hover); transform:translateY(-4px); }
+        .feature-block::before {
+            content:''; position:absolute; top:0; left:0; right:0; height:3px;
+            opacity:0.5;
+        }
+        .feature-block.warm::before { background:var(--grad-warm); }
+        .feature-block.cool::before { background:var(--grad-cool); }
+        .feature-block.rainbow::before { background:var(--grad-rainbow); }
+        .feature-block.green::before { background:linear-gradient(90deg, #00FF95, #00E5FF); }
+        .feature-icon { font-size:40px; margin-bottom:16px; }
+        .feature-block h3 { font-size:28px; font-weight:800; margin-bottom:12px; letter-spacing:-0.02em; }
+        .feature-block p { font-size:16px; color:var(--text-muted); line-height:1.5; }
+
+        /* === STATS — огромные === */
+        .stats {
+            display:grid; grid-template-columns:repeat(4,1fr);
+            gap:32px; text-align:center;
+            padding:100px 24px;
+            border-top:1px solid var(--border);
+            border-bottom:1px solid var(--border);
+        }
+        .stat-num {
+            font-size:clamp(56px, 8vw, 88px);
+            font-weight:900; letter-spacing:-0.04em;
+            background:var(--grad-rainbow);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            line-height:1;
+        }
+        .stat-label { font-size:17px; color:var(--text-muted); margin-top:8px; font-weight:500; }
+
+        /* === CTA === */
+        .cta { position:relative; z-index:1; text-align:center; padding:160px 24px; }
+        .cta-glow {
+            position:absolute; top:50%; left:50%;
+            transform:translate(-50%,-50%);
+            width:800px; height:600px;
+            background:radial-gradient(ellipse, rgba(255,107,53,0.25), transparent 70%);
+            filter:blur(40px); z-index:-1;
+        }
+        .cta h2 {
+            font-size:clamp(40px, 7vw, 72px);
+            font-weight:900; letter-spacing:-0.04em;
+            margin-bottom:24px;
+            background:var(--grad-text);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+        .cta p { color:var(--text-muted); font-size:20px; margin-bottom:40px; max-width:600px; margin-left:auto; margin-right:auto; }
+
+        /* === FOOTER === */
+        .footer { border-top:1px solid var(--border); padding:48px 24px; }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+        .footer-brand { font-size:18px; font-weight:800; display:flex; align-items:center; gap:10px; }
+        .footer-brand svg { width:28px; height:28px; }
+        .footer-links { display:flex; gap:24px; }
+        .footer-links a { color:var(--text-muted); text-decoration:none; font-size:14px; transition:color 0.15s; }
+        .footer-links a:hover { color:var(--text); }
+        .footer-bottom { max-width:1100px; margin:32px auto 0; padding-top:24px; border-top:1px solid var(--border); font-size:13px; color:var(--text-dim); text-align:center; }
+
+        /* === MOBILE NAV === */
+        .nav-burger { display:none; background:none; border:none; cursor:pointer; color:var(--text); font-size:26px; padding:4px 8px; }
+        .nav-mobile-menu {
+            display:none; position:fixed; top:64px; left:0; right:0;
+            background:rgba(0,0,0,0.95); backdrop-filter:blur(20px);
+            border-bottom:1px solid var(--border);
+            padding:16px 24px; z-index:99;
+            flex-direction:column; gap:4px;
+        }
+        .nav-mobile-menu.open { display:flex; }
+        .nav-mobile-menu a { color:var(--text-2); text-decoration:none; font-size:17px; padding:14px 16px; border-radius:var(--r-md); transition:background 0.15s; }
+        .nav-mobile-menu a:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+
+        /* === TABLET === */
+        @media (max-width:1024px) {
+            .features-grid { grid-template-columns:1fr; }
+        }
+
+        /* === MOBILE === */
+        @media (max-width:768px) {
+            .nav-links { display:none; }
+            .nav-burger { display:block; }
+            .nav-cta .btn-signup { display:none; }
+            .nav-logo { font-size:16px; }
+            .nav-logo svg { width:24px; height:24px; }
+
+            .hero { padding:120px 16px 60px; }
+            .hero h1 { font-size:clamp(40px, 11vw, 56px); }
+            .hero p { font-size:18px; }
+            .hero-cta { flex-direction:column; width:100%; max-width:340px; margin:0 auto; }
+            .hero-cta .btn { width:100%; justify-content:center; }
+            .hero-badge { font-size:13px; }
+
+            .mockup-section { padding:60px 16px; }
+            .app-window { transform:none; }
+            .app-window:hover { transform:none; }
+            .app-sidebar { display:none; }
+            .app-main { padding:20px; }
+            .app-msg-bubble { max-width:85%; font-size:14px; }
+            .app-input { font-size:13px; padding:12px 14px; }
+
+            .section { padding:60px 16px; }
+            .section-title h2 { font-size:clamp(32px, 8vw, 40px); }
+            .section-title p { font-size:17px; }
+
+            .features-grid { grid-template-columns:1fr; gap:16px; }
+            .feature-block { padding:28px; min-height:auto; }
+            .feature-block h3 { font-size:24px; }
+
+            .stats { grid-template-columns:repeat(2,1fr); gap:32px; padding:60px 16px; }
+            .stat-label { font-size:15px; }
+
+            .cta { padding:100px 16px; }
+            .cta h2 { font-size:clamp(32px, 8vw, 40px); }
+            .cta p { font-size:18px; }
+            .cta .btn { width:100%; max-width:340px; justify-content:center; font-size:17px; }
+
+            .footer-inner { flex-direction:column; text-align:center; }
+            .footer-links { flex-wrap:wrap; justify-content:center; }
+        }
+
+        @media (max-width:480px) {
+            .hero h1 { font-size:36px; }
+            .hero p { font-size:16px; }
+            .app-msg-bubble { max-width:90%; font-size:13px; padding:10px 14px; }
+            .section-title h2 { font-size:28px; }
+            .feature-block { padding:24px; }
+            .feature-block h3 { font-size:22px; }
+            .stats { grid-template-columns:1fr; gap:24px; }
+            .cta h2 { font-size:28px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- AURORA -->
+<div class="aurora"></div>
+<div class="aurora-3"></div>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">
+            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#g1)"/><path d="M8 8h6v16H8zM18 8h6v16h-6z" fill="#000"/><defs><linearGradient id="g1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#FF6B35"/><stop offset=".5" stop-color="#FFD000"/><stop offset="1" stop-color="#00FF95"/></linearGradient></defs></svg>
+            DebiForge
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Возможности</a></li>
+            <li><a href="#contact">Заказать</a></li>
+        </ul>
+        <div class="nav-cta">
+            <a href="#contact" class="btn-signup">Заказать бота</a>
+            <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
+        </div>
+    </div>
+    <div class="nav-mobile-menu" id="mobileMenu">
+        <a href="#features" onclick="toggleMobileMenu()">Возможности</a>
+        <a href="#contact" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:700">Заказать бота →</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <a href="#features" class="hero-badge">
+        <span class="tag">NEW</span>
+        AI-боты с характером →
+    </a>
+    <h1>
+        Боты, которые<br>
+        <span class="rainbow">работают</span> за тебя
+    </h1>
+    <p>
+        Не шаблон. Не болталка. AI-бот под твой бизнес —
+        с голосом, зрением и характером. За 7 дней.
+    </p>
+    <div class="hero-cta">
+        <a href="tg://resolve?domain=DebiHackBot" class="btn btn-primary">Заказать бота →</a>
+        <a href="#features" class="btn btn-ghost">Смотреть</a>
+    </div>
+</section>
+
+<!-- APP MOCKUP -->
+<div class="mockup-section">
+    <div class="app-window">
+        <div class="app-titlebar">
+            <div class="app-dot r"></div>
+            <div class="app-dot y"></div>
+            <div class="app-dot g"></div>
+            <div class="app-url">t.me/DebiHackBot</div>
+        </div>
+        <div class="app-body">
+            <div class="app-sidebar">
+                <div class="app-sidebar-item active">💬 Чат</div>
+                <div class="app-sidebar-item">📊 Аналитика</div>
+                <div class="app-sidebar-item">⚙️ Настройки</div>
+                <div class="app-sidebar-section">AI</div>
+                <div class="app-sidebar-item">🧠 Мозги</div>
+                <div class="app-sidebar-item">🎤 Голос</div>
+                <div class="app-sidebar-item">👁️ Зрение</div>
+                <div class="app-sidebar-section">ИНТЕГРАЦИИ</div>
+                <div class="app-sidebar-item">🐙 GitHub</div>
+                <div class="app-sidebar-item">💬 Slack</div>
+            </div>
+            <div class="app-main">
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">Напиши код для бота на Python</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        🔥 Сейчас сделаю! Вот структура:<br>
+                        <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:var(--font-mono)">aiogram 3.x + Docker</code><br><br>
+                        ✅ Готово за 7 секунд
+                    </div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar user"></div>
+                    <div class="app-msg-bubble">🎤 [голосовое: "Добавь webhook"]</div>
+                </div>
+                <div class="app-chat-msg">
+                    <div class="app-avatar bot"></div>
+                    <div class="app-msg-bubble bot">
+                        🎤 Услышал: "Добавь webhook"<br>
+                        ✅ Webhook добавлен в config.yaml<br>
+                        🚀 Бот готов к деплою
+                    </div>
+                </div>
+                <div class="app-input">
+                    💬 Спроси что угодно...
+                    <div class="send-btn">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+    <div class="section-title">
+        <h2>Что умеют боты</h2>
+        <p>Не просто болталки. Реальные инструменты для бизнеса.</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-block warm">
+            <div>
+                <div class="feature-icon">🤖</div>
+                <h3>AI-мозги</h3>
+                <p>glm-5.2 — понимает контекст, обучается на твоих данных. Не шаблонные ответы, а осмысленный диалог.</p>
+            </div>
+        </div>
+        <div class="feature-block cool">
+            <div>
+                <div class="feature-icon">🎤</div>
+                <h3>Голос</h3>
+                <p>Groq Whisper — юзер говорит, бот понимает. Идеально для занятых людей в движении.</p>
+            </div>
+        </div>
+        <div class="feature-block rainbow">
+            <div>
+                <div class="feature-icon">👁️</div>
+                <h3>Зрение</h3>
+                <p>qwen-vl-max — фото чека → структурированные данные. Магазин, сумма, товары.</p>
+            </div>
+        </div>
+        <div class="feature-block green">
+            <div>
+                <div class="feature-icon">📊</div>
+                <h3>Дашборд</h3>
+                <p>BotForge — управляй всеми ботами из одного места. Статистика, логи, рассылки.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+    <div class="stats">
+        <div><div class="stat-num">10K+</div><div class="stat-label">Пользователей</div></div>
+        <div><div class="stat-num">5</div><div class="stat-label">Ботов в продакшене</div></div>
+        <div><div class="stat-num">&lt;50ms</div><div class="stat-label">Ответ AI</div></div>
+        <div><div class="stat-num">99.9%</div><div class="stat-label">Uptime</div></div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+    <div class="cta-glow"></div>
+    <h2>Готов?</h2>
+    <p>Напиши — и через 7 дней у тебя работает AI-бот.</p>
+    <a href="tg://resolve?domain=DebiHackBot" class="btn btn-primary">Заказать бота →</a>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#g2)"/><path d="M8 8h6v16H8zM18 8h6v16h-6z" fill="#000"/><defs><linearGradient id="g2" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#FF6B35"/><stop offset=".5" stop-color="#FFD000"/><stop offset="1" stop-color="#00FF95"/></linearGradient></defs></svg>
+            DebiForge
+        </div>
+        <div class="footer-links">
+            <a href="#features">Возможности</a>
+            <a href="tg://resolve?domain=DebiHackBot">Telegram</a>
+            <a href="https://github.com/kelf2009-801/bots-andrey">GitHub</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2026 DebiForge. Боты с характером.
+    </div>
+</footer>
+
+<script>
+    function toggleMobileMenu() {
+        document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', (e) => {
+        const menu = document.getElementById('mobileMenu');
+        const burger = document.querySelector('.nav-burger');
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !burger.contains(e.target)) {
+            menu.classList.remove('open');
+        }
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) document.getElementById('mobileMenu').classList.remove('open');
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.style.opacity = '1';
+                e.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.feature-block, .stat-num, .section-title').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        });
+    });
+</script>
+</body>
+</html>
