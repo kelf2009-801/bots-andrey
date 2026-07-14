@@ -622,7 +622,7 @@
             display:none; position:fixed; top:60px; left:0; right:0;
             background:rgba(13,14,18,0.95); backdrop-filter:blur(20px);
             border-bottom:1px solid var(--border);
-            padding:16px 24px; z-index:99;
+            padding:16px 24px; z-index:102;
             flex-direction:column; gap:4px;
         }
         .nav-mobile-menu.open { display:flex; }
@@ -760,15 +760,15 @@
             <button class="nav-burger" onclick="toggleMobileMenu()" aria-label="Меню">☰</button>
         </div>
     </div>
-    <div class="nav-mobile-menu" id="mobileMenu">
-        <a href="#services" onclick="toggleMobileMenu()">Услуги</a>
-        <a href="#pricing" onclick="toggleMobileMenu()">Цены</a>
-        <a href="#how" onclick="toggleMobileMenu()">Запись</a>
-        <a href="#contact" onclick="toggleMobileMenu()">Контакты</a>
-        <a href="tg://resolve?domain=nail163_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">💅 GlamBot — Записаться →</a>
-        <a href="tg://resolve?domain=Nailselegantstudio_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">✨ BeautyBot — Записаться →</a>
-    </div>
-</nav>
+    </nav>
+<div class="nav-mobile-menu" id="mobileMenu">
+    <a href="#services" onclick="toggleMobileMenu()">Услуги</a>
+    <a href="#pricing" onclick="toggleMobileMenu()">Цены</a>
+    <a href="#how" onclick="toggleMobileMenu()">Запись</a>
+    <a href="#contact" onclick="toggleMobileMenu()">Контакты</a>
+    <a href="tg://resolve?domain=nail163_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">💅 GlamBot — Записаться →</a>
+    <a href="tg://resolve?domain=Nailselegantstudio_bot" onclick="toggleMobileMenu()" style="color:var(--text);font-weight:600">✨ BeautyBot — Записаться →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
