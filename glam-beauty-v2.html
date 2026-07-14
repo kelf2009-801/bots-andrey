@@ -640,7 +640,8 @@
         /* === MOBILE (max-width: 768px) === */
         @media (max-width:768px) {
             .nav-links { display:none; }
-            .nav-burger { display:block; }
+            .nav-burger { display:block; -webkit-tap-highlight-color:transparent; touch-action:manipulation; pointer-events:auto; }
+            .nav-inner { overflow:visible; }
             .nav-cta .btn-nav { display:none; }
             .nav-cta .btn-signup { display:none; }
             .nav-logo { font-size:15px; }
