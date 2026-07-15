@@ -239,18 +239,28 @@ section { padding:100px 0; position:relative; overflow:hidden; }
 }
 
 @media (max-width:768px) {
-  section { padding:60px 0; }
-  .hero { padding:120px 0 60px; }
+  html, body { overflow-x:hidden; width:100%; }
+  .container { padding:0 16px; width:100%; max-width:100%; }
+  section { padding:60px 0; overflow-x:hidden; width:100%; }
+  .hero { padding:120px 0 60px; overflow-x:hidden; }
   .nav-links { display:none; position:fixed; top:68px; left:0; right:0; background:rgba(245,244,242,0.98); border-bottom:1px solid var(--cream-border); flex-direction:column; padding:24px; gap:16px; z-index:999; }
   .nav-links.open { display:flex; }
   .burger { display:flex; }
-  .bento-grid { grid-template-columns:1fr; }
+  .bento-grid { grid-template-columns:1fr; overflow-x:hidden; }
   .bento-card.featured { grid-column:span 1; }
+  .bento-card { max-width:100%; min-width:0; }
   .stats-grid { grid-template-columns:1fr 1fr; gap:16px; }
+  .pricing-grid { grid-template-columns:1fr; max-width:100%; padding:0 8px; }
+  .pricing-card { max-width:100%; min-width:0; }
+  .pricing-features li { word-break:break-word; }
   .hero-stats { gap:24px; }
   .hero-stat-num { font-size:2rem; }
   .footer-grid { grid-template-columns:1fr 1fr; gap:24px; }
   .stat-num { font-size:2rem; }
+  .cta-content { padding:0 16px; }
+  .cta-content h2 { word-break:break-word; }
+  .hero h1 { word-break:break-word; }
+  .hero-subtitle { word-break:break-word; }
 }
 </style>
 </head>
