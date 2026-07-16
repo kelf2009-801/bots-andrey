@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#faf8f5"/>
+      <stop offset="1" stop-color="#f0e8d8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2c57e"/>
+      <stop offset="1" stop-color="#b98a5e"/>
+    </linearGradient>
+  </defs>
+  <rect fill="url(#bg)" width="600" height="750" rx="24"/>
+  <!-- Hand silhouette -->
+  <path d="M250 550 C240 480 220 400 230 350 C235 320 250 310 260 320 C265 330 260 350 255 370 C260 340 275 310 285 315 C295 320 290 350 280 380 C285 350 300 320 315 325 C325 330 320 360 305 400 C300 420 290 460 285 500 L280 550 Z" fill="rgba(201,169,97,0.12)" stroke="rgba(201,169,97,0.25)" stroke-width="1.5"/>
+  <!-- Nail polish bottle -->
+  <rect x="330" y="160" width="60" height="80" rx="8" fill="rgba(201,169,97,0.15)" stroke="rgba(201,169,97,0.35)" stroke-width="1.5"/>
+  <rect x="340" y="130" width="40" height="35" rx="5" fill="rgba(201,169,97,0.2)" stroke="rgba(201,169,97,0.35)" stroke-width="1.5"/>
+  <rect x="350" y="105" width="20" height="30" rx="4" fill="rgba(201,169,97,0.25)" stroke="rgba(201,169,97,0.4)" stroke-width="1.5"/>
+  <rect x="355" y="80" width="10" height="28" rx="3" fill="url(#gold)" opacity="0.6"/>
+  <!-- Nail file -->
+  <rect x="420" y="200" width="120" height="16" rx="8" fill="rgba(201,169,97,0.12)" stroke="rgba(201,169,97,0.3)" stroke-width="1"/>
+  <rect x="420" y="200" width="60" height="16" rx="8" fill="rgba(201,169,97,0.18)"/>
+  <!-- Decorative dots -->
+  <circle cx="160" cy="180" r="6" fill="url(#gold)" opacity="0.4"/>
+  <circle cx="180" cy="170" r="4" fill="url(#gold)" opacity="0.3"/>
+  <circle cx="145" cy="195" r="3" fill="url(#gold)" opacity="0.25"/>
+  <circle cx="440" cy="300" r="5" fill="url(#gold)" opacity="0.35"/>
+  <circle cx="460" cy="290" r="3" fill="url(#gold)" opacity="0.25"/>
+  <!-- Nail polish drops -->
+  <circle cx="370" cy="250" r="8" fill="rgba(226,197,126,0.3)"/>
+  <circle cx="385" cy="260" r="5" fill="rgba(226,197,126,0.2)"/>
+  <circle cx="395" cy="245" r="4" fill="rgba(226,197,126,0.25)"/>
+  <!-- Text -->
+  <text x="300" y="500" text-anchor="middle" font-family="Georgia,serif" font-size="24" fill="#b98a5e" font-weight="bold">Елена</text>
+  <text x="300" y="528" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#9a8a74">Мастер маникюра и педикюра</text>
+  <text x="300" y="550" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#c9a961">Санкт-Петербург</text>
+</svg>
