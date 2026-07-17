@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Андрей · разработчик</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════
+     Minimal Mono · портфолио
+     ═══════════════════════════════════════════════════ */
+  :root {
+    --bg:        #0d0d0d;
+    --surface:   #141414;
+    --border:    #1e1e1e;
+    --text:      #e0e0e0;
+    --text-dim:  #6b6b6b;
+    --text-faint:#444;
+    --accent:    #c0c0c0;
+    --cursor:    #e0e0e0;
+    --green:     #a0a0a0;
+    --sel:       #222;
+    --mono:      'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--bg);
+  }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 14px;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--sel); color: #fff; }
+
+  /* ── scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── layout ── */
+  .container {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ── header / terminal bar ── */
+  .top-bar {
+    padding: 24px 0 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    user-select: none;
+  }
+  .top-bar .prompt {
+    color: var(--text-faint);
+  }
+  .top-bar .prompt span {
+    color: var(--accent);
+  }
+  .top-bar .status {
+    display: flex;
+    gap: 10px;
+  }
+  .top-bar .status .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .top-bar .status .dot.on {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(192,192,192,.3);
+  }
+
+  /* ── hero ── */
+  .hero {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero .ascii-head {
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--text-faint);
+    white-space: pre;
+    margin-bottom: 28px;
+    letter-spacing: .5px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -.3px;
+    margin-bottom: 6px;
+  }
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+  .hero p {
+    font-size: 14px;
+    color: var(--text-dim);
+    max-width: 580px;
+  }
+  .hero p strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* ── code block ── */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px 22px;
+    margin: 32px 0;
+    font-size: 13px;
+    line-height: 1.65;
+    overflow-x: auto;
+    position: relative;
+  }
+  .code-block .comment { color: var(--text-faint); }
+  .code-block .keyword  { color: var(--text-dim); }
+  .code-block .string   { color: var(--accent); }
+  .code-block .func     { color: var(--text); }
+  .code-block .deco     { color: var(--text-faint); }
+  .code-block .lang-tag {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── sections ── */
+  section {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  section:last-of-type {
+    border-bottom: none;
+  }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-faint);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::before {
+    content: '//';
+    color: var(--text-faint);
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── skills grid ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .skill-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px 16px;
+    font-size: 13px;
+    transition: border-color .2s, background .2s;
+    cursor: default;
+  }
+  .skill-item:hover {
+    border-color: var(--text-dim);
+    background: #181818;
+  }
+  .skill-item .skill-name {
+    font-weight: 400;
+  }
+  .skill-item .skill-ver {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 2px;
+  }
+
+  /* ── projects ── */
+  .project {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .project:first-of-type { padding-top: 0; }
+  .project:last-of-type  { border-bottom: none; padding-bottom: 0; }
+
+  .project .meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .project .lang {
+    color: var(--accent);
+  }
+  .project h3 {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+  .project h3 a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .project h3 a:hover {
+    color: var(--accent);
+  }
+  .project h3 a::after {
+    content: ' ↗';
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .project p {
+    font-size: 13px;
+    color: var(--text-dim);
+    max-width: 600px;
+  }
+  .project .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .project .tags span {
+    font-size: 11px;
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+    padding: 1px 8px;
+    border-radius: 2px;
+  }
+
+  /* ── contact ── */
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .contact-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .contact-links a:hover {
+    color: var(--text);
+  }
+  .contact-links a .arrow {
+    color: var(--text-faint);
+    font-size: 11px;
+  }
+
+  /* ── footer ── */
+  footer {
+    padding: 24px 0 40px;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  footer .cursor-blink {
+    display: inline-block;
+    width: 7px; height: 14px;
+    background: var(--cursor);
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+  }
+
+  /* ── responsive ── */
+  @media (max-width: 600px) {
+    .container { padding: 0 16px; }
+    .hero { padding: 48px 0 36px; }
+    .hero h1 { font-size: 22px; }
+    .hero .ascii-head { font-size: 9px; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .top-bar .status { display: none; }
+    section { padding: 36px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ═══ top bar ═══ -->
+  <header class="top-bar">
+    <div class="prompt">
+      <span>andrey</span>@mono:~$ <span style="color:var(--text-faint)">cat portfolio.md</span>
+    </div>
+    <div class="status">
+      <span class="dot on"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </header>
+
+  <!-- ═══ hero ═══ -->
+  <section class="hero">
+    <div class="ascii-head">
+  ┌─────────────────────────────────────┐
+  │  █████╗ ███╗   ██╗██████╗ ██████╗  │
+  │ ██╔══██╗████╗  ██║██╔══██╗██╔══██╗ │
+  │ ███████║██╔██╗ ██║██║  ██║██████╔╝ │
+  │ ██╔══██║██║╚██╗██║██║  ██║██╔══██╗ │
+  │ ██║  ██║██║ ╚████║██████╔╝██║  ██║ │
+  │ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝ │
+  └─────────────────────────────────────┘
+    </div>
+    <h1>Андрей</h1>
+    <div class="badge">Python-разработчик · Сызрань</div>
+    <p>
+      Пишу на <strong>Python</strong>. Строю телеграм-ботов на <strong>aiogram</strong>,
+      поднимаю инфраструктуру в <strong>Docker</strong>, настраиваю <strong>OmniRoute</strong>
+      и расширяю <strong>Hermes Agent</strong>. Предпочитаю чистый код, минимализм
+      и монохромные терминалы.
+    </p>
+  </section>
+
+  <!-- ═══ skills ═══ -->
+  <section>
+    <h2 class="section-title">стек</h2>
+    <div class="skills-grid">
+      <div class="skill-item">
+        <div class="skill-name">Python</div>
+        <div class="skill-ver">3.11+ · asyncio</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Docker</div>
+        <div class="skill-ver">compose · swarm</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">aiogram</div>
+        <div class="skill-ver">3.x · FSM · middlewares</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">OmniRoute</div>
+        <div class="skill-ver">AI-gateway · routing</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Hermes Agent</div>
+        <div class="skill-ver">skills · plugins · tools</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">FastAPI</div>
+        <div class="skill-ver">REST · WebSocket</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">PostgreSQL</div>
+        <div class="skill-ver">asyncpg · alembic</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name">Linux</div>
+        <div class="skill-ver">arch · debian · bash</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ featured code ═══ -->
+  <div class="code-block">
+    <span class="lang-tag">python</span>
+    <span class="deco">@app.on</span>(message.command(<span class="string">"start"</span>))<br>
+    <span class="keyword">async def</span> <span class="func">cmd_start</span>(msg: Message):<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;user = <span class="keyword">await</span> db.get_user(msg.from_.id)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> user:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> db.create_user(msg.from_.id)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> msg.answer(<span class="string">"👋 Добро пожаловать!"</span>)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span>:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># приветствие постоянного пользователя</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">await</span> msg.answer(<span class="string">f"С возвращением, {user.name}"</span>)
+  </div>
+
+  <!-- ═══ projects ═══ -->
+  <section>
+    <h2 class="section-title">проекты</h2>
+
+    <div class="project">
+      <div class="meta">
+        <span class="lang">python</span>
+        <span>2024–2025</span>
+      </div>
+      <h3>OmniRoute Gateway</h3>
+      <p>AI-шлюз с балансировкой провайдеров, кэшированием, rate-limiting
+      и веб-дашбордом. Развёрнут в Docker Swarm.</p>
+      <div class="tags">
+        <span>python</span>
+        <span>fastapi</span>
+        <span>docker</span>
+        <span>redis</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="meta">
+        <span class="lang">python</span>
+        <span>2024</span>
+      </div>
+      <h3>Telegram Bot · Warehouse</h3>
+      <p>Бот для управления складом: aiogram 3.x, FSM, PostgreSQL,
+      админ-панель, экспорт в Excel.</p>
+      <div class="tags">
+        <span>aiogram</span>
+        <span>postgres</span>
+        <span>asyncpg</span>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="meta">
+        <span class="lang">python</span>
+        <span>2024</span>
+      </div>
+      <h3>Hermes Agent · skill-авторство</h3>
+      <p>Разработка навыков и плагинов для Hermes Agent — от cybersec-скриптов
+      до ML-пайплайнов. Оптимизация профилей и инструментов.</p>
+      <div class="tags">
+        <span>hermes-agent</span>
+        <span>skills</span>
+        <span>yaml</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ contact ═══ -->
+  <section>
+    <h2 class="section-title">контакты</h2>
+    <div class="contact-links">
+      <a href="#">GitHub <span class="arrow">→</span></a>
+      <a href="#">Telegram <span class="arrow">→</span></a>
+      <a href="mailto:andrey@example.com">andrey@example.com <span class="arrow">→</span></a>
+    </div>
+  </section>
+
+  <!-- ═══ footer ═══ -->
+  <footer>
+    <span style="color:var(--text-dim)">andrey@mono:~$</span> echo <span style="color:var(--text-faint)">"built with minimal mono"</span>
+    <span class="cursor-blink"></span>
+  </footer>
+
+</div>
+
+</body>
+</html>

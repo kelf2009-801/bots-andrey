@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Андрей | Разработчик — Сызрань</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      background: #0a0a1a;
+      color: #e8e8f0;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ========== ANIMATED BACKGROUND ========== */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .bg-orbs span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: orbFloat 18s ease-in-out infinite alternate;
+    }
+    .bg-orbs .orb1 {
+      width: 500px; height: 500px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: -10%; left: -8%;
+      animation-duration: 22s;
+    }
+    .bg-orbs .orb2 {
+      width: 450px; height: 450px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: -12%; right: -6%;
+      animation-duration: 26s;
+      animation-delay: -4s;
+    }
+    .bg-orbs .orb3 {
+      width: 350px; height: 350px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      top: 45%; left: 55%;
+      animation-duration: 20s;
+      animation-delay: -8s;
+    }
+    .bg-orbs .orb4 {
+      width: 300px; height: 300px;
+      background: linear-gradient(135deg, #43e97b, #38f9d7);
+      top: 70%; left: 10%;
+      animation-duration: 24s;
+      animation-delay: -12s;
+    }
+    .bg-orbs .orb5 {
+      width: 400px; height: 400px;
+      background: linear-gradient(135deg, #fa709a, #fee140);
+      top: 15%; left: 75%;
+      animation-duration: 28s;
+      animation-delay: -6s;
+    }
+
+    @keyframes orbFloat {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(40px, -30px) scale(1.05); }
+      66%  { transform: translate(-20px, 40px) scale(0.95); }
+      100% { transform: translate(30px, -20px) scale(1.02); }
+    }
+
+    /* ========== GRID OVERLAY ========== */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ========== NOISE TEXTURE ========== */
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* ========== LAYOUT ========== */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 6px 18px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.5));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 560px;
+    }
+
+    /* ========== GLASS CARD ========== */
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+
+    /* ========== NAVBAR ========== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      transition: background 0.3s, backdrop-filter 0.3s;
+    }
+    .navbar.scrolled {
+      background: rgba(10,10,26,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #f5576c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .navbar .logo span {
+      color: rgba(255,255,255,0.3);
+      font-weight: 400;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, #667eea, #f5576c);
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none; border: none;
+    }
+    .nav-toggle span {
+      width: 26px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 6px 16px 6px 6px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 28px;
+    }
+    .hero-badge .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #43e97b;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-size: 3.8rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, #667eea, #f5576c, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 480px;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(102,126,234,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(102,126,234,0.5);
+    }
+    .btn-glass {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .btn-glass:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
+    }
+
+    /* ========== HERO AVATAR ========== */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .avatar-glass {
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .avatar-glass .initial {
+      font-size: 7rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #f5576c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .avatar-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.06);
+      animation: ringSpin 30s linear infinite;
+    }
+    .avatar-ring-2 {
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255,255,255,0.04);
+      animation: ringSpin 40s linear infinite reverse;
+    }
+    @keyframes ringSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .floating-tech {
+      position: absolute;
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.8);
+      animation: floatIcon 6s ease-in-out infinite;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .floating-tech.t1 { top: 20px; right: -10px; animation-delay: 0s; }
+    .floating-tech.t2 { bottom: 40px; left: -20px; animation-delay: -2s; }
+    .floating-tech.t3 { top: 50%; right: -30px; animation-delay: -4s; }
+    .floating-tech.t4 { bottom: -10px; right: 30px; animation-delay: -1s; }
+
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* ========== STATS ROW ========== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .stat-card {
+      padding: 28px 24px;
+      text-align: center;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-4px);
+    }
+    .stat-card .num {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #f5576c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 6px;
+    }
+
+    /* ========== ABOUT ========== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-text p {
+      color: rgba(255,255,255,0.55);
+      font-size: 1.05rem;
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+    .about-location {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      width: fit-content;
+    }
+    .about-location svg {
+      width: 20px; height: 20px;
+    }
+
+    .about-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .about-card {
+      padding: 28px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    .about-card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-4px);
+    }
+    .about-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .about-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .about-card p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ========== TECH STACK ========== */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .tech-item {
+      padding: 28px 20px;
+      text-align: center;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .tech-item:hover {
+      background: rgba(255,255,255,0.07);
+      transform: translateY(-6px);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .tech-item .icon {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+    .tech-item .name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .tech-item .desc {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+    }
+
+    /* ========== PROJECTS ========== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 48px;
+    }
+    .project-card {
+      padding: 36px 32px;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      right: 0; height: 3px;
+      background: linear-gradient(90deg, #667eea, #f5576c);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .project-card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .project-card:hover::before {
+      opacity: 1;
+    }
+    .project-card .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+    .project-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .project-card p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .project-tags span {
+      font-size: 0.7rem;
+      padding: 4px 14px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+
+    /* ========== CONTACT ========== */
+    .contact-glass {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 56px 48px;
+      text-align: center;
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 32px;
+    }
+    .contact-glass h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .contact-glass p {
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 36px;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .contact-link:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-3px);
+    }
+    .contact-link svg {
+      width: 20px; height: 20px;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    footer p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+      }
+      .hero p { margin-left: auto; margin-right: auto; }
+      .hero-buttons { justify-content: center; }
+      .hero-badge { margin-left: auto; margin-right: auto; }
+      .hero h1 { font-size: 2.8rem; }
+      .avatar-glass {
+        width: 260px;
+        height: 260px;
+      }
+      .avatar-glass .initial { font-size: 5rem; }
+      .stats-row { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-visual { grid-template-columns: 1fr; }
+      .section-title { font-size: 2rem; }
+      section { padding: 70px 0; }
+      .contact-glass { padding: 40px 28px; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 68px; left: 0; right: 0;
+        flex-direction: column;
+        background: rgba(10,10,26,0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 24px;
+        gap: 20px;
+        text-align: center;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+    }
+    @media (max-width: 500px) {
+      .hero h1 { font-size: 2.2rem; }
+      .hero p { font-size: 1rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-links { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== BACKGROUND ===== -->
+  <div class="bg-orbs">
+    <span class="orb1"></span>
+    <span class="orb2"></span>
+    <span class="orb3"></span>
+    <span class="orb4"></span>
+    <span class="orb5"></span>
+  </div>
+  <div class="grid-overlay"></div>
+  <div class="noise"></div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="logo">Андрей <span>✦</span></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">Обо мне</a></li>
+        <li><a href="#stack">Стек</a></li>
+        <li><a href="#projects">Проекты</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <div class="hero-badge">
+            <span class="dot"></span>
+            Доступен для проектов
+          </div>
+          <h1>
+            Привет, я<br>
+            <span class="gradient-text">Андрей</span>
+          </h1>
+          <p>
+            Разработчик из Сызрани. Создаю Telegram-ботов, AI-решения 
+            и веб-сервисы на Python. Специализируюсь на aiogram, Flask, 
+            Docker и OmniRoute.
+          </p>
+          <div class="hero-buttons">
+            <a href="#projects" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              Проекты
+            </a>
+            <a href="#contact" class="btn btn-glass">Связаться</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="avatar-glass">
+            <span class="avatar-ring"></span>
+            <span class="avatar-ring-2"></span>
+            <span class="initial">А</span>
+            <div class="floating-tech t1" title="Python">🐍</div>
+            <div class="floating-tech t2" title="Docker">🐳</div>
+            <div class="floating-tech t3" title="aiogram">🤖</div>
+            <div class="floating-tech t4" title="Flask">⚡</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="num">5+</div>
+          <div class="label">Лет в разработке</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">30+</div>
+          <div class="label">Реализованных проектов</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">100%</div>
+          <div class="label">Вовлечённость</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="container">
+      <div class="section-label">Обо мне</div>
+      <div class="about-grid">
+        <div class="about-text">
+          <h2 class="section-title">Разработчик из Сызрани</h2>
+          <p>
+            Меня зовут Андрей. Я занимаюсь разработкой программного обеспечения 
+            с фокусом на Python, Telegram-ботов и веб-сервисы. Живу и работаю 
+            в Сызрани — городе на Волге, где сочетаю удалённую работу с 
+            любовью к технологиям.
+          </p>
+          <p>
+            Специализируюсь на создании масштабируемых ботов на aiogram, 
+            веб-приложений на Flask, контейнеризации с Docker и управлении 
+            AI-трафиком через OmniRoute. Постоянно изучаю новые инструменты 
+            и подходы, чтобы делать проекты качественно и в срок.
+          </p>
+          <div class="about-location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Сызрань, Россия</span>
+          </div>
+        </div>
+        <div class="about-visual">
+          <div class="about-card">
+            <div class="icon">🎯</div>
+            <h4>Сфокусирован на результате</h4>
+            <p>Каждый проект довожу до production с нуля</p>
+          </div>
+          <div class="about-card">
+            <div class="icon">🧩</div>
+            <h4>Системное мышление</h4>
+            <p>Проектирую архитектуру, которая масштабируется</p>
+          </div>
+          <div class="about-card">
+            <div class="icon">🤝</div>
+            <h4>Командная работа</h4>
+            <p>Git, CI/CD, code review — всё в порядке</p>
+          </div>
+          <div class="about-card">
+            <div class="icon">🚀</div>
+            <h4>Быстрый запуск</h4>
+            <p>От идеи до MVP за минимальное время</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TECH STACK ===== -->
+  <section id="stack">
+    <div class="container">
+      <div class="section-label">Технологии</div>
+      <h2 class="section-title">Мой стек</h2>
+      <p class="section-sub">Инструменты и технологии, с которыми я работаю ежедневно</p>
+
+      <div class="tech-grid">
+        <div class="tech-item">
+          <div class="icon">🐍</div>
+          <div class="name">Python</div>
+          <div class="desc">Основной язык</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🐳</div>
+          <div class="name">Docker</div>
+          <div class="desc">Контейнеризация</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🤖</div>
+          <div class="name">aiogram</div>
+          <div class="desc">Telegram Bot API</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">⚡</div>
+          <div class="name">Flask</div>
+          <div class="desc">Веб-фреймворк</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🌐</div>
+          <div class="name">OmniRoute</div>
+          <div class="desc">AI-шлюз</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">🗄️</div>
+          <div class="name">PostgreSQL</div>
+          <div class="desc">Базы данных</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">📡</div>
+          <div class="name">Redis</div>
+          <div class="desc">Кэш / очереди</div>
+        </div>
+        <div class="tech-item">
+          <div class="icon">☁️</div>
+          <div class="name">Linux</div>
+          <div class="desc">Серверы / деплой</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-label">Портфолио</div>
+      <h2 class="section-title">Избранные проекты</h2>
+      <p class="section-sub">Кейсы, которыми я горжусь</p>
+
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="emoji">🛒</div>
+          <h3>Telegram Shop Bot</h3>
+          <p>
+            Полноценный бот интернет-магазина с корзиной, платежами 
+            через ЮKassa, админ-панелью и уведомлениями. 
+            Развёрнут в Docker на VPS.
+          </p>
+          <div class="project-tags">
+            <span>aiogram 3</span>
+            <span>Docker</span>
+            <span>PostgreSQL</span>
+            <span>Redis</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="emoji">🤖</div>
+          <h3>AI Support Assistant</h3>
+          <p>
+            Telegram-бот с интеграцией OpenAI, историей диалогов 
+            и RAG на базе векторной БД. OmniRoute управляет 
+            балансировкой между моделями.
+          </p>
+          <div class="project-tags">
+            <span>aiogram</span>
+            <span>OmniRoute</span>
+            <span>OpenAI</span>
+            <span>Docker</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="emoji">📊</div>
+          <h3>Dashboard Analytics</h3>
+          <p>
+            Веб-дашборд на Flask с графиками, фильтрацией данных 
+            и экспортом в PDF. Контейнеризирован, настроен CI/CD 
+            через GitHub Actions.
+          </p>
+          <div class="project-tags">
+            <span>Flask</span>
+            <span>Docker</span>
+            <span>PostgreSQL</span>
+            <span>CI/CD</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="emoji">🔗</div>
+          <h3>OmniRoute Proxy</h3>
+          <p>
+            Настройка и кастомизация AI-шлюза OmniRoute: 
+            fallback между провайдерами, rate limiting, 
+            мониторинг через Prometheus.
+          </p>
+          <div class="project-tags">
+            <span>OmniRoute</span>
+            <span>Docker</span>
+            <span>Prometheus</span>
+            <span>Grafana</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-glass">
+        <div class="section-label" style="margin-bottom: 16px;">Контакты</div>
+        <h2>Давайте работать вместе</h2>
+        <p>
+          Открыт к предложениям, фриланс-проектам и интересным знакомствам. 
+          Пишите в Telegram или на почту — отвечаю быстро.
+        </p>
+        <div class="contact-links">
+          <a href="https://t.me/" class="contact-link" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Telegram
+          </a>
+          <a href="mailto:andrey@example.com" class="contact-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Email
+          </a>
+          <a href="https://github.com/" class="contact-link" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="container">
+      <p>© 2025 Андрей · Сызрань · Сделано с ❤️</p>
+    </div>
+  </footer>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script>
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close nav on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // Smooth reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.stat-card, .tech-item, .project-card, .about-card, .contact-glass').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

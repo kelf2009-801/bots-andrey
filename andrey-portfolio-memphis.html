@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Андрей | Разработчик — Memphis Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Righteous&family=Press+Start+2P&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Fredoka One', sans-serif;
+      background: #FFE082;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(255, 204, 0, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 204, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(255, 51, 102, 0.2) 0%, transparent 50%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #222;
+    }
+
+    /* ===== MEMPHIS BACKGROUND ELEMENTS ===== */
+    .bg-shapes {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-shapes .shape {
+      position: absolute;
+      opacity: 0.15;
+    }
+
+    .bg-shapes .circle-big {
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: #FF3366;
+      top: -80px; left: -60px;
+    }
+    .bg-shapes .circle-big-2 {
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: #00CCFF;
+      bottom: 10%; right: 5%;
+    }
+    .bg-shapes .triangle {
+      width: 0; height: 0;
+      border-left: 150px solid transparent;
+      border-right: 150px solid transparent;
+      border-bottom: 260px solid #FFCC00;
+      top: 20%; left: 70%;
+      transform: rotate(15deg);
+    }
+    .bg-shapes .squiggle {
+      width: 200px; height: 80px;
+      border: 6px dashed #FF3366;
+      border-radius: 50%;
+      top: 65%; left: 10%;
+      transform: rotate(-10deg);
+    }
+    .bg-shapes .squiggle-2 {
+      width: 140px; height: 60px;
+      border: 5px dashed #00CCFF;
+      border-radius: 50%;
+      top: 8%; right: 15%;
+      transform: rotate(20deg);
+    }
+    .bg-shapes .dots {
+      width: 120px; height: 120px;
+      background-image: radial-gradient(circle, #FF3366 3px, transparent 3px);
+      background-size: 15px 15px;
+      top: 40%; left: 5%;
+    }
+    .bg-shapes .dots-2 {
+      width: 160px; height: 160px;
+      background-image: radial-gradient(circle, #00CCFF 3px, transparent 3px);
+      background-size: 18px 18px;
+      bottom: 5%; right: 20%;
+    }
+    .bg-shapes .rect {
+      width: 100px; height: 100px;
+      background: #33CC66;
+      bottom: 20%; left: 40%;
+      transform: rotate(25deg);
+    }
+    .bg-shapes .rect-2 {
+      width: 70px; height: 70px;
+      background: #FF6600;
+      top: 12%; left: 20%;
+      transform: rotate(45deg);
+    }
+
+    /* ===== MAIN CONTAINER ===== */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .header .name-block {
+      background: #222;
+      color: #FFE082;
+      padding: 1rem 2rem;
+      border-radius: 0;
+      transform: skewX(-5deg);
+      box-shadow: 8px 8px 0 #FF3366, 12px 12px 0 rgba(0,0,0,0.1);
+    }
+    .header .name-block h1 {
+      font-family: 'Righteous', cursive;
+      font-size: 2.8rem;
+      letter-spacing: 2px;
+      transform: skewX(5deg);
+    }
+    .header .name-block .subtitle {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      color: #FFCC00;
+      transform: skewX(5deg);
+      margin-top: 0.5rem;
+    }
+
+    .header .geo-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #FF3366;
+      color: #fff;
+      padding: 0.8rem 1.8rem;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      border: 4px solid #222;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+    }
+    .header .geo-badge::before {
+      content: '📍';
+      font-size: 1.4rem;
+    }
+
+    /* ===== HERO / TAGLINE ===== */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      align-items: flex-start;
+    }
+
+    .hero .tagline-box {
+      flex: 1;
+      min-width: 260px;
+      background: #fff;
+      padding: 1.8rem 2rem;
+      border: 6px solid #222;
+      position: relative;
+      box-shadow: 10px 10px 0 #00CCFF;
+    }
+    .hero .tagline-box::after {
+      content: '';
+      position: absolute;
+      top: -18px; right: 20px;
+      width: 36px; height: 36px;
+      background: #FFCC00;
+      border: 4px solid #222;
+      border-radius: 50%;
+    }
+    .hero .tagline-box p {
+      font-size: 1.4rem;
+      line-height: 1.7;
+    }
+    .hero .tagline-box .highlight {
+      display: inline-block;
+      background: #FFCC00;
+      padding: 0.1rem 0.6rem;
+      transform: rotate(-2deg);
+    }
+
+    .hero .avatar-box {
+      width: 180px; height: 180px;
+      background: #FF3366;
+      border: 8px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      box-shadow: -8px 8px 0 #33CC66;
+      flex-shrink: 0;
+    }
+
+    /* ===== SECTION TITLES ===== */
+    .section-title {
+      font-family: 'Righteous', cursive;
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      padding: 0.4rem 1.5rem;
+      border: 5px solid #222;
+      position: relative;
+    }
+    .section-title.st-skills {
+      background: #FF3366;
+      color: #fff;
+    }
+    .section-title.st-skills::before {
+      content: '';
+      position: absolute;
+      top: -12px; left: -12px;
+      width: 24px; height: 24px;
+      background: #FFCC00;
+      border: 3px solid #222;
+      border-radius: 50%;
+    }
+    .section-title.st-projects {
+      background: #00CCFF;
+      color: #fff;
+    }
+    .section-title.st-projects::before {
+      content: '';
+      position: absolute;
+      bottom: -12px; right: -12px;
+      width: 28px; height: 28px;
+      background: #33CC66;
+      border: 3px solid #222;
+      transform: rotate(45deg);
+    }
+    .section-title.st-contact {
+      background: #FFCC00;
+      color: #222;
+    }
+    .section-title.st-contact::after {
+      content: '✦';
+      position: absolute;
+      top: -18px; left: 50%;
+      font-size: 1.8rem;
+      color: #FF3366;
+    }
+
+    /* ===== SKILLS ===== */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .skill-card {
+      padding: 1rem 1.6rem;
+      font-size: 1.1rem;
+      border: 5px solid #222;
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: default;
+    }
+    .skill-card:hover {
+      transform: translate(-4px, -4px);
+    }
+
+    .skill-card:nth-child(1) { background: #FF3366; color: #fff; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(2) { background: #00CCFF; color: #222; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(3) { background: #33CC66; color: #222; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(4) { background: #FFCC00; color: #222; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(5) { background: #FF6600; color: #fff; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(6) { background: #9933FF; color: #fff; box-shadow: 6px 6px 0 #222; }
+    .skill-card:nth-child(7) { background: #222; color: #FFE082; box-shadow: 6px 6px 0 #FF3366; }
+    .skill-card:nth-child(8) { background: #FF66B2; color: #222; box-shadow: 6px 6px 0 #222; }
+
+    .skill-card .emoji {
+      display: block;
+      font-size: 1.6rem;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 3rem;
+    }
+
+    .project-card {
+      background: #fff;
+      border: 6px solid #222;
+      padding: 1.5rem;
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .project-card:hover {
+      transform: translate(-6px, -6px);
+    }
+
+    .project-card:nth-child(1) { box-shadow: 10px 10px 0 #FF3366; }
+    .project-card:nth-child(2) { box-shadow: 10px 10px 0 #00CCFF; }
+    .project-card:nth-child(3) { box-shadow: 10px 10px 0 #33CC66; }
+    .project-card:nth-child(4) { box-shadow: 10px 10px 0 #FFCC00; }
+
+    .project-card .card-tag {
+      position: absolute;
+      top: -14px; left: 20px;
+      background: #FF3366;
+      color: #fff;
+      padding: 0.2rem 1rem;
+      font-size: 0.8rem;
+      font-family: 'Press Start 2P', monospace;
+      border: 3px solid #222;
+      transform: rotate(-3deg);
+    }
+    .project-card:nth-child(2) .card-tag { background: #00CCFF; }
+    .project-card:nth-child(3) .card-tag { background: #33CC66; }
+    .project-card:nth-child(4) .card-tag { background: #FFCC00; color: #222; }
+
+    .project-card h3 {
+      font-size: 1.5rem;
+      margin: 0.5rem 0 0.8rem;
+    }
+    .project-card p {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 400;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+    .project-card .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .project-card .tech-tags span {
+      background: #222;
+      color: #fff;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.75rem;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    /* ===== DECORATIVE LINE ===== */
+    .zigzag {
+      width: 100%;
+      height: 24px;
+      background: repeating-linear-gradient(
+        90deg,
+        #222 0px, #222 12px,
+        transparent 12px, transparent 24px
+      );
+      margin: 2rem 0;
+    }
+    .zigzag.colored {
+      background: repeating-linear-gradient(
+        90deg,
+        #FF3366 0px, #FF3366 6px,
+        #FFCC00 6px, #FFCC00 12px,
+        #00CCFF 12px, #00CCFF 18px,
+        #33CC66 18px, #33CC66 24px
+      );
+    }
+
+    .dots-divider {
+      width: 100%;
+      height: 20px;
+      background-image: radial-gradient(circle, #222 4px, transparent 4px);
+      background-size: 20px 20px;
+      margin: 2rem 0;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-item {
+      flex: 1;
+      min-width: 200px;
+      padding: 1.2rem 1.5rem;
+      border: 5px solid #222;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.1rem;
+      transition: transform 0.15s;
+    }
+    .contact-item:hover {
+      transform: scale(1.03);
+    }
+    .contact-item:nth-child(1) { border-color: #FF3366; box-shadow: 6px 6px 0 #FF3366; }
+    .contact-item:nth-child(2) { border-color: #00CCFF; box-shadow: 6px 6px 0 #00CCFF; }
+    .contact-item:nth-child(3) { border-color: #33CC66; box-shadow: 6px 6px 0 #33CC66; }
+
+    .contact-item .icon {
+      font-size: 1.8rem;
+    }
+    .contact-item a {
+      color: #222;
+      text-decoration: none;
+      border-bottom: 3px dashed #FFCC00;
+    }
+    .contact-item a:hover {
+      border-bottom-style: solid;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 6px solid #222;
+      margin-top: 2rem;
+      position: relative;
+    }
+    .footer .memphis-icon {
+      display: inline-block;
+      width: 40px; height: 40px;
+      background: #FF3366;
+      border: 4px solid #222;
+      border-radius: 50%;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+    .footer .memphis-icon::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 20px; height: 20px;
+      background: #FFCC00;
+      border: 3px solid #222;
+      border-radius: 50%;
+    }
+    .footer p {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .header .name-block h1 {
+        font-size: 2rem;
+      }
+      .hero .avatar-box {
+        width: 120px; height: 120px;
+        font-size: 3rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== BACKGROUND SHAPES ===== -->
+  <div class="bg-shapes">
+    <div class="shape circle-big"></div>
+    <div class="shape circle-big-2"></div>
+    <div class="shape triangle"></div>
+    <div class="shape squiggle"></div>
+    <div class="shape squiggle-2"></div>
+    <div class="shape dots"></div>
+    <div class="shape dots-2"></div>
+    <div class="shape rect"></div>
+    <div class="shape rect-2"></div>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="name-block">
+        <h1>АНДРЕЙ</h1>
+        <div class="subtitle">// BACKEND DEV</div>
+      </div>
+      <div class="geo-badge">
+        Сызрань, Россия
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="tagline-box">
+        <p>
+          ✦ Превращаю сложные идеи в&nbsp;работающий код.
+          <span class="highlight">Python</span>,
+          <span class="highlight">Docker</span>,
+          <span class="highlight">Telegram&nbsp;Bots</span>,
+          <span class="highlight">AI&nbsp;Gateway</span> —
+          делаю надёжные backend-решения.
+        </p>
+      </div>
+      <div class="avatar-box">
+        🐍
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <h2 class="section-title st-skills">⚡ Навыки</h2>
+    <div class="skills-grid">
+      <div class="skill-card"><span class="emoji">🐍</span>Python</div>
+      <div class="skill-card"><span class="emoji">🐳</span>Docker</div>
+      <div class="skill-card"><span class="emoji">🤖</span>aiogram</div>
+      <div class="skill-card"><span class="emoji">🌐</span>FastAPI</div>
+      <div class="skill-card"><span class="emoji">🔀</span>OmniRoute</div>
+      <div class="skill-card"><span class="emoji">🧠</span>Hermes Agent</div>
+      <div class="skill-card"><span class="emoji">🐘</span>PostgreSQL</div>
+      <div class="skill-card"><span class="emoji">☁️</span>Linux / DevOps</div>
+    </div>
+
+    <!-- ZIGZAG DIVIDER -->
+    <div class="zigzag colored"></div>
+
+    <!-- PROJECTS -->
+    <h2 class="section-title st-projects">🚀 Проекты</h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="card-tag">TELEGRAM</div>
+        <h3>🤖 Многофункциональный Telegram-бот</h3>
+        <p>
+          Бот на aiogram 3.x с поддержкой мультиязычности, платежей,
+          админ-панели и интеграцией с внешними API. Микросервисная
+          архитектура в Docker.
+        </p>
+        <div class="tech-tags">
+          <span>Python</span>
+          <span>aiogram</span>
+          <span>Docker</span>
+          <span>PostgreSQL</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-tag">AI GATEWAY</div>
+        <h3>🔀 OmniRoute — AI Gateway</h3>
+        <p>
+          Конфигурация и деплой AI-шлюза с балансировкой провайдеров,
+          fallback-цепочками, rate limiting и мониторингом. Прокси для
+          OpenAI, Anthropic, DashScope и других.
+        </p>
+        <div class="tech-tags">
+          <span>OmniRoute</span>
+          <span>Docker</span>
+          <span>Nginx</span>
+          <span>Prometheus</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-tag">AGENT</div>
+        <h3>🧠 Hermes Agent — Кастомные навыки</h3>
+        <p>
+          Разработка пользовательских навыков и плагинов для Hermes Agent.
+          Автоматизация рутинных задач, интеграция с внешними сервисами,
+          настройка профилей и инструментов.
+        </p>
+        <div class="tech-tags">
+          <span>Python</span>
+          <span>Hermes</span>
+          <span>MCP</span>
+          <span>YAML</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-tag">DEVOPS</div>
+        <h3>☁️ Docker-инфраструктура</h3>
+        <p>
+          Docker Compose-сборки для production-проектов: CI/CD пайплайны,
+          мониторинг стека (Grafana + Prometheus), автоматический
+          бэкап баз данных и SSL-сертификатов.
+        </p>
+        <div class="tech-tags">
+          <span>Docker</span>
+          <span>CI/CD</span>
+          <span>Grafana</span>
+          <span>Linux</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DOTS DIVIDER -->
+    <div class="dots-divider"></div>
+
+    <!-- CONTACT -->
+    <h2 class="section-title st-contact">📬 Контакты</h2>
+    <div class="contact-bar">
+      <div class="contact-item">
+        <span class="icon">📧</span>
+        <a href="mailto:andrey@example.com">andrey@example.com</a>
+      </div>
+      <div class="contact-item">
+        <span class="icon">💬</span>
+        <a href="https://t.me/andrey_dev" target="_blank">@andrey_dev</a>
+      </div>
+      <div class="contact-item">
+        <span class="icon">🐙</span>
+        <a href="https://github.com/andrey" target="_blank">github.com/andrey</a>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="memphis-icon"></div>
+      <p>© 2025 Андрей · Сделано в стиле Memphis ✦</p>
+    </footer>
+
+  </div>
+</body>
+</html>

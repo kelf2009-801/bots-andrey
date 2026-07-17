@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Андрей — Разработчик / Python · Docker · AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   SWISS DESIGN — International Typographic Style
+   Helvetica / Grid / Red · White · Black
+   ═══════════════════════════════════════════════ */
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --red:    #DA291C;
+  --red-bg: #F5E6E4;
+  --black:  #1A1A1A;
+  --white:  #FFFFFF;
+  --off-white: #F8F8F8;
+  --gray:   #888888;
+  --light-gray: #E0E0E0;
+  --font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --grid-gap: 2px;
+  --section-pad: clamp(60px, 8vw, 120px);
+  --col-gap: 40px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--black);
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Grid Container ─── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Typography ─── */
+h1, h2, h3, h4, .label {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* ─── Grid Lines (Swiss grid aesthetic) ─── */
+.grid-line {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0,0,0,0.04);
+  z-index: 0;
+  pointer-events: none;
+}
+.gl-1 { left: 25%; }
+.gl-2 { left: 50%; }
+.gl-3 { left: 75%; }
+
+/* ─── Header ─── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 2px solid var(--black);
+}
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+}
+.header-logo {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--black);
+  text-decoration: none;
+}
+.header-logo span { color: var(--red); }
+.header-nav { display: flex; gap: 32px; }
+.header-nav a {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--black);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.header-nav a:hover { color: var(--red); }
+
+/* ─── Hero ─── */
+.hero {
+  padding: clamp(80px, 10vw, 140px) 0 clamp(60px, 8vw, 100px);
+  border-bottom: 2px solid var(--black);
+  position: relative;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--col-gap);
+  align-items: end;
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--red);
+  padding: 4px 12px;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  margin-bottom: 16px;
+}
+.hero h1 .red { color: var(--red); }
+.hero-location {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--gray);
+  margin-bottom: 32px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--light-gray);
+  border: 2px solid var(--black);
+}
+.hero-stat {
+  background: var(--white);
+  padding: 20px 16px;
+  text-align: center;
+}
+.hero-stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+  margin-top: 6px;
+  display: block;
+}
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero-desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #444;
+  max-width: 480px;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  background: var(--black);
+  padding: 14px 32px;
+  text-decoration: none;
+  transition: background 0.2s;
+  width: fit-content;
+}
+.hero-cta:hover { background: var(--red); }
+.hero-cta svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ─── Section Common ─── */
+section { padding: var(--section-pad) 0; }
+section + section { border-top: 1px solid var(--light-gray); }
+
+/* ─── Stack ─── */
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--light-gray);
+  border: 2px solid var(--black);
+}
+.stack-item {
+  background: var(--white);
+  padding: 32px 24px;
+  position: relative;
+  transition: background 0.2s;
+}
+.stack-item:hover { background: var(--off-white); }
+.stack-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+  display: block;
+}
+.stack-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stack-desc {
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+/* ─── Projects ─── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--light-gray);
+  border: 2px solid var(--black);
+}
+.project-card {
+  background: var(--white);
+  padding: 40px 32px;
+  transition: background 0.2s;
+}
+.project-card.featured {
+  grid-column: 1 / -1;
+  background: var(--black);
+  color: var(--white);
+  padding: 48px 40px;
+}
+.project-card.featured .project-tag { background: var(--red); color: var(--white); }
+.project-card.featured .project-desc { color: rgba(255,255,255,0.7); }
+.project-card.featured .project-link { color: var(--white); border-color: rgba(255,255,255,0.3); }
+.project-card.featured .project-link:hover { border-color: var(--red); }
+.project-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--red);
+  padding: 3px 10px;
+  margin-bottom: 16px;
+}
+.project-card:not(.featured) .project-tag {
+  background: var(--black);
+}
+.project-name {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.project-desc {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  max-width: 520px;
+}
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.project-stack span {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border: 1px solid var(--light-gray);
+  background: var(--off-white);
+}
+.project-card.featured .project-stack span {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: var(--white);
+}
+.project-link {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--black);
+  text-decoration: none;
+  border-bottom: 2px solid var(--black);
+  padding-bottom: 2px;
+  transition: border-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.project-link:hover { border-color: var(--red); color: var(--red); }
+.project-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* ─── Contact / Footer ─── */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--light-gray);
+  border: 2px solid var(--black);
+}
+.contact-info {
+  background: var(--white);
+  padding: 48px 40px;
+}
+.contact-info h3 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--light-gray);
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--black);
+  transition: color 0.2s;
+}
+.contact-item:last-child { border-bottom: none; }
+.contact-item:hover { color: var(--red); }
+.contact-item svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+.contact-note {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 16px;
+  line-height: 1.5;
+}
+.contact-form {
+  background: var(--black);
+  color: var(--white);
+  padding: 48px 40px;
+}
+.contact-form h3 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.contact-form p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 24px;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 13px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--white);
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--red);
+}
+.contact-form textarea {
+  height: 100px;
+  resize: vertical;
+}
+.contact-form button {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  background: var(--red);
+  border: none;
+  padding: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.contact-form button:hover { background: #B82218; }
+
+/* ─── Footer ─── */
+footer {
+  border-top: 2px solid var(--black);
+  padding: 24px 0;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--gray);
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+.footer-links a {
+  color: var(--black);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--red); }
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-right { order: -1; }
+  .hero-desc { max-width: 100%; }
+  .stack-grid { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .header-nav { display: none; }
+  .hero-stats { grid-template-columns: 1fr; }
+  .stack-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card.featured { padding: 32px 24px; }
+  .contact-info { padding: 32px 24px; }
+  .contact-form { padding: 32px 24px; }
+  .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+  .grid-line { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Grid Lines (Swiss Design) ═══ -->
+<div class="grid-line gl-1"></div>
+<div class="grid-line gl-2"></div>
+<div class="grid-line gl-3"></div>
+
+<!-- ═══ Header ═══ -->
+<header>
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="header-logo">Андрей<span>.</span>dev</a>
+      <nav class="header-nav">
+        <a href="#stack">Стек</a>
+        <a href="#projects">Проекты</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <span class="hero-tag">Python Developer</span>
+        <h1>
+          Андрей<br>
+          <span class="red">Сызрань</span>
+        </h1>
+        <div class="hero-location">Сызрань, Россия</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-num">5+</span>
+            <span class="hero-stat-label">Лет в IT</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">15+</span>
+            <span class="hero-stat-label">Проектов</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-num">100%</span>
+            <span class="hero-stat-label">Open Source</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <p class="hero-desc">
+          Разрабатываю на Python. Строю инфраструктуру на Docker, 
+          создаю Telegram-ботов на aiogram, разворачиваю AI-шлюзы 
+          (OmniRoute) и автоматизирую всё, что поддаётся автоматизации.
+        </p>
+        <a href="#contact" class="hero-cta">
+          Связаться
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Stack ═══ -->
+<section id="stack">
+  <div class="container">
+    <span class="label">Стек технологий</span>
+    <h2>Инструменты</h2>
+    <div class="stack-grid">
+      <div class="stack-item">
+        <span class="stack-icon">🐍</span>
+        <div class="stack-name">Python</div>
+        <div class="stack-desc">Основной язык. Бэкенд, скрипты, автоматизация</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🐳</span>
+        <div class="stack-name">Docker</div>
+        <div class="stack-desc">Контейнеризация, Compose, мультистейдж билды</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🤖</span>
+        <div class="stack-name">aiogram</div>
+        <div class="stack-desc">Telegram-боты, FSM, middleware, вебхуки</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🌐</span>
+        <div class="stack-name">OmniRoute</div>
+        <div class="stack-desc">AI-шлюз, балансировка провайдеров, fallback</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">⚡</span>
+        <div class="stack-name">FastAPI</div>
+        <div class="stack-desc">REST API, async, Pydantic, Swagger</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🗄️</span>
+        <div class="stack-name">PostgreSQL</div>
+        <div class="stack-desc">SQLAlchemy, Alembic, миграции, оптимизация</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🧠</span>
+        <div class="stack-name">LLM / AI</div>
+        <div class="stack-desc">OpenAI API, Hermes Agent, промпт-инжиниринг</div>
+      </div>
+      <div class="stack-item">
+        <span class="stack-icon">🔧</span>
+        <div class="stack-name">Hermes Agent</div>
+        <div class="stack-desc">AI-агент, навыки, MCP-инструменты, автоматизация</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Projects ═══ -->
+<section id="projects">
+  <div class="container">
+    <span class="label">Портфолио</span>
+    <h2>Проекты</h2>
+    <div class="projects-grid">
+      <div class="project-card featured">
+        <span class="project-tag">AI · Infrastructure</span>
+        <div class="project-name">OmniRoute — AI Gateway</div>
+        <div class="project-desc">
+          Умный шлюз для AI-провайдеров с балансировкой, fallback-цепочками, 
+          мониторингом и веб-дашбордом. Поддерживает OpenAI, Anthropic, Google, 
+          локальные модели и кастомные эндпоинты.
+        </div>
+        <div class="project-stack">
+          <span>Python</span>
+          <span>FastAPI</span>
+          <span>Docker</span>
+          <span>WebSocket</span>
+          <span>PostgreSQL</span>
+        </div>
+        <a href="#" class="project-link">
+          Подробнее
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="project-card">
+        <span class="project-tag">Telegram Bot</span>
+        <div class="project-name">DealBot</div>
+        <div class="project-desc">
+          Многофункциональный Telegram-бот с aiogram: FSM-сценарии, 
+          платежи, админ-панель, push-уведомления и интеграция с API.
+        </div>
+        <div class="project-stack">
+          <span>aiogram</span>
+          <span>Python</span>
+          <span>Docker</span>
+          <span>Redis</span>
+        </div>
+        <a href="#" class="project-link">
+          Подробнее
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="project-card">
+        <span class="project-tag">AI Agent</span>
+        <div class="project-name">Hermes Agent Skills</div>
+        <div class="project-desc">
+          Набор кастомных навыков для Hermes Agent: автоматизация 
+          деплоя, мониторинг инфраструктуры, генерация отчётов.
+        </div>
+        <div class="project-stack">
+          <span>Python</span>
+          <span>Hermes</span>
+          <span>MCP</span>
+          <span>YAML</span>
+        </div>
+        <a href="#" class="project-link">
+          Подробнее
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="project-card">
+        <span class="project-tag">Dashboard</span>
+        <div class="project-name">Web Dashboard</div>
+        <div class="project-desc">
+          CRUD-дашборды на Flask + HTML + Docker. Управление данными 
+          через веб-интерфейс с авторизацией и экспортом.
+        </div>
+        <div class="project-stack">
+          <span>Flask</span>
+          <span>HTML/CSS</span>
+          <span>Docker</span>
+          <span>SQLite</span>
+        </div>
+        <a href="#" class="project-link">
+          Подробнее
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="project-card">
+        <span class="project-tag">Infrastructure</span>
+        <div class="project-name">Docker Compose Stack</div>
+        <div class="project-desc">
+          Production-ready Docker Compose сценарии: Nginx, PostgreSQL, 
+          Redis, мониторинг, резервное копирование и CI/CD.
+        </div>
+        <div class="project-stack">
+          <span>Docker</span>
+          <span>Nginx</span>
+          <span>PostgreSQL</span>
+          <span>CI/CD</span>
+        </div>
+        <a href="#" class="project-link">
+          Подробнее
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Contact ═══ -->
+<section id="contact">
+  <div class="container">
+    <span class="label">Контакты</span>
+    <h2>Связь</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Андрей</h3>
+        <p style="font-size:14px;color:#555;margin-bottom:24px;line-height:1.6;">
+          Python-разработчик из Сызрани. Открыт к предложениям, 
+          коллаборациям и интересным проектам.
+        </p>
+        <a href="#" class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M21 2H3a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/><path d="M7 7h10v10H7z"/></svg>
+          @andrey_dev
+        </a>
+        <a href="#" class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          t.me/andrey_syzran
+        </a>
+        <a href="#" class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          github.com/andrey
+        </a>
+        <div class="contact-note">
+          Сызрань, Россия · Python · Docker · AI · Open Source
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3>Написать</h3>
+        <p>Оставьте сообщение — я отвечу в течение дня</p>
+        <form onsubmit="event.preventDefault(); alert('Спасибо! Я свяжусь с вами.');">
+          <input type="text" placeholder="Имя" required>
+          <input type="email" placeholder="Email" required>
+          <textarea placeholder="Сообщение" required></textarea>
+          <button type="submit">Отправить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Footer ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span>© 2026 Андрей · Сызрань</span>
+      <div class="footer-links">
+        <a href="#stack">Стек</a>
+        <a href="#projects">Проекты</a>
+        <a href="#contact">Контакты</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

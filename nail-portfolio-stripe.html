@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Елена — Nail Art Studio | Маникюр и педикюр в СПб</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a1a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== UTILITY ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .section-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #a78bfa;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .section-label::after {
+            content: '';
+            display: inline-block;
+            width: 32px;
+            height: 1.5px;
+            background: linear-gradient(90deg, #a78bfa, transparent);
+            margin-left: 12px;
+            vertical-align: middle;
+        }
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #f8fafc 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-desc {
+            font-size: 1.125rem;
+            color: #94a3b8;
+            max-width: 640px;
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: #fff;
+            box-shadow: 0 4px 24px rgba(124, 58, 237, 0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1.5px solid rgba(167, 139, 250, 0.3);
+        }
+        .btn-outline:hover {
+            border-color: #a78bfa;
+            background: rgba(167, 139, 250, 0.08);
+        }
+
+        /* ===== HERO PARTICLES BACKGROUND ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: #0a0a1a;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124, 58, 237, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 70%, rgba(99, 102, 241, 0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 0%, rgba(167, 139, 250, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        /* Grid overlay */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(167, 139, 250, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(167, 139, 250, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+        }
+
+        /* Floating orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2), transparent);
+            top: -200px; right: -200px;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent);
+            bottom: -100px; left: -100px;
+            animation: orbFloat 25s ease-in-out infinite alternate-reverse;
+        }
+        .orb-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbFloat 15s ease-in-out infinite alternate;
+        }
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, -40px) scale(1.15); }
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease;
+        }
+        nav.scrolled {
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(20px) saturate(1.5);
+            border-bottom: 1px solid rgba(167, 139, 250, 0.08);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: -0.03em;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: 700;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #94a3b8;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #f8fafc; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: #fff !important;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(124,58,237,0.4); }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .mobile-toggle span {
+            width: 24px;
+            height: 2px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        .mobile-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .mobile-toggle.open span:nth-child(2) { opacity: 0; }
+        .mobile-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* ===== HERO CONTENT ===== */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 120px 0 80px;
+        }
+        .hero-text .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            margin-bottom: 24px;
+        }
+        .hero-text .badge-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #a78bfa;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+        .hero-text h1 {
+            font-size: clamp(2.8rem, 7vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, #f8fafc 0%, #c4b5fd 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-text h1 .highlight {
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-text p {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin: 24px 0 36px;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(167, 139, 250, 0.1);
+        }
+        .hero-stat h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-stat p {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin: 4px 0 0;
+            font-weight: 500;
+        }
+
+        /* Hero image */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow:
+                0 0 0 1px rgba(167, 139, 250, 0.1),
+                0 24px 80px rgba(124, 58, 237, 0.15);
+        }
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            display: block;
+        }
+        .hero-image-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10,10,26,0.6) 0%, transparent 50%);
+        }
+        .hero-image-badge {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: rgba(10, 10, 26, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+        }
+        .hero-image-badge-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .hero-image-badge-text h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .hero-image-badge-text p {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+        .hero-image-badge-stars {
+            margin-left: auto;
+            color: #fbbf24;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        /* ===== SERVICES ===== */
+        .services {
+            padding: 120px 0;
+            position: relative;
+        }
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.15), transparent);
+        }
+        .services-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .services-header .section-desc {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .service-card {
+            padding: 40px 32px;
+            border-radius: 20px;
+            background: linear-gradient(160deg, rgba(30, 30, 60, 0.6), rgba(20, 20, 40, 0.4));
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7c3aed, transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(167, 139, 250, 0.2);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+        }
+        .service-card:hover::before { opacity: 1; }
+        .service-card.featured {
+            border-color: rgba(167, 139, 250, 0.2);
+            background: linear-gradient(160deg, rgba(40, 30, 80, 0.6), rgba(20, 20, 40, 0.4));
+        }
+        .service-card.featured::before { opacity: 1; }
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        .service-icon.purple {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(167, 139, 250, 0.1));
+        }
+        .service-icon.teal {
+            background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(94, 234, 212, 0.1));
+        }
+        .service-icon.pink {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(244, 114, 182, 0.1));
+        }
+        .service-icon.amber {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.1));
+        }
+        .service-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .service-card .price {
+            display: inline-block;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 12px 0;
+        }
+        .service-card .price-note {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+        }
+        .service-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .service-card .service-features {
+            list-style: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(167, 139, 250, 0.08);
+        }
+        .service-card .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            padding: 4px 0;
+        }
+        .service-card .service-features li::before {
+            content: '✓';
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        /* ===== PORTFOLIO / GALLERY ===== */
+        .portfolio {
+            padding: 120px 0;
+            position: relative;
+        }
+        .portfolio::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.15), transparent);
+        }
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .gallery-item {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            aspect-ratio: 3/4;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease, filter 0.6s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.08);
+            filter: brightness(0.7);
+        }
+        .gallery-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10,10,26,0.8), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+        .gallery-item:hover .overlay { opacity: 1; }
+        .gallery-item .overlay span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+        .gallery-item .overlay small {
+            font-size: 0.7rem;
+            color: #a78bfa;
+        }
+        .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+        .gallery-item:nth-child(6) { grid-column: span 2; }
+
+        /* ===== ABOUT ===== */
+        .about {
+            padding: 120px 0;
+            position: relative;
+        }
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.15), transparent);
+        }
+        .about-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        .about-image {
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 24px 80px rgba(124, 58, 237, 0.1);
+        }
+        .about-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+        .about-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(167, 139, 250, 0.1);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+        .about-content h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #f8fafc 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        .about-content p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .about-quote {
+            margin-top: 32px;
+            padding: 24px 28px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.06), rgba(99, 102, 241, 0.04));
+            border-left: 3px solid #7c3aed;
+        }
+        .about-quote p {
+            font-size: 1rem;
+            font-style: italic;
+            color: #c4b5fd;
+            margin: 0;
+        }
+        .about-quote cite {
+            display: block;
+            font-size: 0.8rem;
+            font-style: normal;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonials {
+            padding: 120px 0;
+            position: relative;
+        }
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.15), transparent);
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+        .testimonial-card {
+            padding: 32px;
+            border-radius: 20px;
+            background: linear-gradient(160deg, rgba(30, 30, 60, 0.4), rgba(20, 20, 40, 0.3));
+            border: 1px solid rgba(167, 139, 250, 0.08);
+            transition: all 0.3s;
+        }
+        .testimonial-card:hover {
+            border-color: rgba(167, 139, 250, 0.15);
+            transform: translateY(-2px);
+        }
+        .testimonial-stars {
+            color: #fbbf24;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+        }
+        .testimonial-card blockquote {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.7;
+            font-style: italic;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(167, 139, 250, 0.08);
+        }
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .testimonial-author div strong {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .testimonial-author div span {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* ===== CTA ===== */
+        .cta-section {
+            padding: 120px 0;
+            position: relative;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.15), transparent);
+        }
+        .cta-box {
+            text-align: center;
+            padding: 80px 40px;
+            border-radius: 32px;
+            background: linear-gradient(160deg, rgba(30, 30, 60, 0.6), rgba(20, 20, 40, 0.4));
+            border: 1px solid rgba(167, 139, 250, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7c3aed, #a78bfa, transparent);
+        }
+        .cta-box h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #f8fafc 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        .cta-box p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            max-width: 520px;
+            margin: 0 auto 36px;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-contact-row {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .cta-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .cta-contact-item .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(167, 139, 250, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(167, 139, 250, 0.08);
+            text-align: center;
+        }
+        footer p {
+            font-size: 0.8rem;
+            color: #475569;
+        }
+        footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+            list-style: none;
+        }
+        footer .footer-links a {
+            font-size: 0.8rem;
+            color: #64748b;
+            transition: color 0.3s;
+        }
+        footer .footer-links a:hover { color: #a78bfa; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .hero-content { grid-template-columns: 1fr; gap: 40px; }
+            .hero-text p { max-width: 100%; }
+            .hero-stats { justify-content: flex-start; }
+            .hero-image-wrapper { max-width: 100%; }
+            .hero-image-wrapper img { height: 400px; }
+            .about-inner { grid-template-columns: 1fr; gap: 40px; }
+            .about-image img { height: 350px; }
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+            .gallery-item:nth-child(1) { grid-column: span 3; }
+            .gallery-item:nth-child(6) { grid-column: span 1; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 26, 0.95);
+                backdrop-filter: blur(20px);
+                padding: 24px;
+                gap: 20px;
+                border-bottom: 1px solid rgba(167, 139, 250, 0.08);
+            }
+            .mobile-toggle { display: flex; }
+            .hero { min-height: auto; }
+            .hero-content { padding: 100px 0 40px; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-stats { gap: 24px; flex-wrap: wrap; }
+            .hero-image-wrapper img { height: 320px; }
+            .services-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+            .gallery-item:nth-child(1) { grid-column: span 2; }
+            .gallery-item:nth-child(6) { grid-column: span 2; }
+            .cta-box { padding: 48px 24px; }
+            .cta-contact-row { flex-direction: column; align-items: center; gap: 16px; }
+        }
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 2rem; }
+            .hero-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAV ===== -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon">E</span>
+                Елена
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#portfolio">Портфолио</a></li>
+                <li><a href="#about">Обо мне</a></li>
+                <li><a href="#testimonials">Отзывы</a></li>
+                <li><a href="#contact" class="nav-cta">Записаться</a></li>
+            </ul>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="badge">
+                        <span class="badge-dot"></span>
+                        Nail-мастер в Санкт-Петербурге
+                    </div>
+                    <h1>
+                        Превращаю<br>
+                        <span class="highlight">ваши ногти</span><br>
+                        в произведение искусства
+                    </h1>
+                    <p>
+                        Маникюр и педикюр премиум-класса с индивидуальным подходом.
+                        Более 7 лет создаю безупречный образ для каждой клиентки.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#contact" class="btn btn-primary">
+                            Записаться на приём
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </a>
+                        <a href="#portfolio" class="btn btn-outline">Смотреть работы</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <h3>7+</h3>
+                            <p>Лет опыта</p>
+                        </div>
+                        <div class="hero-stat">
+                            <h3>2 500+</h3>
+                            <p>Довольных клиенток</p>
+                        </div>
+                        <div class="hero-stat">
+                            <h3>4.9</h3>
+                            <p>Средняя оценка</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-image-wrapper">
+                        <img
+                            src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80&auto=format&fit=crop"
+                            alt="Маникюр Елены"
+                            loading="eager"
+                        >
+                        <div class="hero-image-badge">
+                            <div class="hero-image-badge-avatar">Е</div>
+                            <div class="hero-image-badge-text">
+                                <h4>Елена</h4>
+                                <p>Nail-мастер · СПб</p>
+                            </div>
+                            <div class="hero-image-badge-stars">★★★★★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="services-header reveal">
+                <span class="section-label">Услуги</span>
+                <h2 class="section-title">Что я предлагаю</h2>
+                <p class="section-desc">
+                    Использую только премиальные материалы и современные техники.
+                    Каждая процедура включает заботу о ваших руках и ногах.
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card featured reveal">
+                    <div class="service-icon purple">💅</div>
+                    <h3>Маникюр</h3>
+                    <span class="price">1 500 ₽</span>
+                    <p>Классический, аппаратный или комбинированный — любой вариант под ваш тип ногтей и пожелания.</p>
+                    <ul class="service-features">
+                        <li>Обработка кутикулы</li>
+                        <li>Форма и длина на выбор</li>
+                        <li>Покрытие премиум-базой</li>
+                        <li>Массаж рук</li>
+                    </ul>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon teal">🦶</div>
+                    <h3>Педикюр</h3>
+                    <span class="price">2 000 ₽</span>
+                    <p>Комплексный уход за стопами с удалением огрубевшей кожи и идеальной обработкой ногтей.</p>
+                    <ul class="service-features">
+                        <li>Аппаратная обработка</li>
+                        <li>Удаление натоптышей</li>
+                        <li>Покрытие гель-лаком</li>
+                        <li>Увлажняющий уход</li>
+                    </ul>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon pink">🎨</div>
+                    <h3>Дизайн ногтей</h3>
+                    <span class="price">от 500 ₽</span>
+                    <span class="price-note">дополнительно к покрытию</span>
+                    <p>Уникальный дизайн: от лаконичного минимализма до сложных художественных композиций.</p>
+                    <ul class="service-features">
+                        <li>Френш / лунный дизайн</li>
+                        <li>Градиент / омбре</li>
+                        <li>Стемпинг / слайдеры</li>
+                        <li>Авторская роспись</li>
+                    </ul>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon amber">✨</div>
+                    <h3>Наращивание</h3>
+                    <span class="price">от 2 500 ₽</span>
+                    <span class="price-note">с дизайном</span>
+                    <p>Укрепление и наращивание ногтей любой длины и формы. Держится до 4 недель.</p>
+                    <ul class="service-features">
+                        <li>Гель / акригель</li>
+                        <li>Любая форма (миндаль, квадрат)</li>
+                        <li>Укрепление натуральных ногтей</li>
+                        <li>Коррекция через 2-3 недели</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PORTFOLIO ===== -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="portfolio-header reveal">
+                <div>
+                    <span class="section-label">Портфолио</span>
+                    <h2 class="section-title">Мои работы</h2>
+                </div>
+                <p class="section-desc" style="max-width: 400px;">
+                    Каждый дизайн — результат вдохновения и профессионального подхода.
+                </p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80&auto=format&fit=crop" alt="Дизайн ногтей 1" loading="lazy">
+                    <div class="overlay"><span>Френч с золотом</span><small>Дизайн</small></div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&q=80&auto=format&fit=crop" alt="Дизайн ногтей 2" loading="lazy">
+                    <div class="overlay"><span>Nude-стиль</span><small>Маникюр</small></div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&auto=format&fit=crop" alt="Дизайн ногтей 3" loading="lazy">
+                    <div class="overlay"><span>Мраморный эффект</span><small>Дизайн</small></div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=400&q=80&auto=format&fit=crop" alt="Дизайн ногтей 4" loading="lazy">
+                    <div class="overlay"><span>Ягодный оттенок</span><small>Маникюр</small></div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&auto=format&fit=crop" alt="Дизайн ногтей 5" loading="lazy">
+                    <div class="overlay"><span>Минимализм</span><small>Дизайн</small></div>
+                </div>
+                <div class="gallery-item reveal">
+                    <img src="https://images.unsplash.com/photo-1607779097040-26e80aa78e66?w=600&q=80&auto=format&fit=crop" alt="Дизайн ногтей 6" loading="lazy">
+                    <div class="overlay"><span>Классический красный</span><small>Педикюр</small></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-inner">
+                <div class="about-image reveal">
+                    <img
+                        src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80&auto=format&fit=crop"
+                        alt="Елена — Nail-мастер"
+                        loading="lazy"
+                    >
+                </div>
+                <div class="about-content reveal">
+                    <span class="section-label">Обо мне</span>
+                    <h2>Елена — ваш мастер красоты в СПб</h2>
+                    <p>
+                        Привет! Меня зовут Елена. Я профессиональный nail-мастер с опытом работы более 7 лет.
+                        Специализируюсь на маникюре и педикюре, создаю дизайны, которые подчёркивают
+                        индивидуальность каждой клиентки.
+                    </p>
+                    <p>
+                        Работаю в центре Санкт-Петербурга в уютной студии с премиальными материалами
+                        ведущих мировых брендов. Постоянно повышаю квалификацию на мастер-классах
+                        и слежу за мировыми трендами nail-индустрии.
+                    </p>
+                    <div class="about-quote">
+                        <p>«Ногти — это аксессуар, который всегда с вами. Я помогаю каждой девушке чувствовать себя уверенно и красиво до кончиков пальцев.»</p>
+                        <cite>— Елена, nail-мастер</cite>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="services-header reveal">
+                <span class="section-label">Отзывы</span>
+                <h2 class="section-title">Что говорят клиентки</h2>
+                <p class="section-desc">
+                    Более 2 500 довольных клиенток — лучшая рекомендация моего профессионализма.
+                </p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>«Лучший мастер, к которому я ходила! Елена чувствует ноготь, делает идеально аккуратно. Дизайн получается ещё красивее, чем на фото. Рекомендую всем!»</blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">А</div>
+                        <div>
+                            <strong>Анна</strong>
+                            <span>· клиентка 2 года</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>«Хожу к Елене уже полгода. Всегда чисто, стерильно, очень комфортная атмосфера. Педикюр — просто космос, ножки как у младенца!»</blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">М</div>
+                        <div>
+                            <strong>Мария</strong>
+                            <span>· клиентка 6 месяцев</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <blockquote>«Очень довольна результатом! Елена учла все мои пожелания, подобрала идеальный оттенок. Маникюр держится уже третью неделю без сколов. Спасибо!»</blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">Е</div>
+                        <div>
+                            <strong>Екатерина</strong>
+                            <span>· клиентка 1 год</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="cta-box reveal">
+                <h2>Готова создать для вас идеальный образ</h2>
+                <p>
+                    Запишитесь на удобное время — и я превращу ваши ногти в произведение искусства.
+                    Первый визит — скидка 10% на маникюр.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://wa.me/78121234567" class="btn btn-primary" target="_blank" rel="noopener">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Написать в WhatsApp
+                    </a>
+                    <a href="https://t.me/elena_nail" class="btn btn-outline" target="_blank" rel="noopener">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg>
+                        Telegram
+                    </a>
+                </div>
+                <div class="cta-contact-row">
+                    <div class="cta-contact-item">
+                        <span class="icon">📍</span>
+                        Санкт-Петербург, м. Невский проспект
+                    </div>
+                    <div class="cta-contact-item">
+                        <span class="icon">📞</span>
+                        +7 (812) 123-45-67
+                    </div>
+                    <div class="cta-contact-item">
+                        <span class="icon">🕐</span>
+                        Ежедневно с 10:00 до 21:00
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="container">
+            <ul class="footer-links">
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#portfolio">Портфолио</a></li>
+                <li><a href="#about">Обо мне</a></li>
+                <li><a href="#testimonials">Отзывы</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+            <p>© 2025 Елена — Nail Art Studio. Санкт-Петербург.</p>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // Nav scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Mobile toggle
+        const toggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('open');
+            navLinks.classList.toggle('open');
+        });
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggle.classList.remove('open');
+                navLinks.classList.remove('open');
+            });
+        });
+
+        // Scroll reveal
+        const revealObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            },
+            { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+        );
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>
