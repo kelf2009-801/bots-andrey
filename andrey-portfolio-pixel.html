@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Андрей | 8-bit Портфолио</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: #0f0d1a;
+      color: #e0e0e0;
+      line-height: 1.8;
+      font-size: 10px;
+      image-rendering: pixelated;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCANLINES ===== */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ===== CRT GLOW ===== */
+    .crt-glow {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: #0f0d1a; }
+    ::-webkit-scrollbar-thumb {
+      background: #3a2a5a;
+      border: 2px solid #6b4fa0;
+      border-radius: 0;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ===== STARFIELD ===== */
+    #starfield {
+      position: fixed; inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      width: 4px; height: 4px;
+      background: #fff;
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0%   { opacity: 0.2; transform: scale(1); }
+      100% { opacity: 1;   transform: scale(1.3); }
+    }
+
+    /* ===== PIXEL BORDER ===== */
+    .pixel-box {
+      background: #1a1530;
+      border: 4px solid #6b4fa0;
+      box-shadow:
+        inset -4px -4px 0 #2a1f4a,
+        inset  4px  4px 0 #8a6fc0;
+      padding: 24px;
+      position: relative;
+    }
+    .pixel-box::before {
+      content: '';
+      position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px;
+      border: 4px solid #3a2a5a;
+      pointer-events: none;
+    }
+
+    /* ===== TITLE SCREEN ===== */
+    .title-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .title-screen::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(15,13,26,0) 0%, rgba(15,13,26,1) 100%);
+      pointer-events: none;
+    }
+
+    .title-art {
+      font-size: 8px;
+      line-height: 1.1;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd70088;
+      margin-bottom: 20px;
+      white-space: pre;
+    }
+
+    .title-name {
+      font-size: 28px;
+      color: #ffd700;
+      text-shadow:
+        3px 3px 0 #aa4400,
+        6px 6px 0 #552200,
+        0 0 20px #ffd70066;
+      margin-bottom: 8px;
+      letter-spacing: 4px;
+    }
+    .title-sub {
+      font-size: 12px;
+      color: #7ec8e3;
+      text-shadow: 0 0 10px #7ec8e388;
+      margin-bottom: 30px;
+    }
+    .title-location {
+      font-size: 9px;
+      color: #d4a574;
+      margin-bottom: 40px;
+    }
+    .title-location span {
+      display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    /* ===== PRESS START ===== */
+    .press-start {
+      font-size: 10px;
+      color: #44ff44;
+      animation: blink 1s step-end infinite;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .press-start:hover {
+      color: #88ff88;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0; }
+    }
+
+    /* ===== NAV ===== */
+    .nav-bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15,13,26,0.92);
+      border-bottom: 4px solid #6b4fa0;
+      padding: 0 20px;
+      backdrop-filter: blur(4px);
+    }
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 48px;
+    }
+    .nav-logo {
+      font-size: 10px;
+      color: #ffd700;
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 8px;
+      color: #b0a0d0;
+      text-decoration: none;
+      padding: 6px 10px;
+      border: 2px solid transparent;
+      transition: 0.15s;
+    }
+    .nav-links a:hover {
+      color: #ffd700;
+      border-color: #6b4fa0;
+      background: #2a1f4a;
+    }
+
+    /* ===== SECTION ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 0;
+    }
+    .section-title {
+      font-size: 16px;
+      color: #ffd700;
+      text-align: center;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 0 #884400;
+    }
+    .section-title::before {
+      content: '► ';
+      color: #44ff44;
+    }
+    .section-title::after {
+      content: ' ◄';
+      color: #44ff44;
+    }
+
+    /* ===== ABOUT ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-text {
+      font-size: 9px;
+      line-height: 2;
+    }
+    .about-text strong {
+      color: #ffd700;
+    }
+
+    .about-avatar-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .avatar-pixel {
+      width: 160px;
+      height: 160px;
+      background: #1a1530;
+      border: 4px solid #6b4fa0;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(16, 1fr);
+      gap: 1px;
+      padding: 2px;
+    }
+    .avatar-pixel span {
+      display: block;
+      width: 100%; height: 100%;
+    }
+    .avatar-pixel .p0 { background: transparent; }
+    .avatar-pixel .p1 { background: #f4c28d; } /* skin */
+    .avatar-pixel .p2 { background: #5a3a1a; } /* hair */
+    .avatar-pixel .p3 { background: #ffffff; } /* eyes */
+    .avatar-pixel .p4 { background: #222222; } /* pupil */
+    .avatar-pixel .p5 { background: #3a6a3a; } /* shirt */
+    .avatar-pixel .p6 { background: #2a4a2a; } /* shirt shadow */
+    .avatar-pixel .p7 { background: #4a3a2a; } /* pants */
+    .avatar-pixel .p8 { background: #3a2a1a; } /* pants shadow */
+    .avatar-pixel .p9 { background: #8a6a4a; } /* shoes */
+    .avatar-pixel .pa { background: #ff6666; } /* heart */
+    .avatar-pixel .pb { background: #ff4444; } /* heart dark */
+
+    .avatar-label {
+      font-size: 8px;
+      color: #d4a574;
+      text-align: center;
+    }
+    .avatar-label .hp-bar {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #44ff44;
+      margin: 0 1px;
+    }
+    .avatar-label .hp-bar.empty {
+      background: #333;
+    }
+
+    /* ===== STATS BAR ===== */
+    .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-size: 8px;
+      color: #b0a0d0;
+      min-width: 80px;
+    }
+    .stat-bar-bg {
+      flex: 1;
+      height: 14px;
+      background: #1a1530;
+      border: 2px solid #3a2a5a;
+      position: relative;
+    }
+    .stat-bar-fill {
+      height: 100%;
+      transition: width 1s ease;
+    }
+    .stat-bar-fill.python  { background: #3776AB; }
+    .stat-bar-fill.docker  { background: #2496ED; }
+    .stat-bar-fill.aiogram { background: #00A86B; }
+    .stat-bar-fill.hermes  { background: #FF6B35; }
+    .stat-bar-fill.omniroute{background: #9B59B6; }
+    .stat-bar-fill.linux   { background: #FCC624; }
+    .stat-val {
+      font-size: 8px;
+      color: #fff;
+      min-width: 30px;
+      text-align: right;
+    }
+
+    /* ===== SKILLS / ITEMS ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .skill-card {
+      background: #1a1530;
+      border: 4px solid #3a2a5a;
+      padding: 20px;
+      text-align: center;
+      transition: 0.2s;
+      cursor: default;
+    }
+    .skill-card:hover {
+      border-color: #ffd700;
+      box-shadow: 0 0 20px #ffd70044;
+      transform: translateY(-4px);
+    }
+    .skill-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .skill-name {
+      font-size: 9px;
+      color: #ffd700;
+      margin-bottom: 8px;
+    }
+    .skill-desc {
+      font-size: 7px;
+      color: #b0a0d0;
+      line-height: 1.8;
+    }
+    .skill-rarity {
+      font-size: 6px;
+      margin-top: 10px;
+      padding: 3px 8px;
+      display: inline-block;
+      border: 2px solid;
+    }
+    .skill-rarity.common    { color: #aaa; border-color: #555; }
+    .skill-rarity.uncommon  { color: #44ff44; border-color: #44ff44; }
+    .skill-rarity.rare      { color: #4488ff; border-color: #4488ff; }
+    .skill-rarity.epic      { color: #aa44ff; border-color: #aa44ff; }
+    .skill-rarity.legendary { color: #ff8800; border-color: #ff8800; }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+    .project-card {
+      background: #1a1530;
+      border: 4px solid #3a2a5a;
+      padding: 20px;
+      transition: 0.2s;
+    }
+    .project-card:hover {
+      border-color: #7ec8e3;
+    }
+    .project-title {
+      font-size: 10px;
+      color: #7ec8e3;
+      margin-bottom: 10px;
+    }
+    .project-title::before {
+      content: '📦 ';
+    }
+    .project-desc {
+      font-size: 7px;
+      color: #b0a0d0;
+      line-height: 2;
+      margin-bottom: 12px;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .project-tag {
+      font-size: 6px;
+      padding: 3px 8px;
+      background: #2a1f4a;
+      border: 2px solid #6b4fa0;
+      color: #b0a0d0;
+    }
+
+    /* ===== QUOTE / NPC ===== */
+    .npc-quote {
+      background: #1a1530;
+      border: 4px solid #6b4fa0;
+      padding: 24px;
+      text-align: center;
+      margin: 40px 0;
+      position: relative;
+    }
+    .npc-quote::before {
+      content: '✦ НОВЫЙ КВЕСТ ✦';
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: #0f0d1a;
+      padding: 0 12px;
+      font-size: 8px;
+      color: #ffd700;
+    }
+    .npc-quote p {
+      font-size: 9px;
+      color: #d4a574;
+      line-height: 2;
+      font-style: italic;
+    }
+    .npc-quote .npc-name {
+      font-size: 8px;
+      color: #7ec8e3;
+      margin-top: 12px;
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+    .contact-box {
+      background: #1a1530;
+      border: 4px solid #3a2a5a;
+      padding: 20px;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .contact-box:hover {
+      border-color: #ffd700;
+    }
+    .contact-box .icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .contact-box .label {
+      font-size: 8px;
+      color: #b0a0d0;
+      margin-bottom: 6px;
+    }
+    .contact-box .value {
+      font-size: 9px;
+      color: #ffd700;
+      word-break: break-all;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px;
+      border-top: 4px solid #3a2a5a;
+    }
+    footer p {
+      font-size: 7px;
+      color: #555;
+      line-height: 2;
+    }
+    footer .hearts {
+      color: #ff6666;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 0.6; }
+      50%      { opacity: 1; }
+    }
+
+    /* ===== FLOATING PLATFORMS ===== */
+    .float-platform {
+      position: fixed;
+      width: 32px; height: 8px;
+      background: #3a2a5a;
+      z-index: 0;
+      animation: floatAround 20s linear infinite;
+      opacity: 0.3;
+    }
+    @keyframes floatAround {
+      0%   { transform: translate(0, 0); }
+      25%  { transform: translate(100px, -50px); }
+      50%  { transform: translate(200px, 0); }
+      75%  { transform: translate(100px, 50px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* ===== COIN ANIMATION ===== */
+    .coin {
+      display: inline-block;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0%   { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .title-name { font-size: 18px; }
+      .title-sub  { font-size: 9px; }
+      .nav-links a { font-size: 7px; padding: 4px 6px; }
+      .section-title { font-size: 12px; }
+      .avatar-pixel { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CRT Overlay -->
+  <div class="crt-glow"></div>
+
+  <!-- Starfield -->
+  <div id="starfield"></div>
+
+  <!-- Floating platforms -->
+  <div class="float-platform" style="top:15%;left:10%;animation-delay:0s;"></div>
+  <div class="float-platform" style="top:40%;left:80%;animation-delay:5s;width:48px;"></div>
+  <div class="float-platform" style="top:70%;left:5%;animation-delay:10s;width:40px;"></div>
+  <div class="float-platform" style="top:85%;left:70%;animation-delay:15s;"></div>
+
+  <!-- ===== NAV ===== -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">⧩ АНДРЕЙ</a>
+      <ul class="nav-links">
+        <li><a href="#about">[О]</a></li>
+        <li><a href="#skills">[Навыки]</a></li>
+        <li><a href="#projects">[Проекты]</a></li>
+        <li><a href="#contact">[Контакты]</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===== TITLE SCREEN ===== -->
+  <header class="title-screen" id="top">
+    <div class="title-art">
+░░░░░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░▓▓░░░░▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░▓▓░░░░░░░░▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░▓▓░░░░░░░░░░░░▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░▓▓░░░░░░░░▓▓░░░░▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░▓▓░░░░░░▓▓▓▓▓▓░░░░▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░▓▓░░░░░░▓▓▓▓▓▓░░░░▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░▓▓░░░░░░▓▓▓▓░░░░▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░▓▓░░░░░░░░░░░░▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░▓▓░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░▓▓▓▓░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+    </div>
+
+    <div class="title-name">⯌ АНДРЕЙ ⯌</div>
+    <div class="title-sub">⚡ Python Developer &amp; AI-Engineer ⚡</div>
+    <div class="title-location"><span>📍</span> Сызрань, Россия</div>
+
+    <div class="press-start" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+      ▶ НАЖМИ START ◀
+    </div>
+  </header>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">О ПЕРСОНАЖЕ</h2>
+      <div class="about-grid">
+        <div class="about-text pixel-box">
+          <p><strong>Имя:</strong> Андрей</p>
+          <p><strong>Уровень:</strong> 42</p>
+          <p><strong>Класс:</strong> Python Developer / AI-Engineer</p>
+          <p><strong>Локация:</strong> Сызрань, Самарская обл.</p>
+          <p><strong>Специализация:</strong> Разработка Telegram-ботов, Docker-инфраструктура, AI-шлюзы, автоматизация</p>
+          <p style="margin-top:12px;">
+            Создаю надёжные backend-решения, пишу на Python, оборачиваю в Docker,
+            дружу с aiogram, строю AI-шлюзы на OmniRoute и расширяю Hermes Agent.
+            В свободное время — исследую новые технологии и улучшаю свои скиллы.
+          </p>
+          <p style="margin-top:12px;color:#44ff44;">
+            ❤ HP: 100/100 &nbsp; ⚡ MP: 80/80 &nbsp; 🏆 EXP: ████████░░ 80%
+          </p>
+        </div>
+
+        <div class="about-avatar-box">
+          <div class="avatar-pixel" id="avatar">
+            <!-- Pixel art avatar generated by JS -->
+          </div>
+          <div class="avatar-label">
+            <div style="color:#ffd700;font-size:10px;margin-bottom:6px;">АНДРЕЙ</div>
+            <div style="margin-bottom:4px;">
+              <span class="hp-bar"></span><span class="hp-bar"></span><span class="hp-bar"></span>
+              <span class="hp-bar"></span><span class="hp-bar"></span><span class="hp-bar"></span>
+              <span class="hp-bar"></span><span class="hp-bar"></span><span class="hp-bar"></span>
+              <span class="hp-bar"></span>
+            </div>
+            <div style="color:#7ec8e3;">Lv.42 Разработчик</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NPC QUOTE ===== -->
+  <section style="padding:20px 0;">
+    <div class="container">
+      <div class="npc-quote">
+        <p>«Привет, путник! Я — Андрей, местный разработчик из Сызрани.<br>
+        Могу написать тебе Telegram-бота, настроить Docker-стейк<br>
+        или построить AI-шлюз. Готов к новым квестам!»</p>
+        <div class="npc-name">— Андрей, NPC-разработчик 🗡️</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">ИНВЕНТАРЬ НАВЫКОВ</h2>
+
+      <!-- Stats bars -->
+      <div class="pixel-box" style="margin-bottom:30px;">
+        <div class="stat-row">
+          <span class="stat-label">🐍 Python</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill python" style="width:95%"></div></div>
+          <span class="stat-val">95%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🐳 Docker</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill docker" style="width:88%"></div></div>
+          <span class="stat-val">88%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🤖 Aiogram</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill aiogram" style="width:92%"></div></div>
+          <span class="stat-val">92%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🧠 Hermes Agent</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill hermes" style="width:80%"></div></div>
+          <span class="stat-val">80%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🌐 OmniRoute</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill omniroute" style="width:85%"></div></div>
+          <span class="stat-val">85%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">🐧 Linux</span>
+          <div class="stat-bar-bg"><div class="stat-bar-fill linux" style="width:90%"></div></div>
+          <span class="stat-val">90%</span>
+        </div>
+      </div>
+
+      <!-- Skill cards -->
+      <div class="skills-grid">
+        <div class="skill-card">
+          <span class="skill-icon">🐍</span>
+          <div class="skill-name">Python</div>
+          <div class="skill-desc">Backend, асинхронность, скрипты автоматизации, FastAPI, парсинг</div>
+          <div class="skill-rarity legendary">LEGENDARY</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🐳</span>
+          <div class="skill-name">Docker</div>
+          <div class="skill-desc">Контейнеризация, docker-compose, мультистейдж сборки, оркестрация</div>
+          <div class="skill-rarity epic">EPIC</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🤖</span>
+          <div class="skill-name">Aiogram</div>
+          <div class="skill-desc">Telegram-боты, FSM, middleware, платежи, веб-приложения</div>
+          <div class="skill-rarity legendary">LEGENDARY</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🧠</span>
+          <div class="skill-name">Hermes Agent</div>
+          <div class="skill-desc">AI-агенты, инструменты, скиллы, плагины, расширение функционала</div>
+          <div class="skill-rarity epic">EPIC</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🌐</span>
+          <div class="skill-name">OmniRoute</div>
+          <div class="skill-desc">AI-шлюз, балансировка провайдеров, fallback, кэширование</div>
+          <div class="skill-rarity rare">RARE</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🐧</span>
+          <div class="skill-name">Linux</div>
+          <div class="skill-desc">Администрирование, bash, systemd, сетевые настройки, Nginx</div>
+          <div class="skill-rarity epic">EPIC</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">🗄️</span>
+          <div class="skill-name">Базы данных</div>
+          <div class="skill-desc">PostgreSQL, Redis, SQLite, SQLAlchemy, Alembic</div>
+          <div class="skill-rarity rare">RARE</div>
+        </div>
+        <div class="skill-card">
+          <span class="skill-icon">⚡</span>
+          <div class="skill-name">FastAPI</div>
+          <div class="skill-desc">REST API, WebSocket, async, валидация, документация OpenAPI</div>
+          <div class="skill-rarity rare">RARE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title">ВЫПОЛНЕННЫЕ КВЕСТЫ</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-title">Telegram Multi-Provider Bot</div>
+          <div class="project-desc">
+            Умный Telegram-бот с поддержкой множества AI-провайдеров, 
+            fallback цепочкой, балансировкой нагрузки и кэшированием ответов.
+            Работает через OmniRoute.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Aiogram</span>
+            <span class="project-tag">OmniRoute</span>
+            <span class="project-tag">Docker</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Hermes Agent Plugins</div>
+          <div class="project-desc">
+            Разработка плагинов и скиллов для Hermes Agent — desktop-плагины,
+            Telegram-интеграция, кастомные инструменты, расширение возможностей AI-агента.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Python</span>
+            <span class="project-tag">Hermes</span>
+            <span class="project-tag">API</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">AI Gateway — OmniRoute</div>
+          <div class="project-desc">
+            Настройка и развёртывание AI-шлюза OmniRoute с поддержкой
+            множества LLM-провайдеров, rate limiting, мониторингом и веб-дашбордом.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Docker</span>
+            <span class="project-tag">OmniRoute</span>
+            <span class="project-tag">Nginx</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-title">Docker-инфраструктура</div>
+          <div class="project-desc">
+            Проектирование и развёртывание Docker-стейков: микросервисы,
+            CI/CD, мониторинг (Grafana + Prometheus), автоматический бэкап.
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Docker</span>
+            <span class="project-tag">Compose</span>
+            <span class="project-tag">CI/CD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">СВЯЗЬ С NPC</h2>
+      <div class="contact-grid">
+        <a href="https://t.me/andrey_dev" target="_blank" style="text-decoration:none;">
+          <div class="contact-box">
+            <span class="icon">✉️</span>
+            <div class="label">Telegram</div>
+            <div class="value">@andrey_dev</div>
+          </div>
+        </a>
+        <a href="https://github.com/andrey" target="_blank" style="text-decoration:none;">
+          <div class="contact-box">
+            <span class="icon">🐙</span>
+            <div class="label">GitHub</div>
+            <div class="value">github.com/andrey</div>
+          </div>
+        </a>
+        <div class="contact-box">
+          <span class="icon">📧</span>
+          <div class="label">Email</div>
+          <div class="value">andrey@syzran.dev</div>
+        </div>
+        <div class="contact-box">
+          <span class="icon">📍</span>
+          <div class="label">Локация</div>
+          <div class="value">Сызрань, Россия</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>
+      <span class="hearts">♥</span> Made with pixel love in Сызрань <span class="hearts">♥</span><br>
+      © 2025 Андрей · 8-bit Portfolio · All Rights Reserved<br>
+      <span style="font-size:6px;color:#333;">[ SYSTEM: ONLINE ]  [ FRAME RATE: 60 FPS ]  [ PLAYER: ACTIVE ]</span>
+    </p>
+  </footer>
+
+  <script>
+    // ===== STARFIELD =====
+    (function() {
+      const sf = document.getElementById('starfield');
+      for (let i = 0; i < 80; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top = Math.random() * 100 + '%';
+        s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+        s.style.animationDelay = Math.random() * 4 + 's';
+        const size = 2 + Math.floor(Math.random() * 3);
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        const colors = ['#fff','#ffd700','#7ec8e3','#ff88cc','#88ff88'];
+        s.style.background = colors[Math.floor(Math.random() * colors.length)];
+        sf.appendChild(s);
+      }
+    })();
+
+    // ===== PIXEL AVATAR =====
+    (function() {
+      const container = document.getElementById('avatar');
+      // 16x16 pixel art character
+      const sprite = [
+        // 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+        [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 ], // 0
+        [ 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0 ], // 1
+        [ 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0 ], // 2
+        [ 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0 ], // 3
+        [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 ], // 4
+        [ 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 ], // 5 face
+        [ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 ], // 6
+        [ 0, 0, 1, 1, 1, 3, 3, 1, 3, 3, 1, 1, 0, 0, 0, 0 ], // 7 eyes
+        [ 0, 0, 1, 1, 1, 4, 4, 1, 4, 4, 1, 1, 0, 0, 0, 0 ], // 8 pupils
+        [ 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 ], // 9 nose
+        [ 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 ], // 10
+        [ 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0 ], // 11 shirt
+        [ 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0 ], // 12
+        [ 0, 0, 5, 5, 6, 6, 5, 5, 6, 6, 5, 5, 0, 0, 0, 0 ], // 13
+        [ 0, 0, 0, 7, 7, 8, 8, 8, 8, 7, 7, 0, 0, 0, 0, 0 ], // 14 pants
+        [ 0, 0, 0, 0, 7, 9, 9, 9, 9, 7, 0, 0, 0, 0, 0, 0 ], // 15 shoes
+      ];
+      // p0=transparent, p1=skin, p2=hair, p3=white, p4=black/pupil, p5=shirt, p6=shirt shadow, p7=pants, p8=pants shadow, p9=shoes
+      const classMap = ['p0','p1','p2','p3','p4','p5','p6','p7','p8','p9'];
+      for (let r = 0; r < 16; r++) {
+        for (let c = 0; c < 16; c++) {
+          const px = document.createElement('span');
+          px.className = classMap[sprite[r][c]] || classMap[0];
+          container.appendChild(px);
+        }
+      }
+    })();
+
+    // ===== STAT BAR ANIMATION ON SCROLL =====
+    (function() {
+      const fills = document.querySelectorAll('.stat-bar-fill');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.transition = 'width 1.2s ease-out';
+          }
+        });
+      }, { threshold: 0.3 });
+      fills.forEach(f => observer.observe(f));
+    })();
+  </script>
+</body>
+</html>

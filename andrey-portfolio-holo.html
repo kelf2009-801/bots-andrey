@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Андрей · Голографическое портфолио</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============ RESET & BASE ============ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ============ HOLOGRAPHIC BG CANVAS ============ */
+    #holo-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ============ NOISE OVERLAY ============ */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* ============ SCROLL INDICATOR ============ */
+    .scroll-indicator {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.3);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    .scroll-indicator .mouse {
+      width: 22px; height: 34px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      position: relative;
+    }
+    .scroll-indicator .mouse::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 3px; height: 8px;
+      background: linear-gradient(180deg, #a855f7, #ec4899);
+      border-radius: 3px;
+      animation: scrollWheel 1.5s ease-in-out infinite;
+    }
+    @keyframes scrollWheel {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+      50% { transform: translateX(-50%) translateY(10px); opacity: 0.3; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* ============ GLASS CARD ============ */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.4s ease,
+                  border-color 0.3s ease;
+    }
+    .glass:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(255,255,255,0.15);
+      box-shadow:
+        0 16px 48px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .glass-strong {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(24px) saturate(1.5);
+      -webkit-backdrop-filter: blur(24px) saturate(1.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+    }
+
+    /* ============ IRIDESCENT TEXT ============ */
+    .iridescent {
+      background: linear-gradient(
+        135deg,
+        #f59e0b 0%,
+        #ec4899 20%,
+        #a855f7 40%,
+        #06b6d4 60%,
+        #22c55e 80%,
+        #f59e0b 100%
+      );
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: iridescentShift 6s ease-in-out infinite;
+    }
+    @keyframes iridescentShift {
+      0%   { background-position: 0% 50%; }
+      25%  { background-position: 100% 0%; }
+      50%  { background-position: 100% 100%; }
+      75%  { background-position: 0% 100%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .iridescent-border {
+      position: relative;
+    }
+    .iridescent-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #f59e0b, #ec4899, #a855f7, #06b6d4, #22c55e, #f59e0b);
+      background-size: 300% 300%;
+      z-index: -1;
+      animation: iridescentShift 6s ease-in-out infinite;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      padding: 1px;
+    }
+
+    /* ============ LAYOUT ============ */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 120px 0 80px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      background: rgba(168,85,247,0.1);
+      border: 1px solid rgba(168,85,247,0.2);
+      color: #c084fc;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      letter-spacing: -2px;
+      animation: fadeInUp 0.8s ease 0.1s forwards;
+      opacity: 0;
+    }
+    .hero h1 .iridescent {
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: rgba(255,255,255,0.5);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease 0.2s forwards;
+      opacity: 0;
+    }
+    .hero-sub strong {
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+
+    .hero-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease 0.3s forwards;
+      opacity: 0;
+    }
+    .hero-location svg { width: 16px; height: 16px; }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 0.8s ease 0.35s forwards;
+      opacity: 0;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 60px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(168,85,247,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 40px rgba(168,85,247,0.45);
+    }
+    .btn-glass {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .btn-glass:hover {
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    /* ============ FLOATING ORBS ============ */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      opacity: 0.4;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #a855f7, transparent);
+      top: -100px; right: -100px;
+      animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, #ec4899, transparent);
+      bottom: 10%; left: -80px;
+      animation-delay: -4s;
+    }
+    .orb-3 {
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, #06b6d4, transparent);
+      top: 50%; left: 50%;
+      animation-delay: -8s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -40px) scale(1.1); }
+      50% { transform: translate(-20px, 20px) scale(0.9); }
+      75% { transform: translate(40px, 30px) scale(1.05); }
+    }
+
+    /* ============ ANIMATIONS ============ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ SECTION ============ */
+    .section {
+      padding: 100px 0;
+      position: relative;
+    }
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .section-desc {
+      color: rgba(255,255,255,0.5);
+      max-width: 500px;
+      line-height: 1.7;
+      font-size: 15px;
+      margin-bottom: 48px;
+    }
+
+    /* ============ ABOUT ============ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+
+    .about-card {
+      padding: 40px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .about-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+    .about-card .icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .about-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .about-card p {
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* ============ SKILLS ============ */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+    }
+    .skill-item {
+      padding: 24px 20px;
+      text-align: center;
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: default;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .skill-item:hover {
+      transform: translateY(-6px) scale(1.05);
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(168,85,247,0.3);
+      box-shadow: 0 8px 32px rgba(168,85,247,0.15);
+    }
+    .skill-item .emoji {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .skill-item .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+    }
+    .skill-item .level {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+    .skill-item .level span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    .skill-item .level span.active {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+    }
+
+    /* ============ PROJECTS ============ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .project-card {
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(168,85,247,0.05), rgba(236,72,153,0.05));
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .project-card:hover::before {
+      opacity: 1;
+    }
+    .project-card .project-number {
+      font-size: 48px;
+      font-weight: 900;
+      background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .project-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .project-card p {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .project-tags span {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ============ CONTACT ============ */
+    .contact-section {
+      text-align: center;
+      padding: 100px 0;
+    }
+    .contact-section .section-desc {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 60px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .contact-link:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(168,85,247,0.3);
+      color: #fff;
+    }
+
+    .contact-link svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ============ GLITCH TEXT ============ */
+    .glitch-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .glitch-text {
+      position: relative;
+      display: inline-block;
+    }
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .glitch-text::before {
+      color: #a855f7;
+      animation: glitchShift 3s infinite linear alternate-reverse;
+      clip-path: inset(0 0 60% 0);
+    }
+    .glitch-text::after {
+      color: #ec4899;
+      animation: glitchShift 2.5s infinite linear alternate;
+      clip-path: inset(60% 0 0 0);
+    }
+    @keyframes glitchShift {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 1px); }
+      40% { transform: translate(2px, -1px); }
+      60% { transform: translate(-1px, 2px); }
+      80% { transform: translate(1px, -1px); }
+      100% { transform: translate(0); }
+    }
+
+    /* ============ FOOTER ============ */
+    .footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ============ REVEAL ON SCROLL ============ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============ SHIMMER ============ */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .shimmer-text {
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.4) 50%,
+        rgba(255,255,255,0.1) 100%
+      );
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    /* ============ MARQUEE ============ */
+    .marquee-wrap {
+      overflow: hidden;
+      padding: 24px 0;
+      position: relative;
+      width: 100%;
+    }
+    .marquee-wrap::before,
+    .marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-wrap::before {
+      left: 0;
+      background: linear-gradient(90deg, #0a0a0f, transparent);
+    }
+    .marquee-wrap::after {
+      right: 0;
+      background: linear-gradient(-90deg, #0a0a0f, transparent);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      width: max-content;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-track span {
+      font-size: 14px;
+      color: rgba(255,255,255,0.15);
+      white-space: nowrap;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+    .marquee-track span em {
+      font-style: normal;
+      color: rgba(168,85,247,0.3);
+      margin: 0 8px;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============ 3D TILT (JS) ============ */
+    .tilt { transition: transform 0.1s ease; transform-style: preserve-3d; perspective: 800px; }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-card { padding: 28px; }
+      .project-card { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HOLOGRAPHIC CANVAS ===== -->
+  <canvas id="holo-canvas"></canvas>
+  <div class="noise-overlay"></div>
+
+  <!-- ===== FLOATING ORBS ===== -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ===== SCROLL INDICATOR ===== -->
+  <div class="scroll-indicator" id="scrollIndicator">
+    <div class="mouse"></div>
+    <span>Scroll</span>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="container" style="position:relative;z-index:2;">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Доступен для проектов
+      </div>
+
+      <h1>
+        <span class="glitch-wrapper">
+          <span class="glitch-text" data-text="Андрей">Андрей</span>
+        </span>
+        <span class="iridescent">Разработчик</span>
+      </h1>
+
+      <p class="hero-sub">
+        Создаю <strong>telegram-ботов</strong>, <strong>API-сервисы</strong>
+        и <strong>AI-инфраструктуру</strong> на&nbsp;Python.
+        Пишу чистый код, проектирую масштабируемые решения.
+      </p>
+
+      <div class="hero-location">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Сызрань, Россия
+      </div>
+
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">
+          Проекты
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-glass">
+          Контакты
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MARQUEE ===== -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Python <em>✦</em> Docker <em>✦</em> Aiogram <em>✦</em> OmniRoute <em>✦</em> Hermes <em>✦</em> FastAPI <em>✦</em> PostgreSQL <em>✦</em> Redis <em>✦</em> Nginx <em>✦</em> Linux <em>✦</em></span>
+      <span>Python <em>✦</em> Docker <em>✦</em> Aiogram <em>✦</em> OmniRoute <em>✦</em> Hermes <em>✦</em> FastAPI <em>✦</em> PostgreSQL <em>✦</em> Redis <em>✦</em> Nginx <em>✦</em> Linux <em>✦</em></span>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Обо мне</div>
+        <h2 class="section-title iridescent">Код, который <br>работает сам</h2>
+        <p class="section-desc">
+          Пишу на Python с душой. От телеграм-ботов до AI-шлюзов —
+          каждая строка проходит code review и покрыта тестами.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card glass reveal">
+          <span class="icon">🧠</span>
+          <h3>AI-интеграции</h3>
+          <p>
+            OmniRoute, Hermes Agent, GPT/Claude API — встраиваю LLM
+            в реальные продукты. Промпт-инжиниринг, RAG, streaming.
+          </p>
+        </div>
+        <div class="about-card glass reveal">
+          <span class="icon">⚡</span>
+          <h3>Telegram-боты</h3>
+          <p>
+            Aiogram 3.x, middleware, FSM, платежи, админки.
+            Боты на тысячи пользователей с нуля до продакшена.
+          </p>
+        </div>
+        <div class="about-card glass reveal">
+          <span class="icon">🐳</span>
+          <h3>Docker & DevOps</h3>
+          <p>
+            Контейнеризация, docker-compose, CI/CD, Nginx,
+            PostgreSQL. Всё, чтобы проект запускался одной командой.
+          </p>
+        </div>
+        <div class="about-card glass reveal">
+          <span class="icon">🔧</span>
+          <h3>Open Source</h3>
+          <p>
+            Вношу вклад в Hermes Agent, пишу инструменты для сообщества.
+            Верю, что open source делает индустрию сильнее.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Навыки</div>
+        <h2 class="section-title">Стек технологий</h2>
+        <p class="section-desc">
+          Инструменты, которыми владею на уровне уверенного продакшна.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-item reveal">
+          <span class="emoji">🐍</span>
+          <span class="name">Python</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🤖</span>
+          <span class="name">Aiogram</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🐳</span>
+          <span class="name">Docker</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🌐</span>
+          <span class="name">FastAPI</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🧠</span>
+          <span class="name">OmniRoute</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">⚡</span>
+          <span class="name">Hermes Agent</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🗄️</span>
+          <span class="name">PostgreSQL</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">📡</span>
+          <span class="name">Redis</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🐧</span>
+          <span class="name">Linux</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">🔒</span>
+          <span class="name">Nginx</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">⚙️</span>
+          <span class="name">CI/CD</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+        <div class="skill-item reveal">
+          <span class="emoji">📊</span>
+          <span class="name">Git</span>
+          <div class="level"><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span><span class="active"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Проекты</div>
+        <h2 class="section-title">Что я <span class="iridescent">строю</span></h2>
+        <p class="section-desc">
+          Пет-проекты, коммерческие разработки и open-source вклад.
+        </p>
+      </div>
+
+      <div class="projects-grid">
+        <div class="project-card glass reveal">
+          <div class="project-number">01</div>
+          <h3>OmniRoute</h3>
+          <p>AI-шлюз с мульти-провайдерной маршрутизацией, fallback-цепочками и балансировкой. Управление через Telegram.</p>
+          <div class="project-tags">
+            <span>Python</span>
+            <span>FastAPI</span>
+            <span>LLM</span>
+            <span>Docker</span>
+          </div>
+        </div>
+
+        <div class="project-card glass reveal">
+          <div class="project-number">02</div>
+          <h3>Hermes Agent</h3>
+          <p>AI-агент с функциями компьютерного зрения, работы с файлами и интеграцией Telegram. Контрибьюции в ядро.</p>
+          <div class="project-tags">
+            <span>Python</span>
+            <span>AI Agent</span>
+            <span>Open Source</span>
+          </div>
+        </div>
+
+        <div class="project-card glass reveal">
+          <div class="project-number">03</div>
+          <h3>Telegram-боты</h3>
+          <p>Серия коммерческих ботов на aiogram: от магазинов до административных панелей с платежами и аналитикой.</p>
+          <div class="project-tags">
+            <span>Aiogram</span>
+            <span>PostgreSQL</span>
+            <span>Redis</span>
+          </div>
+        </div>
+
+        <div class="project-card glass reveal">
+          <div class="project-number">04</div>
+          <h3>AI-инфраструктура</h3>
+          <p>Прокси-сервера, WAF, балансировщики для LLM-провайдеров. Мониторинг, логирование, авто-масштабирование.</p>
+          <div class="project-tags">
+            <span>Docker</span>
+            <span>Nginx</span>
+            <span>CI/CD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section contact-section" id="contact">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Контакты</div>
+        <h2 class="section-title">Давайте <span class="iridescent">работать</span> вместе</h2>
+        <p class="section-desc">
+          Открыт к предложениям — фриланс, контракты, стартапы.
+          Пишите в Telegram, я отвечаю быстро.
+        </p>
+      </div>
+
+      <div class="contact-links reveal">
+        <a href="https://t.me/andrey" target="_blank" class="contact-link" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          Telegram
+        </a>
+        <a href="https://github.com/andrey" target="_blank" class="contact-link" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:andrey@example.com" class="contact-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Email
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Андрей · Сызрань · Сделано с ❤️ и голографией</p>
+    </div>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ===== HOLOGRAPHIC CANVAS =====
+    const canvas = document.getElementById('holo-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, time = 0;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawHolo(t) {
+      ctx.clearRect(0, 0, w, h);
+
+      // Deep gradient background
+      const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h)*0.8);
+      grad.addColorStop(0, '#0f0a1a');
+      grad.addColorStop(0.4, '#0a0a1a');
+      grad.addColorStop(0.7, '#060612');
+      grad.addColorStop(1, '#020208');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Iridescent flowing waves
+      for (let i = 0; i < 5; i++) {
+        const yOff = h * 0.15 + i * (h * 0.18);
+        const amp = 40 + i * 8;
+        const freq = 0.003 + i * 0.0008;
+        const speed = 0.3 + i * 0.05;
+        const phase = i * 1.2;
+
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+
+        for (let x = 0; x <= w; x += 4) {
+          const y = yOff + Math.sin(x * freq + t * speed + phase) * amp
+                    + Math.sin(x * freq * 2.3 + t * speed * 0.7 + phase * 1.5) * amp * 0.4;
+          ctx.lineTo(x, y);
+        }
+
+        ctx.lineTo(w, h);
+        ctx.closePath();
+
+        const hue = (i * 50 + t * 8) % 360;
+        const alpha = 0.04 + i * 0.01;
+        ctx.fillStyle = `hsla(${hue}, 80%, 60%, ${alpha})`;
+        ctx.fill();
+      }
+
+      // Iridescent shimmer streaks
+      for (let i = 0; i < 8; i++) {
+        const x = (Math.sin(t * 0.15 + i * 1.7) * 0.5 + 0.5) * w;
+        const y = (Math.cos(t * 0.12 + i * 2.3) * 0.5 + 0.5) * h;
+        const radius = 60 + Math.sin(t * 0.2 + i) * 20;
+
+        const glow = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        const hue = (i * 45 + t * 20) % 360;
+        glow.addColorStop(0, `hsla(${hue}, 100%, 70%, 0.08)`);
+        glow.addColorStop(0.5, `hsla(${hue + 30}, 90%, 60%, 0.03)`);
+        glow.addColorStop(1, `hsla(${hue + 60}, 80%, 50%, 0)`);
+        ctx.fillStyle = glow;
+        ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      }
+
+      // Scanline grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.012)';
+      ctx.lineWidth = 1;
+      const step = 60;
+      for (let x = 0; x < w; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(() => drawHolo(performance.now() / 1000));
+    }
+    drawHolo(0);
+
+    // ===== SCROLL REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ===== SCROLL INDICATOR HIDE =====
+    window.addEventListener('scroll', () => {
+      const indicator = document.getElementById('scrollIndicator');
+      if (window.scrollY > 200) {
+        indicator.style.opacity = '0';
+        indicator.style.pointerEvents = 'none';
+      } else {
+        indicator.style.opacity = '1';
+        indicator.style.pointerEvents = 'auto';
+      }
+    });
+
+    // ===== 3D TILT ON CARDS =====
+    document.querySelectorAll('.tilt').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -6;
+        const rotateY = ((x - centerX) / centerX) * 6;
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+      });
+    });
+
+    // ===== PARALLAX ON ORBS =====
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.querySelectorAll('.orb').forEach((orb, i) => {
+        const speed = 10 + i * 5;
+        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+      });
+    });
+  </script>
+</body>
+</html>

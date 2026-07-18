@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Андрей — портфолио</title>
+<style>
+  /* ===== RESET / BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Noto+Sans+JP:wght@300;400&display=swap');
+
+  :root {
+    --ink:       #1a1a1a;
+    --ink-light: #3a3a3a;
+    --washi:     #f5f0e8;
+    --washi-alt: #ede6d6;
+    --paper:     #e8e0d0;
+    --rust:      #8b5a3a;
+    --rust-dim:  #6b4c3a;
+    --indigo:    #2c3e50;
+    --gold:      #a0845c;
+    --text:      #2a2a2a;
+    --text-dim:  #6b6b6b;
+    --border:    #d4c8b4;
+    --accent:    #c0392b;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'Noto Serif JP', 'Georgia', 'Times New Roman', serif;
+    background: var(--washi);
+    color: var(--text);
+    line-height: 1.9;
+    letter-spacing: .02em;
+    overflow-x: hidden;
+  }
+
+  /* ===== INK TEXTURE OVERLAY ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      /* subtle grain */
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.012) 2px,
+        rgba(0,0,0,.012) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,.008) 3px,
+        rgba(0,0,0,.008) 5px
+      );
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: multiply;
+    opacity: .5;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--washi-alt); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    z-index: 1000;
+    padding: 1.2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, var(--washi) 60%, transparent);
+    mix-blend-mode: normal;
+  }
+
+  nav .logo {
+    font-size: 1.1rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 300;
+    text-decoration: none;
+  }
+
+  nav .logo span { color: var(--rust); }
+
+  nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  nav ul a {
+    text-decoration: none;
+    color: var(--text-dim);
+    font-size: .85rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    font-weight: 300;
+    transition: color .4s;
+    position: relative;
+  }
+
+  nav ul a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--rust);
+    transition: width .5s;
+  }
+
+  nav ul a:hover { color: var(--ink); }
+  nav ul a:hover::after { width: 100%; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    text-align: center;
+  }
+
+  /* ink splash — SVG circle mimicking sumi-nagashi */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 12%; left: 50%;
+    transform: translateX(-50%);
+    width: 640px; height: 640px;
+    background:
+      radial-gradient(circle at 40% 45%, rgba(26,26,26,.03) 0%, transparent 50%),
+      radial-gradient(circle at 60% 55%, rgba(26,26,26,.02) 0%, transparent 40%),
+      radial-gradient(circle at 30% 60%, rgba(139,90,58,.04) 0%, transparent 45%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: inkBreathe 12s ease-in-out infinite;
+  }
+
+  @keyframes inkBreathe {
+    0%, 100% { transform: translateX(-50%) scale(1); opacity: .6; }
+    50%      { transform: translateX(-50%) scale(1.08); opacity: .9; }
+  }
+
+  .hero > * { position: relative; z-index: 1; }
+
+  .hero .kaki {
+    display: block;
+    font-size: 5rem;
+    font-weight: 300;
+    letter-spacing: .4em;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+
+  /* vertical ruby stroke */
+  .hero .kaki::after {
+    content: '';
+    position: absolute;
+    left: 50%; bottom: -8px;
+    transform: translateX(-50%);
+    width: 40px; height: 1px;
+    background: var(--rust);
+    opacity: .5;
+  }
+
+  .hero .sub {
+    font-size: .95rem;
+    letter-spacing: .25em;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-top: 1.5rem;
+    text-transform: uppercase;
+  }
+
+  .hero .sub span {
+    display: inline-block;
+    padding: 0 .6rem;
+    color: var(--rust);
+  }
+
+  .hero .location {
+    margin-top: 2.5rem;
+    font-size: .8rem;
+    letter-spacing: .3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    opacity: .7;
+  }
+
+  .hero .location::before,
+  .hero .location::after {
+    content: ' — ';
+    color: var(--border);
+  }
+
+  /* brush-stroke divider */
+  .brush-divider {
+    display: block;
+    width: 120px;
+    height: 4px;
+    margin: 2rem auto;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--ink) 15%,
+      var(--ink) 55%,
+      transparent 90%
+    );
+    opacity: .25;
+    position: relative;
+  }
+  .brush-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px; height: 8px;
+    background: radial-gradient(ellipse, rgba(26,26,26,.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ===== SECTIONS COMMON ===== */
+  section {
+    padding: 6rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2.6rem;
+    font-weight: 300;
+    letter-spacing: .15em;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  .section-title .jp {
+    display: block;
+    font-size: .7rem;
+    letter-spacing: .3em;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-top: .2rem;
+    opacity: .6;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -6px;
+    width: 50px; height: 1px;
+    background: var(--rust);
+    opacity: .5;
+  }
+
+  .section-intro {
+    color: var(--text-dim);
+    font-size: .95rem;
+    line-height: 1.9;
+    max-width: 620px;
+    margin-top: 2rem;
+  }
+
+  /* ===== ABOUT ===== */
+  #about {
+    padding-top: 2rem;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    margin-bottom: 1.4rem;
+    font-size: .95rem;
+    color: var(--text);
+  }
+
+  .about-text p:first-child::first-letter {
+    font-size: 3.2rem;
+    float: left;
+    margin-right: .6rem;
+    line-height: 1;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 2rem;
+  }
+
+  .about-tags span {
+    padding: .3rem 1rem;
+    border: 1px solid var(--border);
+    font-size: .78rem;
+    letter-spacing: .1em;
+    color: var(--text-dim);
+    font-weight: 300;
+    transition: all .4s;
+  }
+
+  .about-tags span:hover {
+    border-color: var(--rust);
+    color: var(--rust);
+    background: rgba(139,90,58,.04);
+  }
+
+  /* ink-brush portrait placeholder */
+  .about-portrait {
+    position: relative;
+  }
+
+  .about-portrait .brush-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 120%;
+    background: var(--washi-alt);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .about-portrait .brush-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 40% 30%, rgba(26,26,26,.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 70%, rgba(139,90,58,.06) 0%, transparent 40%),
+      radial-gradient(ellipse at 30% 80%, rgba(26,26,26,.03) 0%, transparent 35%);
+  }
+
+  .about-portrait .brush-frame .ink-text {
+    position: absolute;
+    bottom: 1.5rem; right: 1.5rem;
+    writing-mode: vertical-rl;
+    font-size: .8rem;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+    opacity: .4;
+    font-weight: 300;
+  }
+
+  .about-portrait .brush-frame .sumi-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 45% 40%,
+      rgba(26,26,26,.08) 0%,
+      rgba(26,26,26,.04) 40%,
+      transparent 70%
+    );
+  }
+
+  /* ===== PROJECTS ===== */
+  #projects {
+    padding-top: 2rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .project-card {
+    padding: 2rem;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.3);
+    transition: all .6s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--rust);
+    transition: height .6s;
+  }
+
+  .project-card:hover {
+    border-color: var(--rust-dim);
+    background: rgba(255,255,255,.5);
+  }
+  .project-card:hover::before { height: 100%; }
+
+  .project-card .num {
+    font-size: .7rem;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+    opacity: .4;
+    margin-bottom: .5rem;
+    display: block;
+  }
+
+  .project-card h3 {
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: .08em;
+    margin-bottom: .8rem;
+    color: var(--ink);
+  }
+
+  .project-card .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin: 1rem 0 1.2rem;
+  }
+
+  .project-card .tech span {
+    font-size: .7rem;
+    padding: .15rem .6rem;
+    background: var(--washi-alt);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    letter-spacing: .05em;
+  }
+
+  .project-card p {
+    font-size: .88rem;
+    color: var(--text-dim);
+    line-height: 1.8;
+  }
+
+  .project-card .link {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-size: .78rem;
+    letter-spacing: .15em;
+    color: var(--rust);
+    text-decoration: none;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    transition: border-color .4s;
+  }
+  .project-card .link:hover { border-bottom-color: var(--rust); }
+
+  /* ===== SKILLS ===== */
+  #skills {
+    padding-top: 2rem;
+  }
+
+  .skills-wrap {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .skill-group h4 {
+    font-size: .85rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    font-weight: 400;
+    margin-bottom: 1.2rem;
+  }
+
+  .skill-group h4::after {
+    content: '';
+    display: block;
+    width: 30px; height: 1px;
+    background: var(--border);
+    margin-top: .4rem;
+  }
+
+  .skill-group ul {
+    list-style: none;
+  }
+
+  .skill-group ul li {
+    padding: .5rem 0;
+    font-size: .9rem;
+    color: var(--text);
+    border-bottom: 1px solid rgba(0,0,0,.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .skill-group ul li .level {
+    font-size: .7rem;
+    color: var(--text-dim);
+    letter-spacing: .15em;
+    opacity: .6;
+  }
+
+  /* bar */
+  .skill-bar {
+    width: 60px;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-bar .fill {
+    height: 100%;
+    background: var(--ink);
+    opacity: .4;
+  }
+
+  /* ===== CONTACT ===== */
+  #contact {
+    padding-top: 2rem;
+    padding-bottom: 8rem;
+  }
+
+  .contact-wrap {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+  }
+
+  .contact-wrap a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1rem;
+    letter-spacing: .1em;
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all .4s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .contact-wrap a .label {
+    font-size: .7rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: .6;
+  }
+
+  .contact-wrap a:hover {
+    color: var(--rust);
+    border-bottom-color: var(--rust);
+    padding-left: .5rem;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: .75rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    opacity: .6;
+  }
+
+  footer .mon {
+    display: block;
+    font-size: 1.6rem;
+    margin-bottom: .5rem;
+    opacity: .3;
+    letter-spacing: 0;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { gap: 1.2rem; }
+    nav ul a { font-size: .75rem; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid,
+    .projects-grid,
+    .skills-wrap { grid-template-columns: 1fr; gap: 2rem; }
+    .hero .kaki { font-size: 3rem; }
+    .hero::before { width: 320px; height: 320px; }
+  }
+
+  @media (max-width: 600px) {
+    nav ul { display: none; }
+    .hero .kaki { font-size: 2.2rem; }
+    .section-title { font-size: 2rem; }
+    .about-portrait .brush-frame { padding-bottom: 80%; }
+  }
+
+  /* ===== REVEAL ANIMATION ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <a href="#" class="logo">安<span>.</span></a>
+  <ul>
+    <li><a href="#about">Обо мне</a></li>
+    <li><a href="#projects">Работы</a></li>
+    <li><a href="#skills">Навыки</a></li>
+    <li><a href="#contact">Связаться</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <span class="kaki">Андрей</span>
+  <span class="brush-divider"></span>
+  <span class="sub">Разработчик <span>·</span> Сызрань</span>
+  <span class="location">Python · Docker · aiogram · OmniRoute · Hermes</span>
+</header>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <h2 class="section-title reveal">
+    Обо мне
+    <span class="jp">自己紹介</span>
+  </h2>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        Я — разработчик из Сызрани. Пишу на Python, собираю микросервисы в Docker,
+        проектирую телеграм-ботов на aiogram и занимаюсь инфраструктурой для AI-агентов.
+      </p>
+      <p>
+        Люблю, когда код дышит — чистый, без лишнего. Как в японской эстетике:
+        красота в пустоте, в недосказанности, в естественности. В&nbsp;моих проектах
+        каждый модуль — как мазок туши: один, но точный.
+      </p>
+      <p>
+        Владею OmniRoute — AI-шлюзом для маршрутизации запросов между провайдерами,
+        и Hermes — агентной системой для автоматизации. Строю надёжные системы,
+        которые работают тихо, как чайная церемония: без лишнего шума, с ритуалом.
+      </p>
+      <div class="about-tags">
+        <span>Python</span>
+        <span>Docker</span>
+        <span>aiogram</span>
+        <span>FastAPI</span>
+        <span>OmniRoute</span>
+        <span>Hermes</span>
+        <span>PostgreSQL</span>
+        <span>Redis</span>
+      </div>
+    </div>
+    <div class="about-portrait reveal">
+      <div class="brush-frame">
+        <div class="sumi-circle"></div>
+        <span class="ink-text">渡り鳥は空に跡を残さない</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects">
+  <h2 class="section-title reveal">
+    Работы
+    <span class="jp">作品</span>
+  </h2>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <span class="num">01</span>
+      <h3>OmniRoute Gateway</h3>
+      <div class="tech">
+        <span>Python</span>
+        <span>FastAPI</span>
+        <span>Redis</span>
+        <span>Docker</span>
+      </div>
+      <p>
+        AI-шлюз с балансировкой и маршрутизацией между LLM-провайдерами.
+        Умный failover, кэширование, rate limiting, логгирование.
+      </p>
+      <a href="#" class="link">Подробнее →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <span class="num">02</span>
+      <h3>Hermes Agent</h3>
+      <div class="tech">
+        <span>Python</span>
+        <span>WebSocket</span>
+        <span>Plugin API</span>
+        <span>Docker</span>
+      </div>
+      <p>
+        Агентная система для автоматизации рабочих процессов.
+        Расширяемая архитектура плагинов, мульти-провайдерность,
+        интеграция с Telegram.
+      </p>
+      <a href="#" class="link">Подробнее →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <span class="num">03</span>
+      <h3>Telegram Shop Bot</h3>
+      <div class="tech">
+        <span>aiogram</span>
+        <span>PostgreSQL</span>
+        <span>Stripe API</span>
+        <span>Docker</span>
+      </div>
+      <p>
+        Полноценный магазин в Telegram с корзиной, оплатой,
+        админ-панелью и уведомлениями. Надёжен как старый мост.
+      </p>
+      <a href="#" class="link">Подробнее →</a>
+    </div>
+
+    <div class="project-card reveal">
+      <span class="num">04</span>
+      <h3>Dashboard Wabi</h3>
+      <div class="tech">
+        <span>Python</span>
+        <span>Flask</span>
+        <span>HTML/CSS</span>
+        <span>Docker</span>
+      </div>
+      <p>
+        Веб-дашборд в эстетике ваби-саби. Минималистичный интерфейс,
+        тушёвые графики, асимметричная сетка.
+      </p>
+      <a href="#" class="link">Подробнее →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills">
+  <h2 class="section-title reveal">
+    Навыки
+    <span class="jp">技術</span>
+  </h2>
+  <div class="skills-wrap">
+    <div class="skill-group reveal">
+      <h4>Backend</h4>
+      <ul>
+        <li>Python <span class="level"><span class="skill-bar"><span class="fill" style="width:95%"></span></span></span></li>
+        <li>FastAPI <span class="level"><span class="skill-bar"><span class="fill" style="width:85%"></span></span></span></li>
+        <li>Docker / Compose <span class="level"><span class="skill-bar"><span class="fill" style="width:90%"></span></span></span></li>
+        <li>PostgreSQL <span class="level"><span class="skill-bar"><span class="fill" style="width:80%"></span></span></span></li>
+        <li>Redis <span class="level"><span class="skill-bar"><span class="fill" style="width:75%"></span></span></span></li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <h4>Инструменты</h4>
+      <ul>
+        <li>aiogram <span class="level"><span class="skill-bar"><span class="fill" style="width:90%"></span></span></span></li>
+        <li>OmniRoute <span class="level"><span class="skill-bar"><span class="fill" style="width:85%"></span></span></span></li>
+        <li>Hermes Agent <span class="level"><span class="skill-bar"><span class="fill" style="width:80%"></span></span></span></li>
+        <li>Git / CI/CD <span class="level"><span class="skill-bar"><span class="fill" style="width:85%"></span></span></span></li>
+        <li>Linux <span class="level"><span class="skill-bar"><span class="fill" style="width:88%"></span></span></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <h2 class="section-title reveal">
+    Связаться
+    <span class="jp">連絡</span>
+  </h2>
+  <div class="contact-wrap">
+    <a href="#" class="reveal">
+      <span class="label">Telegram</span>
+      @andrey_dev
+    </a>
+    <a href="#" class="reveal">
+      <span class="label">Email</span>
+      andrey@syzran.dev
+    </a>
+    <a href="#" class="reveal">
+      <span class="label">GitHub</span>
+      github.com/andrey
+    </a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <span class="mon">○</span>
+  <span>Сызрань, 2025 · 和 · 寂 · 美</span>
+</footer>
+
+<!-- ===== SCROLL REVEAL ===== -->
+<script>
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: .15, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => observer.observe(el));
+})();
+</script>
+
+</body>
+</html>
